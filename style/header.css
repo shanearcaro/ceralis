@@ -1,0 +1,86 @@
+/* 
+    =======================
+        Header Banner CSS 
+    =======================
+
+  * * * * * * * * * * * * * * * 
+    Changes here will affect the
+          entire project
+  * * * * * * * * * * * * * * *
+
+*/
+
+* {
+    font-family: 'Lato', sans-serif;
+}
+
+.banner-container {
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.banner {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-frame,
+.banner-title,
+.banner-spacer {
+    height: 100%;
+}
+
+.banner-frame {
+    width: 15%;
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#banner-image {
+    width: 75%;
+    height: 100%;
+    padding-bottom: 1vh;
+}
+
+.banner-title {
+    width: 10%;
+    min-width: 200px;
+    padding-top: 0.5vh;
+}
+
+.banner-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+
+    padding-top: 1.5vh;
+}
+
+.banner-description h1 {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.banner-spacer {
+    width: 65%;
+}
+
+.break {
+    width: 100%;
+    border: 1px solid rgb(234, 234, 234);
+}

@@ -1,0 +1,24 @@
+{
+    "name": "cs490/project",
+    "description": "CS490 Senior Project",
+    "license": "MIT",
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "config": {
+        "process-timeout": 900
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit -v --debug"
+        ]
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.4"
+    }
+}
