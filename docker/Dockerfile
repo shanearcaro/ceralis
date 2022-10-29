@@ -1,8 +1,12 @@
 FROM php:8.0-apache
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install python3 -y
-RUN a2enmod rewrite && service apache2 restart
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+WORKDIR /var/www/html
 
-# CMD [ "composer", "test" ]
+RUN apt-get update && apt-get install -y \
+    && apt-get install python3 -y \
+    && docker-php-ext-install mysqli && docker-php-ext-enable mysqli \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install pdo_mysql \
+    && a2enmod rewrite && service apache2 restart
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer

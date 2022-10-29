@@ -72,6 +72,32 @@ body {
     height: 90%;
 }
 
+.form-error {
+    height: 10%;
+
+    margin-top: 1vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+
+    background-color: rgb(253, 246, 246);
+    border: 1px solid rgb(230, 142, 141);
+    border-radius: 2px;
+
+    text-align: left;
+    
+    display: flex;
+    justify-content: left;
+}
+
+.error-text {
+    color: red;
+    padding-left: 0.5vw;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-weight: 300;
+    letter-spacing: normal;
+}
+
 .form-body form {
     display: flex;
     flex-direction: column;
@@ -126,4 +152,8 @@ body {
 
 .apply-shake {
     animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.disabled {
+    display: none;
 }

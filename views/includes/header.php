@@ -1,6 +1,4 @@
-<?php
-    echo '<link rel="stylesheet" href="../../style/header.css" type="text/css">';
-?>
+<?php echo '<link rel="stylesheet" href="/style/header.css" type="text/css">'; ?>
 
 <div class="banner-container">
     <div class="banner">
