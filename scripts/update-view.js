@@ -1,3 +1,8 @@
+/**
+ * Sleep for a specified duration of time
+ * @param {int} time - the number of milliseconds to sleep
+ * @returns promise
+ */
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
   }
@@ -71,4 +76,8 @@ function login() {
     ajax.open("POST", "/login/request", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
+}
+
+function logout() {
+    console.log("Log the user out!");
 }
