@@ -1,0 +1,17 @@
+#logout-button {
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+
+    border: none;
+    border-radius: 3px;
+    background-color: rgb(218, 83, 72);
+
+    font-weight: 700;
+    color: white;
+}
+
+#logout-button:hover {
+    cursor: pointer;
+}

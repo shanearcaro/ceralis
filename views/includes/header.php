@@ -1,4 +1,4 @@
-<?php echo '<link rel="stylesheet" href="/style/header.css?' . time() . '" type="text/css">'; ?>
+<?php echo '<link rel="stylesheet" href="/style/includes/header.css?' . time() . '" type="text/css">'; ?>
 
 <div class="banner-container banner-element">
     <div class="banner banner-element">
@@ -13,5 +13,5 @@
         </div>
         <div class="banner-spacer banner-element"></div>
     </div>
-    <div class="break banner-element"></div>
+    <div class="banner-break banner-element"></div>
 </div>

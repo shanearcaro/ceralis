@@ -1,3 +1,6 @@
+<!-- Validate user authentication -->
+<?php require_once("controller/authenticate-login.php"); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +17,8 @@
 </head>
 <body>
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
-    <!-- <h1>Teacher Login</h1> -->
+    <div class="content-area">
+        <h1>Teacher Login</h1>
+    </div>
 </body>
 </html>
