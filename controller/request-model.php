@@ -8,7 +8,7 @@ $post_data = $_POST;
 $encoded = json_encode($post_data);
 
 // Curl
-$url = $post_url . "/query";
+$url = $post_url . "/login/query";
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_POST, 1);
