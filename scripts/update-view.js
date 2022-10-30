@@ -53,6 +53,8 @@ function login() {
 
                 properAuth.classList.remove("disabled");
                 authentication.classList.add("disabled");
+
+                properAuth.classList.add("apply-color");
                 
                 sleep(1250).then(() => {
                     // Redirect based on position
