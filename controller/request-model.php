@@ -18,4 +18,11 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
 // Decode the results of sending the data
 $result = curl_exec($ch);
 curl_close($ch);
+
+// User is not authenticated
+if(!isset($_SESSION['user_id'])) {
+    $response = json_decode($result);
+    if (isset($response->{'user_id'}))
+        $_SESSION['user_id'] = $response->{'user_id'};
+} 
 echo $result;
