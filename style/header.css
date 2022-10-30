@@ -10,8 +10,11 @@
 
 */
 
-* {
+.banner-element {
     font-family: 'Lato', sans-serif;
+    margin: 0px; 
+    padding: 0px;
+    letter-spacing: -0.05em;
 }
 
 .banner-container {

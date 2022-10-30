@@ -1,17 +1,17 @@
 <?php echo '<link rel="stylesheet" href="/style/header.css?' . time() . '" type="text/css">'; ?>
 
-<div class="banner-container">
-    <div class="banner">
-        <div class="banner-frame">
-            <img id="banner-image" src="/assets/njit_new.png" alt="njit logo">
+<div class="banner-container banner-element">
+    <div class="banner banner-element">
+        <div class="banner-frame banner-element">
+            <img class="banner-element" id="banner-image" src="/assets/njit_new.png" alt="njit logo">
         </div>
-        <div class="banner-title">
-            <div class="banner-description">
-                <h1 id="class-name">CERALIS</h1>
-                <h1 id="project-name">Autograder</h1>
+        <div class="banner-title banner-element">
+            <div class="banner-description banner-element">
+                <h1 class="banner-element" id="class-name">CERALIS</h1>
+                <h1 class="banner-element" id="project-name">Autograder</h1>
             </div>
         </div>
-        <div class="banner-spacer"></div>
+        <div class="banner-spacer banner-element"></div>
     </div>
-    <div class="break"></div>
+    <div class="break banner-element"></div>
 </div>
