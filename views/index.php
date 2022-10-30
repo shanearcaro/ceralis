@@ -24,6 +24,7 @@
                 <div class="form-body">
                     <div class="form-error disabled" id="response-handler">
                         <p class="error-text disabled" id="error-authentication">Invalid Login Credentials</p>
+                        <p class="error-text disabled" id="proper-authentication">User Authenticated</p>
                     </div>
                     <form method="post" id="form-login" autocomplete="off" onsubmit="return false">
                         <label for="username" class="form-label">Username <span class="form-required">*</span></label>

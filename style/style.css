@@ -79,8 +79,6 @@ body {
     margin-left: 1vw;
     margin-right: 1vw;
 
-    background-color: rgb(253, 246, 246);
-    border: 1px solid rgb(230, 142, 141);
     border-radius: 2px;
 
     text-align: left;
@@ -89,8 +87,19 @@ body {
     justify-content: left;
 }
 
-.error-text {
+.form-login-invalid {
+    background-color: rgb(253, 246, 246);
+    border: 1px solid rgb(230, 142, 141);
     color: red;
+}
+
+.form-login-valid {
+    background-color: rgb(246, 253, 247);
+    border: 1px solid rgb(141, 230, 141);
+    color: green;
+}
+
+.error-text {
     padding-left: 0.5vw;
     margin-top: auto;
     margin-bottom: auto;
