@@ -12,8 +12,8 @@ function login() {
     const authentication = document.getElementById("error-authentication");
 
     // Shake effect
-    const submit = document.getElementById("form-button");
-    submit.classList.remove("apply-shake");
+    const text = document.getElementById("error-authentication");
+    text.classList.remove("apply-shake");
 
     // Request code for database
     const requestCode = document.getElementById("form-request").value;
@@ -25,16 +25,24 @@ function login() {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200)
+        // User fails to log in
             if (ajax.responseText == "false") {
-                // User fails to log in
+                // Don't shake first time
+                if (!error.classList.contains("disabled"))
+                    text.classList.add("apply-shake");
+                
                 error.classList.remove("disabled");
+                error.classList.add("apply-fade");
                 authentication.classList.remove("disabled");
-
-                submit.classList.add("apply-shake");
             }
+            // User logs in
             else {
-                // Log the user in
-                window.location = "/success";
+                // Decode json response
+                const response = JSON.parse(ajax.responseText);
+                
+                // Redirect based on position
+                if (response.position == "student") window.location.href = "/student";
+                if (response.position == "teacher") window.location.href = "/teacher";
             }
         else
             return;
