@@ -34,12 +34,12 @@ $request_code = $data->{'request'};
  * 
  * 0 - Login request
  *      username, password
- *      accountID
+ *      user_id, position
  */
 
 switch($request_code) {
     case 0:
-        $query = $pdo->prepare("SELECT accountID FROM Users WHERE username = ? AND password= ?");
+        $query = $pdo->prepare("SELECT user_id, position FROM Users WHERE name = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
 

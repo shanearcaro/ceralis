@@ -2,84 +2,54 @@ CREATE DATABASE IF NOT EXISTS sma237;
 USE sma237;
 
 CREATE TABLE IF NOT EXISTS Users (
-    accountID INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(20) NOT NULL,
-    password TEXT(255) NOT NULL,
-    PRIMARY KEY(accountID)
+    user_id int AUTO_INCREMENT NOT NULL,
+    name varchar(50) NOT NULL,
+    password varchar(50) NOT NULL,
+    position varchar(50) NOT NULL,
+    PRIMARY KEY(user_id),
+    UNIQUE(name)
 );
 
-CREATE TABLE IF NOT EXISTS Students (
-    accountID INT NOT NULL,
-    studentID INT NOT NULL AUTO_INCREMENT,
-    FOREIGN KEY (accountID) REFERENCES Users(accountID),
-    PRIMARY KEY(studentID)
+CREATE TABLE Exams (
+    exam_id int AUTO_INCREMENT NOT NULL,
+    user_id int NOT NULL,
+    title varchar(50) NOT NULL,
+    points int NOT NULL,
+    date datetime NOT NULL,
+    PRIMARY KEY(exam_id),
+    FOREIGN KEY(user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS Teachers (
-    accountID INT NOT NULL,
-    teacherID INT NOT NULL AUTO_INCREMENT,
-    FOREIGN KEY (accountID) REFERENCES Users(accountID),
-    PRIMARY KEY(teacherID)
+CREATE TABLE Questions (
+    question_id int AUTO_INCREMENT NOT NULL,
+    type varchar(50) NOT NULL,
+    difficulty varchar(50) NOT NULL,
+    case1 varchar(50) NOT NULL,
+    case2 varchar(50) NOT NULL,
+    PRIMARY KEY(question_id)
 );
 
-CREATE TABLE IF NOT EXISTS Exams (
-    examID INT NOT NULL AUTO_INCREMENT,
-    examPoints INT NOT NULL,
-    numberOfQuestions INT NOT NULL,
-    teacherID INT NOT NULL,
-    FOREIGN KEY (teacherID) REFERENCES Teachers(teacherID),
-    PRIMARY KEY (examID)
+CREATE TABLE StudentExams (
+    user_id int NOT NULL,
+    exam_id int NOT NULL,
+    score int NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
+    PRIMARY KEY(user_id, exam_id)
 );
 
-CREATE TABLE IF NOT EXISTS StudentExams (
-    studentExamID INT NOT NULL AUTO_INCREMENT,
-    studentID INT NOT NULL,
-    examID INT NOT NULL,
-    score INT,
-    PRIMARY KEY(studentExamID),
-    FOREIGN KEY (studentID) REFERENCES Students(studentID),
-    FOREIGN KEY (examID) REFERENCES Exams(examID)
+CREATE TABLE ExamQuestions (
+    exam_id int NOT NULL,
+    question_id int NOT NULL,
+    points int NOT NULL,
+    answer varchar(2000),
+    comment varchar(500),
+    FOREIGN KEY(exam_id) REFERENCES Exams(exam_id),
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id),
+    PRIMARY KEY(exam_id, question_id)
 );
 
-CREATE TABLE IF NOT EXISTS Questions (
-    questionID INT NOT NULL AUTO_INCREMENT,
-    teacherID INT NOT NULL,
-    question TEXT(255) NOT NULL,
-    testcase1 VARCHAR(50) NOT NULL,
-    caseAnswer1 VARCHAR(50) NOT NULL,
-    testcase2 VARCHAR(50) NOT NULL,
-    caseAnswer2 VARCHAR(50) NOT NULL,
-    PRIMARY KEY(questionID),
-    FOREIGN KEY(teacherID) REFERENCES Teachers(teacherID)
-);
-
-CREATE TABLE IF NOT EXISTS CompletedExam (
-    studentExamID INT NOT NULL,
-    questionID INT NOT NULL,
-    answer TEXT(255) NOT NULL,
-    result1 TEXT(255),
-    result2 TEXT(255),
-    score INT NOT NULL,
-    comment TEXT(255),
-    FOREIGN KEY (studentExamID) REFERENCES StudentExams(studentExamID),
-    FOREIGN KEY (questionID) REFERENCES Questions(questionID)
-);
-
-CREATE TABLE IF NOT EXISTS ExamQuestions (
-    examID INT NOT NULL,
-    questionID INT NOT NULL,
-    questionPoints INT NOT NULL,
-    FOREIGN KEY (examID) REFERENCES Exams(examID),
-    FOREIGN KEY (questionID) REFERENCES Questions(questionID)
-);
-
-INSERT INTO `Users` (`accountID`, `username`, `password`) VALUES (NULL, 'student', 'student');
-INSERT INTO `Users` (`accountID`, `username`, `password`) VALUES (NULL, 'malcolm', 'student');
-
-INSERT INTO `Users` (`accountID`, `username`, `password`) VALUES (NULL, 'teacher', 'teacher');
-INSERT INTO `Users` (`accountID`, `username`, `password`) VALUES (NULL, 'shane', 'teacher');
-
-INSERT INTO `Students` (`accountID`, `studentID`) VALUES ('1', NULL);
-INSERT INTO `Students` (`accountID`, `studentID`) VALUES ('2', NULL);
-INSERT INTO `Teachers` (`accountID`, `teacherID`) VALUES ('3', NULL);
-INSERT INTO `Teachers` (`accountID`, `teacherID`) VALUES ('4', NULL);
+INSERT INTO Users(name, password, position) VALUES('studentshane', 'studentpassword', 'student');
+INSERT INTO Users(name, password, position) VALUES('teachershane', 'teacherpassword', 'teacher');
+INSERT INTO Users(name, password, position) VALUES('studentmalcolm', 'studentpassword', 'student');
+INSERT INTO Users(name, password, position) VALUES('teachermalcolm', 'teacherpassword', 'teacher');
