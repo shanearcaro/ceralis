@@ -1,0 +1,63 @@
+@import url("/style/includes/logout-button.css");
+
+/* Reset values to 0 */
+* { 
+    margin: 0px; 
+    padding: 0px;
+    letter-spacing: -0.05em;
+    font-family: 'Lato', sans-serif; 
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+
+.content-area {
+    position: absolute;
+    width: inherit;
+    height: 90%;
+    bottom: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.content-panel {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 10%;
+
+    display: flex;
+    flex-direction: row;
+
+    background-color: rgb(247, 247, 247);
+}
+
+.panel-spacer {
+    width: 75%;
+    height: 100%;
+}
+
+.panel-list-area {
+    width: 25%;
+    height: 100%;
+
+    display: flex;
+}
+
+.panel-list {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    list-style: none;
+
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-right: 20%;
+}
