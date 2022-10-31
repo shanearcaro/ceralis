@@ -109,5 +109,12 @@ function storeSessionLogin(user_id) {
     sessionStorage.setItem('user_id', user_id);
 }
 
+/**
+ * Disable the back button
+ */
+function disableBack() {
+    window.history.forward();
+}
+
 // Validate session on every focus of each page
 document.addEventListener("focus", validateSession);

@@ -15,7 +15,7 @@
     <script type="text/javascript" src="scripts/update-view.js??<?php echo time();?>"></script>
     <title>Student Portal</title>
 </head>
-<body>
+<body onload="disableBack()">
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
     <div class="content-area">
         <div class="content-panel">
