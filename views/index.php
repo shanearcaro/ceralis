@@ -19,7 +19,7 @@
         <div class="content-form">
             <div class="form-area">
                 <div class="form-title">
-                    <p>MEMBER LOGIN</p>
+                    <p id="index-login-title">MEMBER LOGIN</p>
                 </div>
                 <div class="form-body">
                     <div class="form-error disabled" id="response-handler">
