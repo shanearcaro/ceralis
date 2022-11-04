@@ -1,5 +1,12 @@
 @import url("/style/includes/logout-button.css");
 
+/* DEFINE COLORS */
+:root {
+    
+    --content-bg:   rgb(247, 247, 247);     /* Main content background */
+    --dash-bg:      rgb(246, 246, 246);     /* Table title background  */
+    --dash-ol:      rgb(200, 200, 200);     /* Table title outline     */
+}
 /* Reset values to 0 */
 * { 
     margin: 0px; 
@@ -33,7 +40,7 @@ body {
     display: flex;
     flex-direction: row;
 
-    background-color: rgb(247, 247, 247);
+    background-color: var(--content-bg);
 }
 
 .panel-spacer {
@@ -60,4 +67,72 @@ body {
     margin-top: auto;
     margin-bottom: auto;
     padding-right: 20%;
+}
+
+.content-dash {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.dash-table {
+    width: 50%;
+    height: 50%;
+    border: 1px solid var(--dash-ol);
+}
+
+.dash-title {
+    width: 100%;
+    height: 10%;
+
+    border-bottom: 1px solid var(--dash-ol);
+    background-color: var(--dash-bg);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#dash-table-title {
+    font-size: 1rem;
+    font-weight: 300;
+    padding-left: 0.5vw;
+    
+}
+
+.dash-searchbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 1vh;
+}
+
+.searchbar-element {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.searchbar-select {
+    width: 18%;
+}
+
+#results-amount {
+    background-color: white;
+    border: 1px solid var(--dash-ol);
+    border-radius: 0px;
+    text-align: center;
+    padding-left: 0.25vw;
+}
+
+.searchbar-search {
+    width: 25%;
 }

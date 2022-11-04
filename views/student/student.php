@@ -27,9 +27,27 @@
                     <button id="logout-button" onclick="logout()">LOG OUT</button>
                 </ul>
             </div>
-            
         </div>
-        <h1>Student Login</h1>
+        <div class="content-dash">
+            <div class="dash-table">
+                <div class="dash-title"><h1 id='dash-table-title'>Exams List</h1></div>
+                <div class="dash-searchbar">
+                    <div class="searchbar-select searchbar-element">
+                        <select name="resultsAmount" id="results-amount">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <p>records per page</p>
+                    </div>
+                    <div class="searchbar-search searchbar-element">
+                        <p>Search: </p>
+                        <input type="text" id='dash-search-input'>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
 </body>
