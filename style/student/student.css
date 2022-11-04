@@ -69,6 +69,15 @@ body {
     padding-right: 20%;
 }
 
+.panel-hover {
+    height: 100%;
+}
+
+.panel-element:hover {
+    color: red;
+    cursor: pointer;
+}
+
 .content-dash {
     width: 100%;
     height: 100%;
@@ -80,10 +89,11 @@ body {
 
 }
 
-.dash-table {
+.dash-table-area {
     width: 50%;
     height: 50%;
     border: 1px solid var(--dash-ol);
+
 }
 
 .dash-title {
@@ -107,6 +117,7 @@ body {
 }
 
 .dash-searchbar {
+    height: 5%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -135,4 +146,20 @@ body {
 
 .searchbar-search {
     width: 25%;
+}
+
+.dash-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: green;
+    height: 83%;
+    opacity: 20%;
+}
+
+#exams-table{
+    width: 98%;
+    height: 80%;
+
+    margin-top: 1vh;
 }
