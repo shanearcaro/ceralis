@@ -22,9 +22,9 @@
             <div class="panel-spacer"></div>
             <div class="panel-list-area">
                 <ul class="panel-list">
-                    <div class="panel-div panel-hover"><li class="panel-element" id="panel-dashboard">DASHBOARD</li></div>
-                    <div class="panel-div panel-hover"><li class="panel-element" id="panel-exam">TAKE EXAM</li></div>
-                    <div class="panel-div"><button class="panel-element" id="logout-button" onclick="logout()">LOG OUT</button></div>
+                    <div class="panel-div panel-hover"><li class="panel-element" id='panel-dashboard'>DASHBOARD</li></div>
+                    <div class="panel-div panel-hover"><li class="panel-element" id='panel-exam'>TAKE EXAM</li></div>
+                    <div class="panel-div"><button class="panel-element" id='logout-button' onclick="logout()">LOG OUT</button></div>
                 </ul>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 <div class="dash-title"><h1 id='dash-table-title'>Exams List</h1></div>
                 <div class="dash-searchbar">
                     <div class="searchbar-select searchbar-element">
-                        <select name="resultsAmount" id="results-amount">
+                        <select name="resultsAmount" id='results-amount'>
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
@@ -46,8 +46,9 @@
                         <input type="text" id='dash-search-input'>
                     </div>
                 </div>
-                <div class="dash-table">
-                    <table id='exams-table'></table>
+                <div class="dash-table-div">
+                    <p class="disabled" id='table-empty-records'>No records</p>
+                    <table id='table'><script> loadTables(); </script></table>
                 </div>
             </div>
         </div>

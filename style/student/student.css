@@ -111,6 +111,8 @@ body {
     width: 50%;
     height: 50%;
     border: 1px solid var(--dash-ol);
+    display: flex;
+    flex-direction: column;
 }
 
 .dash-title {
@@ -166,18 +168,28 @@ body {
     width: 25%;
 }
 
-.dash-table {
+.dash-table-div {
+    width: 100%;
+    height: 85%;
+
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    background-color: green;
-    height: 83%;
-    opacity: 20%;
 }
 
-#exams-table{
-    width: 98%;
-    height: 80%;
+#table {
+    width: 97%;
+    height: 93%;
 
-    margin-top: 1vh;
+    border: 1px solid var(--dash-ol);
+}
+
+#table-empty-records {
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.disabled {
+    display: none;
 }
