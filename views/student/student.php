@@ -22,14 +22,14 @@
             <div class="panel-spacer"></div>
             <div class="panel-list-area">
                 <ul class="panel-list">
-                    <li class="panel-element" id="panel-dashboard">DASHBOARD</li>
-                    <li class="panel-element" id="panel-exam">TAKE EXAM</li>
-                    <button id="logout-button" onclick="logout()">LOG OUT</button>
+                    <div class="panel-div panel-hover"><li class="panel-element" id="panel-dashboard">DASHBOARD</li></div>
+                    <div class="panel-div panel-hover"><li class="panel-element" id="panel-exam">TAKE EXAM</li></div>
+                    <div class="panel-div"><button class="panel-element" id="logout-button" onclick="logout()">LOG OUT</button></div>
                 </ul>
             </div>
         </div>
         <div class="content-dash">
-            <div class="dash-table">
+            <div class="dash-table-area">
                 <div class="dash-title"><h1 id='dash-table-title'>Exams List</h1></div>
                 <div class="dash-searchbar">
                     <div class="searchbar-select searchbar-element">
@@ -45,6 +45,9 @@
                         <p>Search: </p>
                         <input type="text" id='dash-search-input'>
                     </div>
+                </div>
+                <div class="dash-table">
+                    <table id='exams-table'></table>
                 </div>
             </div>
         </div>

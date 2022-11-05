@@ -3,9 +3,10 @@
 /* DEFINE COLORS */
 :root {
     
-    --content-bg:   rgb(247, 247, 247);     /* Main content background */
-    --dash-bg:      rgb(246, 246, 246);     /* Table title background  */
-    --dash-ol:      rgb(200, 200, 200);     /* Table title outline     */
+    --panel-hover:  rgb(220, 220, 220);     /* Banner element highlight */
+    --content-bg:   rgb(247, 247, 247);     /* Main content background  */
+    --dash-bg:      rgb(246, 246, 246);     /* Table title background   */
+    --dash-ol:      rgb(200, 200, 200);     /* Table title outline      */
 }
 /* Reset values to 0 */
 * { 
@@ -44,12 +45,12 @@ body {
 }
 
 .panel-spacer {
-    width: 75%;
+    width: 70%;
     height: 100%;
 }
 
 .panel-list-area {
-    width: 25%;
+    width: 30%;
     height: 100%;
 
     display: flex;
@@ -57,6 +58,7 @@ body {
 
 .panel-list {
     width: 100%;
+    height: 100%;
 
     display: flex;
     flex-direction: row;
@@ -73,6 +75,22 @@ body {
     height: 100%;
 }
 
+.panel-div {
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.panel-hover:hover {
+    background-color: var(--panel-hover);
+}
+
+.panel-element {
+    height: 25%;
+}
 .panel-element:hover {
     color: red;
     cursor: pointer;
@@ -93,7 +111,6 @@ body {
     width: 50%;
     height: 50%;
     border: 1px solid var(--dash-ol);
-
 }
 
 .dash-title {
@@ -113,14 +130,15 @@ body {
     font-size: 1rem;
     font-weight: 300;
     padding-left: 0.5vw;
-    
 }
 
 .dash-searchbar {
     height: 5%;
+    
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
     padding-left: 1vw;
     padding-right: 1vw;
     padding-top: 1vh;
