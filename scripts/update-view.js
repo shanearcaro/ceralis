@@ -77,7 +77,7 @@ function login() {
     }
 
     // Send request
-    ajax.open("POST", "/login/request", true);
+    ajax.open("POST", "/post", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
@@ -114,6 +114,30 @@ function storeSessionLogin(user_id) {
  */
 function disableBack() {
     window.history.forward();
+}
+
+function loadTables() {
+    const credentials = `request=${1}`;
+    const ajax = new XMLHttpRequest();
+
+    // Check AJAX
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            console.log("LOADING TABLES");
+            // const response = JSON.parse(ajax.responseText);
+            console.log(ajax.responseText);
+            // for (let i = 0; i < response.size; i++) {
+            //     console.log(i);
+            // }
+        }
+        else
+            return;
+    }
+
+    // Send request
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
 }
 
 // Validate session on every focus of each page
