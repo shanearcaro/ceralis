@@ -1,3 +1,6 @@
+// Number of columns the table in student dashboard will have
+const MAX_TABLE_ELEMENTS_STUDENT = 5;
+
 /**
  * Sleep for a specified duration of time
  * @param {int} time - the number of milliseconds to sleep
@@ -140,11 +143,30 @@ function loadTables() {
             }
             else {
                 // Display results
+                const response = JSON.parse(ajax.responseText);
+                const table = document.getElementById("table");
                 for (let i = 0; i < response.length; i++) {
-                    const row = document.createElement("tr");
+                    const element = response[i];
                     const exam = response[i];
-                    row.insertCell(i);
-                    row.insertCell(exam.title);
+
+                    const prefix = "cell";
+                    const delim = "-";
+                    const data = ["index", "title", "name", "points", "date"];
+                    const row = table.insertRow(-1);
+                    row.classList.add("exam-student-row");
+                    row.classList.add("row-" + (i % 2 == 0 ? "light" : "dark"));
+                    for (let i = 0; i < MAX_TABLE_ELEMENTS_STUDENT; i++) {
+                        const cell = row.insertCell(-1);
+                        cell.classList.add(prefix + delim + data[i]);
+                        cell.classList.add(prefix);
+                        cell.innerHTML = "s";
+                    }
+                    row.cells[0].innerHTML = i;
+                    row.cells[1].innerHTML = "Mr. " + exam.name;
+                    row.cells[2].innerHTML = exam.title;
+                    row.cells[3].innerHTML = exam.points;
+                    row.cells[4].innerHTML = exam.date;
+                    
                     // TODO: Create and add elements to table
                 }
             }
