@@ -32,7 +32,8 @@ CREATE TABLE Questions (
 CREATE TABLE StudentExams (
     user_id int NOT NULL,
     exam_id int NOT NULL,
-    score int NOT NULL,
+    score int,
+    date datetime NOT NULL,
     FOREIGN KEY(user_id) REFERENCES Users(user_id),
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
     PRIMARY KEY(user_id, exam_id)
