@@ -40,7 +40,7 @@ function login() {
                 
             error.classList.remove("disabled");
             error.classList.add("apply-fade");
-            
+
             // User fails to log in
             if (ajax.responseText == "false") {
                 error.classList.add("form-login-invalid");
@@ -50,7 +50,9 @@ function login() {
             // User logs in
             else {
                 // Decode json response
-                const response = JSON.parse(ajax.responseText);
+                const allResponses = JSON.parse(ajax.responseText);
+                const response = allResponses[0];
+                console.log(response);
                 const properAuth = document.getElementById("proper-authentication");
 
                 // Change from error to accept message
@@ -64,7 +66,7 @@ function login() {
 
                 // Store for checking later
                 storeSessionLogin(response.user_id);
-                
+
                 sleep(1250).then(() => {
                     // Redirect based on position
                     if (response.position == "student") window.location.href = "/student";
@@ -106,6 +108,7 @@ function validateSession() {
  * @param {number} user_id - user's id number
  */
 function storeSessionLogin(user_id) {
+    console.log("USER ID: " + user_id);
     sessionStorage.setItem('user_id', user_id);
 }
 
@@ -124,11 +127,27 @@ function loadTables() {
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
             console.log("LOADING TABLES");
-            // const response = JSON.parse(ajax.responseText);
             console.log(ajax.responseText);
-            // for (let i = 0; i < response.size; i++) {
-            //     console.log(i);
-            // }
+
+            // If exams exist print table dynamically
+            if (ajax.responseText == "false") {
+                // If no exams exist display empty table
+                const empty = document.getElementById("table-empty-records");
+                const table = document.getElementById("table");
+
+                empty.classList.remove("disabled");
+                table.classList.add("disabled");
+            }
+            else {
+                // Display results
+                for (let i = 0; i < response.length; i++) {
+                    const row = document.createElement("tr");
+                    const exam = response[i];
+                    row.insertCell(i);
+                    row.insertCell(exam.title);
+                    // TODO: Create and add elements to table
+                }
+            }
         }
         else
             return;
