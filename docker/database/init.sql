@@ -3,11 +3,12 @@ USE sma237;
 
 CREATE TABLE IF NOT EXISTS Users (
     user_id int AUTO_INCREMENT NOT NULL,
+    username varchar(50) NOT NULL,
     name varchar(50) NOT NULL,
     password varchar(50) NOT NULL,
     position varchar(50) NOT NULL,
     PRIMARY KEY(user_id),
-    UNIQUE(name)
+    UNIQUE(username)
 );
 
 CREATE TABLE Exams (
@@ -50,7 +51,7 @@ CREATE TABLE ExamQuestions (
     PRIMARY KEY(exam_id, question_id)
 );
 
-INSERT INTO Users(name, password, position) VALUES('studentshane', 'studentpassword', 'student');
-INSERT INTO Users(name, password, position) VALUES('teachershane', 'teacherpassword', 'teacher');
-INSERT INTO Users(name, password, position) VALUES('studentmalcolm', 'studentpassword', 'student');
-INSERT INTO Users(name, password, position) VALUES('teachermalcolm', 'teacherpassword', 'teacher');
+INSERT INTO Users(name, username, password, position) VALUES('Shane','studentshane', 'studentpassword', 'student');
+INSERT INTO Users(name, username, password, position) VALUES('Shane','teachershane', 'teacherpassword', 'teacher');
+INSERT INTO Users(name, username, password, position) VALUES('Malcolm','studentmalcolm', 'studentpassword', 'student');
+INSERT INTO Users(name, username, password, position) VALUES('Malcolm','teachermalcolm', 'teacherpassword', 'teacher');
