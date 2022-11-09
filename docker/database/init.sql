@@ -53,3 +53,5 @@ INSERT INTO Users(name, password, position) VALUES('studentshane', 'studentpassw
 INSERT INTO Users(name, password, position) VALUES('teachershane', 'teacherpassword', 'teacher');
 INSERT INTO Users(name, password, position) VALUES('studentmalcolm', 'studentpassword', 'student');
 INSERT INTO Users(name, password, position) VALUES('teachermalcolm', 'teacherpassword', 'teacher');
+INSERT INTO Users(name, password, position) VALUES('studentege', 'studentpassword', 'student');
+INSERT INTO Users(name, password, position) VALUES('teacherege', 'teacherpassword', 'teacher');
