@@ -67,6 +67,7 @@ function login() {
                 
                 sleep(1250).then(() => {
                     // Redirect based on position
+                    //console.log(response.position); testing to fix redirect
                     if (response.position == "student") window.location.href = "/student";
                     if (response.position == "teacher") window.location.href = "/teacher";
                 });
