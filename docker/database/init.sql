@@ -65,13 +65,15 @@ CREATE TABLE StudentExams (
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
 );
 
---no progress past this point
-CREATE TABLE ExamQuestions (
+
+CREATE TABLE QuestionAnswers (
+    student_id int NOT NULL,
     exam_id int NOT NULL,
     question_id int NOT NULL,
     points int NOT NULL,
     answer varchar(2000),
     comment varchar(500),
+    FOREIGN KEY (student_id) REFERENCES Users(User_id),
     FOREIGN KEY(exam_id) REFERENCES Exams(exam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
     PRIMARY KEY(exam_id, question_id)

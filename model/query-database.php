@@ -39,7 +39,7 @@ $request_code = $data->{'request'};
 
 switch($request_code) {
     case 0:
-        $query = $pdo->prepare("SELECT user_id, position FROM Users WHERE name = ? AND password= ?");
+        $query = $pdo->prepare("SELECT user_id, isteacher FROM Users WHERE name = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
 
