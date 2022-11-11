@@ -1,18 +1,20 @@
 CREATE DATABASE IF NOT EXISTS sma237;
 USE sma237;
 
+--DROP TABLE IF EXISTS `Exams`, `QuestionAnswers`, `Questions`, `StudentExams`, `Types`, `Users`;
+
 CREATE TABLE IF NOT EXISTS Users (
     user_id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
     name varchar(50) unique NOT NULL,
     password varchar(50) NOT NULL,
-    isteacher bit NOT NULL default 0
+    position varchar(50) NOT NULL
 );
 
-INSERT INTO Users(name, password, isteacher) VALUES
-('teststudent', 'studentpassword', 0),
-('testteacher', 'teacherpassword', 1),
-('teststudent2', 'studentpassword', 0),
-('testteacher2', 'teacherpassword', 1);
+INSERT INTO Users(name, password, position) VALUES
+('student1', 'studentp1', 'student'),
+('teacher1', 'teacherp1', 'teacher'),
+('student2', 'studentp2', 'student'),
+('teacher2', 'teacherp2', 'teacher');
 
 
 CREATE TABLE Exams (

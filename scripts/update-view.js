@@ -67,8 +67,9 @@ function login() {
                 
                 sleep(1250).then(() => {
                     // Redirect based on position
-                    if (response.position == "False") window.location.href = "/student";
-                    if (response.position == "True") window.location.href = "/teacher";
+                    //console.log(response.position); testing to fix redirect
+                    if (response.position == "student") window.location.href = "/student";
+                    if (response.position == "teacher") window.location.href = "/teacher";
                 });
             }
         }
