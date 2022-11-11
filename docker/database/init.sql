@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Users (
     user_id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
     name varchar(50) unique NOT NULL,
     password varchar(50) NOT NULL,
-    isteacher byte NOT NULL default 0,
+    isteacher bit NOT NULL default 0
 );
 
 INSERT INTO Users(name, password, isteacher) VALUES
@@ -30,7 +30,7 @@ INSERT INTO Exams(creator_id, title, points) VALUES
 
 CREATE TABLE Types (
     type_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    typename varchar(10) not null
+    typename varchar(20) not null
 );
 
 INSERT INTO Types(typename) VALUES
@@ -45,8 +45,8 @@ CREATE TABLE Questions (
     question_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
     question_type int NOT NULL default 0,
     difficulty varchar(50) NOT NULL DEFAULT 'Medium',
-    question_text varchar(999) not null 
-    tc1input varchar(50) NOT NULL, --Multiple input parameters are split by character '~'
+    question_text varchar(999) not null, 
+    tc1input varchar(50) NOT NULL, 
     tc1answer varchar(50) NOT NULL,
     FOREIGN KEY(question_type) REFERENCES Types(type_id)
 );
@@ -62,7 +62,7 @@ CREATE TABLE StudentExams (
     exam_id int NOT NULL,
     score int NOT NULL,
     FOREIGN KEY(user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
+    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id)
 );
 
 
