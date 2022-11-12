@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS sma237;
 USE sma237;
 
---DROP TABLE IF EXISTS `Exams`, `QuestionAnswers`, `Questions`, `StudentExams`, `Types`, `Users`;
+/*DROP TABLE IF EXISTS `Exams`, `QuestionAnswers`, `Questions`, `StudentExams`, `Types`, `Users`;*/
 
 CREATE TABLE IF NOT EXISTS Users (
     user_id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE Questions (
     creator_id int NOT NULL,
     question_type int NOT NULL default 0,
     difficulty varchar(50) NOT NULL DEFAULT 'Medium',
-    constraint varchar(999) DEFAULT NULL,
+    `constraint` varchar(999) DEFAULT NULL,
     question_text varchar(999) not null,
     tc1 varchar(50) NOT NULL, 
     an1 varchar(50) NOT NULL,
