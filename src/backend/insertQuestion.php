@@ -1,6 +1,6 @@
 <?php
     session_start();
-/*
+
     $db_credentials = include 'credentials.php';
 
     $connection = new mysqli($db_credentials['HOST'], $db_credentials['NAME'], $db_credentials['PASS'], $db_credentials['DATABASE']);
@@ -10,30 +10,6 @@
 	    echo "Failed to connect to MYSQL: " . mysqli_connect_error();
         exit();
     }
-*/
-
-    require_once('vendor/autoload.php');
-
-    // Read credentials
-    $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 1));
-    $dotenv->load();
-
-    // Create connection string
-    $dsn = "mysql:host={$_ENV['HOST']};dbname={$_ENV['DATABASE']};charset=utf8mb4";
-    $options = [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES   => false,
-    ];
-
-    // Try connection
-    try {
-        $pdo = new PDO($dsn, $_ENV['NAME'], $_ENV['PASS'], $options);
-    } catch (\PDOException $e) {
-        throw new \PDOException($e->getMessage(), (int)$e->getCode());
-    }
-
-
 
     // Read posted user data from the front end
     $user_data = json_decode(file_get_contents('php://input'));
