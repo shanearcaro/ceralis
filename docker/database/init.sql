@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS sma237;
 USE sma237;
 
-/*DROP TABLE IF EXISTS `Exams`, `QuestionAnswers`, `Questions`, `StudentExams`, `Types`, `Users`;*/
+/*DROP TABLE IF EXISTS `Users`, `Exams`, `Types`, `Questions`, `ExamQuestions`, `StudentExams`, `QuestionAnswers`;*/
 
 CREATE TABLE IF NOT EXISTS Users (
     user_id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -27,19 +27,9 @@ CREATE TABLE Exams (
     FOREIGN KEY(creator_id) REFERENCES Users(user_id)
 );
 
-INSERT INTO Exams(creator_id, title, points) VALUES
-(2, 'testexam1', 80),
-(4, 'testexam2', 60);
-
-
-CREATE TABLE IF NOT EXISTS ExamQuestions (
-    link_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    exam_id INT NOT NULL,
-    question_id INT NOT NULL,
-    questionPoints INT NOT NULL,
-    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
-    FOREIGN KEY (question_id) REFERENCES Questions(question_id)
-);
+INSERT INTO Exams(creator_id, title, points, question_count) VALUES
+(2, 'testexam1', 80, 2),
+(4, 'testexam2', 60, 2);
 
 
 CREATE TABLE Types (
@@ -95,6 +85,22 @@ INSERT INTO ExtraTestCases(question_id, tcxinput, tcxanswer) VALUES
 (2, '[1,300,2,9,8,1]', '300'),
 (2, '[1,800,300,9,8,1]', '800');
 */
+
+CREATE TABLE IF NOT EXISTS ExamQuestions (
+    link_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    exam_id INT NOT NULL,
+    question_id INT NOT NULL,
+    questionPoints INT NOT NULL,
+    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id)
+);
+
+INSERT INTO ExamQuestions(exam_id, question_id, questionPoints) VALUES
+(1, 1, 50),
+(1, 2, 30),
+(2, 3, 20),
+(2, 4, 40);
+
 
 CREATE TABLE StudentExams (
     submission_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
