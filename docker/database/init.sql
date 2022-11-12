@@ -21,7 +21,8 @@ CREATE TABLE Exams (
     exam_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
     creator_id int NOT NULL,
     title varchar(50) NOT NULL,
-    points int NOT NULL DEFAULT 100,
+    points int NOT NULL,
+    question_count int NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(creator_id) REFERENCES Users(user_id)
 );
@@ -29,6 +30,17 @@ CREATE TABLE Exams (
 INSERT INTO Exams(creator_id, title, points) VALUES
 (2, 'testexam1', 80),
 (4, 'testexam2', 60);
+
+
+CREATE TABLE IF NOT EXISTS ExamQuestions (
+    link_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    exam_id INT NOT NULL,
+    question_id INT NOT NULL,
+    questionPoints INT NOT NULL,
+    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id)
+);
+
 
 CREATE TABLE Types (
     type_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -40,7 +52,6 @@ INSERT INTO Types(typename) VALUES
 ('Strings'),
 ('Recursion'),
 ('ForLoops');
-
 
 
 CREATE TABLE Questions (
