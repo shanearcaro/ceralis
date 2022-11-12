@@ -24,7 +24,9 @@
 
     while ($row = mysqli_fetch_array($result)) {
         $question = array('questionID' => $row['question_id'], 'questionType' => $row['question_type'], 
-            'questionDiff' => $row['difficulty'], 'questionConst' => $row['constraint'], 'question' => $row['question_text']);
+            'questionDiff' => $row['difficulty'], 'questionConst' => $row['constraint'], 'question' => $row['question_text'],
+            'tc1' => $row['tc1'], 'an1' => $row['an1'], 'tc2' => $row['tc2'], 'an2' => $row['an2'], 'tc3' => $row['tc3'], 
+            'an3' => $row['an3'], 'tc4' => $row['tc4'], 'an4' => $row['an4'], 'tc5' => $row['tc5'], 'an5' => $row['an5']);
         array_push($questions, $question);
     }
 
@@ -34,3 +36,5 @@
 
     $connection->close();
  ?>
+
+
