@@ -72,19 +72,6 @@ INSERT INTO Questions(creator_id, question_type, difficulty, question_text, tc1,
 (4, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string', 'John~Howdy', 'Howdy, John', 'apple~orange', 'orange, apple', NULL, NULL, NULL, NULL, NULL, NULL),
 (4, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found', '[3,7,2,9,8,1]', '9', '[1,2,3,7,5,1]', '7', '[1,300,2,9,8,1]', '300', '[1,800,300,9,8,1]', '800', NULL, NULL);
 
-/*
-CREATE TABLE ExtraTestCases (
-    case_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    question_id int NOT NULL,
-    tcxinput varchar(50) NOT NULL, 
-    tcxanswer varchar(50) NOT NULL,
-    FOREIGN KEY(question_id) REFERENCES Questions(question_id)
-);
-
-INSERT INTO ExtraTestCases(question_id, tcxinput, tcxanswer) VALUES
-(2, '[1,300,2,9,8,1]', '300'),
-(2, '[1,800,300,9,8,1]', '800');
-*/
 
 CREATE TABLE IF NOT EXISTS ExamQuestions (
     link_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
