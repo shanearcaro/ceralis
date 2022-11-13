@@ -111,3 +111,20 @@ CREATE TABLE QuestionAnswers (
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
     PRIMARY KEY(exam_id, question_id)
 );
+
+
+CREATE TABLE CompletedExam (
+    completion_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    submission_id INT NOT NULL,
+    question_id INT NOT NULL,
+    answer varchar(255) NOT NULL,
+    result1 varchar(255),
+    result2 varchar(255),
+    result3 varchar(255),
+    result4 varchar(255),
+    result5 varchar(255),
+    score INT NOT NULL,
+    `comment` varchar(255),
+    FOREIGN KEY (submission_id) REFERENCES StudentExams(submission_id),
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id)
+);
