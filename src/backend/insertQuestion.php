@@ -43,8 +43,8 @@
 */
 
     // //Insert question data into question table
-    $query = "INSERT INTO Questions (creator_id, question_type, difficulty, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5) 
-              VALUES ('{$userID}', '{$questiontype}', '{$questiondiff}', '{$questiontext}', '{$tc1}', '{$an1}', '{$tc2}', '{$an2}', '{$tc3}', '{$an3}', '{$tc4}', '{$an4}', '{$tc5}', '{$an5}')"; 
+    $query = "INSERT INTO Questions (creator_id, question_type, difficulty, constraint, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5) 
+              VALUES ('{$userID}', '{$questiontype}', '{$questiondiff}', '{$questionconst}', '{$questiontext}', '{$tc1}', '{$an1}', '{$tc2}', '{$an2}', '{$tc3}', '{$an3}', '{$tc4}', '{$an4}', '{$tc5}', '{$an5}')"; 
 
     $result = mysqli_query($connection, $query);
     $response = $result ? "Success" : "Failure";
