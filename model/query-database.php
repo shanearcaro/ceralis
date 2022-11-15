@@ -84,14 +84,18 @@ $request_code = $data->{'request'};
  *      user_id
  *      submission_id, name, user_id, exam_id, score, points
  * 
- * 13 - Insert completed exam //TODO: NEEDS WORK
+ * 13 - Get submission_id (from StudentExams) (Used formerly by both insertCompleteExam.php and selectExamResults.php)
+ *      user_id, exam_id
+ *      submission_id
+ * 
+ * 14 - Insert completed exam //TODO: NEEDS WORK
  *      submission_id, question_id, answer, question_count, result1, result2, result3, result4, result5, score, comment
  *      insertionStatus
  * 
- * 14 - Select exam results //TODO: NEEDS WORK
- *      user_id
- *      submission_id, question_id, answer, result1, result2, result3, result4, result5, score, comment,\\
- *          \\studentGrade, questionPoints, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5, points
+ * 15 - Select exam results
+ *      submission_id
+ *      question_id, answer, result1, result2, result3, result4, result5, score, comment, studentGrade, \
+ *          \ questionPoints, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5, points
  */
 
 switch($request_code) {
@@ -193,13 +197,26 @@ switch($request_code) {
         $query->execute([$data->{'user_id'}]);
         break;
     
-    case 13: //TODO: NEEDS WORK
+    case 13:
+        $query = $pdo->prepare("SELECT submission_id FROM StudentExams WHERE user_id = ? AND exam_id = ? ");
+        $query->execute([$data->{'user_id'}, $data->{'exam_id'}]);
+        break;
+
+    case 14: //TODO: NEEDS WORK
         $query = $pdo->prepare("SELECT * from Users");
         $query->execute([$data->{'submission_id'}]);
         break;
     
-    case 14: //TODO: NEEDS WORK
-        $query = $pdo->prepare("SELECT * from users");
+    case 15:
+        $query = $pdo->prepare("SELECT ce.submission_id, ce.question_id, ce.answer, ce.result1, ce.result2, ce.result3,
+        ce.result4, ce.result5, ce.score, ce.comment, se.score AS studentGrade, eq.questionPoints, q.question_text, 
+        q.tc1, q.an1, q.tc2, q.an2, q.tc3, q.an3, q.tc4, q.an4, q.tc5, q.an5, e.points FROM CompletedExam AS ce
+        INNER JOIN StudentExams AS se ON ce.submission_id=se.submission_id
+        INNER JOIN ExamQuestions AS eq ON se.exam_id=eq.exam_id AND ce.question_id=eq.question_id
+        INNER JOIN Questions AS q ON ce.question_id=q.question_id
+        INNER JOIN Exams AS e ON e.exam_id=se.exam_id
+        WHERE ce.submission_id = ? ");
+
         $query->execute([$data->{'submission_id'}]);
         break;
     
