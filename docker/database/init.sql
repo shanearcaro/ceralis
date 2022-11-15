@@ -51,26 +51,39 @@ CREATE TABLE Questions (
     difficulty varchar(50) NOT NULL DEFAULT 'Medium',
     `constraint` varchar(50) DEFAULT NULL,
     question_text varchar(999) not null,
-    tc1 varchar(50) NOT NULL, 
-    an1 varchar(50) NOT NULL,
-    tc2 varchar(50) NOT NULL, 
-    an2 varchar(50) NOT NULL,
-    tc3 varchar(50) DEFAULT NULL, 
-    an3 varchar(50) DEFAULT NULL,
-    tc4 varchar(50) DEFAULT NULL, 
-    an4 varchar(50) DEFAULT NULL,
-    tc5 varchar(50) DEFAULT NULL, 
-    an5 varchar(50) DEFAULT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(creator_id) REFERENCES Users(user_id),
     FOREIGN KEY(question_type) REFERENCES Types(type_id)
 );
 
-INSERT INTO Questions(creator_id, question_type, difficulty, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5) VALUES
-(2, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string', 'John~Howdy', 'Howdy, John', 'apple~orange', 'orange, apple', NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found', '[3,7,2,9,8,1]', '9', '[1,2,3,7,5,1]', '7', '[1,300,2,9,8,1]', '300', '[1,800,300,9,8,1]', '800', NULL, NULL),
-(4, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string', 'John~Howdy', 'Howdy, John', 'apple~orange', 'orange, apple', NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found', '[3,7,2,9,8,1]', '9', '[1,2,3,7,5,1]', '7', '[1,300,2,9,8,1]', '300', '[1,800,300,9,8,1]', '800', NULL, NULL);
+INSERT INTO Questions(creator_id, question_type, difficulty, question_text) VALUES
+(2, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),
+(2, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found'),
+(4, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),
+(4, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found');
+
+
+CREATE TABLE TestCases (
+    case_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    question_id int NOT NULL,
+    case_input varchar(50),
+    case_answer varchar(50),
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id),
+);
+
+INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
+(1, 'John~Howdy', 'Howdy, John'),
+(1, 'apple~orange', 'orange, apple'),
+(2, '[3,7,2,9,8,1]', '9'),
+(2, '[1,2,3,7,5,1]', '7'),
+(2, '[1,300,2,9,8,1]', '300'),
+(2, '[1,800,300,9,8,1]', '800'),
+(3, 'John~Howdy', 'Howdy, John'),
+(3, 'apple~orange', 'orange, apple'),
+(4, '[3,7,2,9,8,1]', '9'),
+(4, '[1,2,3,7,5,1]', '7'),
+(4, '[1,300,2,9,8,1]', '300'),
+(4, '[1,800,300,9,8,1]', '800');
 
 
 CREATE TABLE IF NOT EXISTS ExamQuestions (

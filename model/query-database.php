@@ -37,12 +37,12 @@ $request_code = $data->{'request'};
  *      user_id, position
  * 
  * 1 - Insert question
- *      user_id, questiontype, difficulty, constraint, question, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5
+ *      user_id, questiontype, difficulty, constraint, question
  *      insertionStatus
  * 
  * 2 - Select questions created by a teacher
  *      user_id
- *      question_id, created, question_type, difficulty, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5
+ *      question_id, created, question_type, difficulty, question_text
  *
  * 3 - Insert exam
  *      user_id, title, points, question_count
@@ -66,7 +66,7 @@ $request_code = $data->{'request'};
  * 
  * 8 - Select completed exam
  *      submission_id
- *      question_id, answer, questionPoints, created, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5
+ *      question_id, answer, questionPoints, created, question_text
  *
  * 9 - Select name
  *      user_id
@@ -98,8 +98,17 @@ $request_code = $data->{'request'};
  * 
  * 16 - Select exam results
  *      submission_id
- *      question_id, answer, result1, result2, result3, result4, result5, score, comment, studentGrade, \
- *          \ questionPoints, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5, points
+ *      question_id, answer, result1, result2, result3, result4, result5, \
+ *         \ score, comment, studentGrade, questionPoints, question_text, points
+ * 
+ * 17 - Insert test case
+ *      question_id, case_input, case_answer
+ *      insertionStatus
+ * 
+ * 18 - Select test cases
+ *      question_id
+ *      (case_input, case_answer)[]
+ * 
  */
 
 switch($request_code) {
@@ -111,19 +120,18 @@ switch($request_code) {
 
 
     case 1:
-        $query = $pdo->prepare("INSERT INTO Questions (creator_id, question_type, difficulty, constraint, question_text, 
-            tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?. ?)");
+        $query = $pdo->prepare("INSERT INTO Questions (creator_id, question_type, difficulty, constraint, question_text) 
+            VALUES (?, ?, ?, ?, ?)");
 
-        $query->execute([$data->{'user_id'}, $data->{'questiontype'}, $data->{'difficulty'}, $data->{'constraint'}, 
-            $data->{'question_text'}, $data->{'tc1'}, $data->{'an1'}, $data->{'tc2'}, $data->{'an2'}, $data->{'tc3'}, 
-            $data->{'an3'}, $data->{'tc4'}, $data->{'an4'}, $data->{'tc5'}, $data->{'an5'}]);
+        $query->execute([$data->{'user_id'}, $data->{'questiontype'}, $data->{'difficulty'}, 
+            $data->{'constraint'}, $data->{'question_text'}]);
 
         break;
 
         
     case 2:
-        $query = $pdo->prepare("SELECT question_id, created, question_type, difficulty, question_text, tc1, an1, 
-            tc2, an2, tc3, an3, tc4, an4, tc5, an5 FROM Questions WHERE creator_id= ? ");
+        $query = $pdo->prepare("SELECT question_id, created, question_type, difficulty, question_text
+            FROM Questions WHERE creator_id= ? ");
 
         $query->execute([$data->{'user_id'}]);
         break;
@@ -165,7 +173,7 @@ switch($request_code) {
 
     case 8:
         $query = $pdo->prepare("SELECT ce.submission_id, ce.question_id, ce.answer, eq.questionPoints, q.question_text, 
-            q.tc1, q.an1, q.tc2, q.an2, q.tc3, q.an3, q.tc4, q.an4, q.tc5, q.an5 FROM CompletedExam AS ce 
+            FROM CompletedExam AS ce 
             INNER JOIN StudentExams AS se ON ce.submission_id=se.submission_id 
             INNER JOIN ExamQuestions AS eq ON se.exam_id=eq.exam_id AND ce.question_id=eq.question_id 
             INNER JOIN Questions AS q ON ce.question_id=q.question_id 
@@ -241,8 +249,8 @@ switch($request_code) {
 
     case 16:
         $query = $pdo->prepare("SELECT ce.submission_id, ce.question_id, ce.answer, ce.result1, ce.result2, ce.result3,
-            ce.result4, ce.result5, ce.score, ce.comment, se.score AS studentGrade, eq.questionPoints, q.question_text, 
-            q.tc1, q.an1, q.tc2, q.an2, q.tc3, q.an3, q.tc4, q.an4, q.tc5, q.an5, e.points FROM CompletedExam AS ce
+            ce.result4, ce.result5, ce.score, ce.comment, se.score AS studentGrade, eq.questionPoints, q.question_text, e.points 
+            FROM CompletedExam AS ce
             INNER JOIN StudentExams AS se ON ce.submission_id=se.submission_id
             INNER JOIN ExamQuestions AS eq ON se.exam_id=eq.exam_id AND ce.question_id=eq.question_id
             INNER JOIN Questions AS q ON ce.question_id=q.question_id
@@ -250,6 +258,18 @@ switch($request_code) {
             WHERE ce.submission_id = ? ");
 
         $query->execute([$data->{'submission_id'}]);
+        break;
+    
+
+    case 17:
+        $query = $pdo->prepare("INSERT INTO TestCases(question_id, case_input, case_answer) VALUES (?, ?, ?)");
+        $query->execute([$data->{'question_id'}, $data->{'case_input'}, $data->{'case_answer'}]);
+        break;
+    
+    
+    case 18:
+        $query = $pdo->prepare("SELECT case_input, case_answer FROM TestCases WHERE question_id = ? ");
+        $query->execute([$data->{'question_id'}]);
         break;
     
 }
