@@ -41,6 +41,7 @@ $request_code = $data->{'request'};
  *      [exam_id, user_id, title, points, e.date, score, se.date]
  */
 
+//  Execute queries based on request 
 switch($request_code) {
     case 0:
         $query = $pdo->prepare("SELECT user_id, position FROM Users WHERE username = ? AND password= ?");
@@ -53,5 +54,6 @@ switch($request_code) {
         break;
 }
 
+// Fetch data and return
 $response = $query->fetchAll();
 echo json_encode($query->rowCount() == 0 ? false : $response);
