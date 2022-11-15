@@ -79,6 +79,19 @@ $request_code = $data->{'request'};
  * 11 - Select students exam (sent name is teachers name) (aka selectExamsStudent.php)
  *      user_id
  *      exam_id, points, question_count, creator_id, name
+ * 
+ * 12 - Select exam submissions (given user id students, sent name is teachers) (points is out-of-XX) (aka selectStudentExams.php)
+ *      user_id
+ *      submission_id, name, user_id, exam_id, score, points
+ * 
+ * 13 - Insert completed exam //TODO: NEEDS WORK
+ *      submission_id, question_id, answer, question_count, result1, result2, result3, result4, result5, score, comment
+ *      insertionStatus
+ * 
+ * 14 - Select exam results //TODO: NEEDS WORK
+ *      user_id
+ *      submission_id, question_id, answer, result1, result2, result3, result4, result5, score, comment,\\
+ *          \\studentGrade, questionPoints, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5, points
  */
 
 switch($request_code) {
@@ -169,6 +182,25 @@ switch($request_code) {
         ORDER BY e.exam_id ASC;");
 
         $query->execute([$data->{'user_id'}]);
+        break;
+    
+    case 12:
+        $query = $pdo->prepare("SELECT se.submission_id, u.name, se.user_id, se.exam_id, se.score, e.points FROM StudentExams AS se
+        INNER JOIN Exams AS e on se.exam_id=e.exam_id
+        INNER JOIN Users AS u ON e.creator_id=u.user_id
+        WHERE se.score != -1 AND se.user_id = ?
+        ORDER BY se.exam_id ASC");
+        $query->execute([$data->{'user_id'}]);
+        break;
+    
+    case 13: //TODO: NEEDS WORK
+        $query = $pdo->prepare("SELECT * from Users");
+        $query->execute([$data->{'submission_id'}]);
+        break;
+    
+    case 14: //TODO: NEEDS WORK
+        $query = $pdo->prepare("SELECT * from users");
+        $query->execute([$data->{'submission_id'}]);
         break;
     
 }
