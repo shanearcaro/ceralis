@@ -88,11 +88,15 @@ $request_code = $data->{'request'};
  *      user_id, exam_id
  *      submission_id
  * 
- * 14 - Insert completed exam //TODO: NEEDS WORK
+ * 14 - Get question_id list (from ExamQuestions) (Used formerly by insertCompleteExam.php)
+ *      exam_id
+ *      question_id[]
+ * 
+ * 15 - Insert completed exam (Loop previously handled in insertCompleteExam.php needs to be implemented middle-end)
  *      submission_id, question_id, answer, question_count, result1, result2, result3, result4, result5, score, comment
  *      insertionStatus
  * 
- * 15 - Select exam results
+ * 16 - Select exam results
  *      submission_id
  *      question_id, answer, result1, result2, result3, result4, result5, score, comment, studentGrade, \
  *          \ questionPoints, question_text, tc1, an1, tc2, an2, tc3, an3, tc4, an4, tc5, an5, points
@@ -202,12 +206,22 @@ switch($request_code) {
         $query->execute([$data->{'user_id'}, $data->{'exam_id'}]);
         break;
 
-    case 14: //TODO: NEEDS WORK
-        $query = $pdo->prepare("SELECT * from Users");
-        $query->execute([$data->{'submission_id'}]);
+    case 14:
+        $query = $pdo->prepare("SELECT question_id FROM ExamQuestions WHERE exam_id= ? ");
+        $query->execute([$data->{'exam_id'}]);
+        break;
+
+    case 15: 
+        $query = $pdo->prepare("INSERT INTO CompletedExam (submission_id, question_id, answer, result1, result2, 
+        result3, result4, result5, score, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
+
+        $query->execute([$data->{'submission_id'}, $data->{'question_id'}, $data->{'answer'}, 
+        $data->{'result1'}, $data->{'result2'}, $data->{'result3'}, $data->{'result4'}, 
+        $data->{'result5'}, $data->{'score'}, $data->{'comment'}]);
+        
         break;
     
-    case 15:
+    case 16:
         $query = $pdo->prepare("SELECT ce.submission_id, ce.question_id, ce.answer, ce.result1, ce.result2, ce.result3,
         ce.result4, ce.result5, ce.score, ce.comment, se.score AS studentGrade, eq.questionPoints, q.question_text, 
         q.tc1, q.an1, q.tc2, q.an2, q.tc3, q.an3, q.tc4, q.an4, q.tc5, q.an5, e.points FROM CompletedExam AS ce
