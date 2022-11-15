@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS sma237;
 USE sma237;
 
-/*DROP TABLE IF EXISTS `Users`, `Exams`, `Types`, `Questions`, `ExamQuestions`, `StudentExams`, `QuestionAnswers`;*/
+DROP TABLE IF EXISTS `Users`, `Exams`, `Types`, `Questions`, `TestCases`, `ExamQuestions`, `StudentExams`, `QuestionAnswers`, `CompletedExam`;
 
 CREATE TABLE IF NOT EXISTS Users (
     user_id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE TestCases (
     question_id int NOT NULL,
     case_input varchar(50),
     case_answer varchar(50),
-    FOREIGN KEY (question_id) REFERENCES Questions(question_id),
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id)
 );
 
 INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
