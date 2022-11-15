@@ -162,7 +162,7 @@ function loadTables() {
                         cell.innerHTML = "s";
                     }
                     row.cells[0].innerHTML = i;
-                    row.cells[1].innerHTML = "Mr. " + exam.name;
+                    row.cells[1].innerHTML = "Professor " + exam.name;
                     row.cells[2].innerHTML = exam.title;
                     row.cells[3].innerHTML = exam.points;
                     row.cells[4].innerHTML = exam.date;

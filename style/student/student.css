@@ -19,6 +19,7 @@
 body {
     width: 100%;
     height: 100%;
+    min-width: max-content;
 }
 
 .content-area {
@@ -36,24 +37,22 @@ body {
     position: absolute;
     top: 0;
     width: 100%;
+    min-width: max-content;
     height: 10%;
 
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
 
     background-color: var(--content-bg);
 }
 
-.panel-spacer {
-    width: 70%;
-    height: 100%;
-}
-
 .panel-list-area {
-    width: 30%;
     height: 100%;
+    min-width: max-content;
 
     display: flex;
+    margin-right: 2rem;
 }
 
 .panel-list {
@@ -77,6 +76,8 @@ body {
 
 .panel-div {
     width: 33%;
+    min-width: max-content;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -89,6 +90,9 @@ body {
 }
 
 .panel-element {
+    min-width: max-content;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
     height: 25%;
 }
 .panel-element:hover {
@@ -104,12 +108,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
 }
 
 .dash-table-area {
     width: 50%;
     height: 50%;
+    min-width: max-content;
+
     border: 1px solid var(--dash-ol);
     display: flex;
     flex-direction: column;
@@ -135,6 +140,7 @@ body {
 }
 
 .dash-searchbar {
+    min-width: 400px;
     height: 5%;
     
     display: flex;
@@ -147,13 +153,19 @@ body {
 }
 
 .searchbar-element {
+    width: max-content;
+
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 }
 
-.searchbar-select {
+/* .searchbar-select {
     width: 18%;
+} */
+
+#search-text {
+    margin-right: 0.5vw;
 }
 
 #results-amount {
@@ -163,10 +175,10 @@ body {
     text-align: center;
     padding-left: 0.25vw;
 }
-
+/* 
 .searchbar-search {
     width: 25%;
-}
+} */
 
 .dash-table-div {
     width: 100%;
@@ -192,6 +204,11 @@ body {
     font-weight: 300;
 }
 
+#records-text {
+    min-width: max-content;
+    margin-left: 0.5vw;
+}
+
 .exam-student-row {
     margin-left: 1vw;
     margin-right: 1vw;
@@ -212,6 +229,10 @@ body {
 
 .cell {
     border: 1px solid var(--dash-ol);
+}
+
+.exam-student-row:not(:first-child) > .cell {
+    border-top: 0px
 }
 
 .cell:not(:first-child) {

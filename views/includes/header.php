@@ -1,5 +1,3 @@
-<?php echo '<link rel="stylesheet" href="/style/includes/header.css?' . time() . '" type="text/css">'; ?>
-
 <div class="banner-container banner-element">
     <div class="banner banner-element">
         <div class="banner-frame banner-element">
