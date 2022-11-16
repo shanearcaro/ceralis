@@ -7,6 +7,9 @@
     --content-bg:   rgb(247, 247, 247);     /* Main content background  */
     --dash-bg:      rgb(246, 246, 246);     /* Table title background   */
     --dash-ol:      rgb(200, 200, 200);     /* Table title outline      */
+    --cell-light:   rgb(255, 255, 255);     /* Cell row light           */
+    --cell-dark:    rgb(210, 242, 240);     /* Cell row dark            */
+    --cell-hover:   rgb(236, 246, 166);     /* Cell row hover           */
 }
 /* Reset values to 0 */
 * { 
@@ -219,6 +222,10 @@ body {
     text-align: center;
 }
 
+.exam-student-row:hover {
+    background-color: var(--cell-hover);
+}
+
 .exam-student-row:first-child {
     margin-top: 1.5vh;
 }
@@ -239,12 +246,19 @@ body {
     border-left: none;
 }
 
-.cell-light {
-
+.row-light {
+    background-color: var(--cell-light);
 }
 
-.cell-dark {
-    background-color: rgb(249, 249, 249);
+.row-dark {
+    background-color: var(--cell-dark);
+}
+
+.row-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 }
 
 .cell-index {

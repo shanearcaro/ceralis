@@ -149,23 +149,31 @@ function loadTables() {
                     const element = response[i];
                     const exam = response[i];
 
+                    // Set up class list for each cell
                     const prefix = "cell";
                     const delim = "-";
                     const data = ["index", "title", "name", "points", "date"];
                     const row = table.insertRow(-1);
                     row.classList.add("exam-student-row");
                     row.classList.add("row-" + (i % 2 == 0 ? "light" : "dark"));
+
+                    // Display only a certain number of elements
                     for (let i = 0; i < MAX_TABLE_ELEMENTS_STUDENT; i++) {
                         const cell = row.insertCell(-1);
                         cell.classList.add(prefix + delim + data[i]);
                         cell.classList.add(prefix);
+                        cell.classList.add('row-cell');
                         cell.innerHTML = "s";
                     }
+                    
+                    // Display row information
                     row.cells[0].innerHTML = i;
                     row.cells[1].innerHTML = "Professor " + exam.name;
                     row.cells[2].innerHTML = exam.title;
                     row.cells[3].innerHTML = exam.points;
-                    row.cells[4].innerHTML = exam.date;
+
+                    // Need to format the date
+                    row.cells[4].innerHTML = formateDate(exam.date);
                     
                     // TODO: Create and add elements to table
                 }
@@ -179,6 +187,12 @@ function loadTables() {
     ajax.open("POST", "/post", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
+}
+
+function formateDate(datetime) {
+    // Date is in format YYYY-MM-DD HOURS:MINUTES:SECONDS
+    const date = new Date(datetime);
+    return date.toLocaleDateString();
 }
 
 // Validate session on every focus of each page
