@@ -44,12 +44,18 @@ $request_code = $data->{'request'};
 //  Execute queries based on request 
 switch($request_code) {
     case 0:
-        $query = $pdo->prepare("SELECT user_id, position FROM Users WHERE username = ? AND password= ?");
+        $query = $pdo->prepare(
+            "SELECT user_id, position FROM Users 
+            WHERE username = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
     case 1:
-        $query = $pdo->prepare("SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name,
-         se.score, se.date FROM Exams AS e INNER JOIN StudentExams AS se ON e.exam_id=se.exam_id INNER JOIN Users AS u ON e.user_id=u.user_id");
+        $query = $pdo->prepare(
+            "SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
+            FROM Exams AS e 
+            INNER JOIN StudentExams AS se ON e.exam_id=se.exam_id 
+            INNER JOIN Users AS u ON e.user_id=u.user_id
+            ORDER BY e.exam_id ASC");
         $query->execute();
         break;
 }

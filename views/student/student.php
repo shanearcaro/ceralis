@@ -30,17 +30,17 @@
                 <div class="dash-title"><h1 id='dash-table-title'>Exams List</h1></div>
                 <div class="dash-searchbar">
                     <div class="searchbar-select searchbar-element">
-                        <select name="resultsAmount" id='results-amount'>
+                        <select name="resultsAmount" id='results-amount' onchange="updateDisplayAmount()">
                             <option value="5">5</option>
                             <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
                         </select>
                         <p id='records-text'>records per page</p>
                     </div>
                     <div class="searchbar-search searchbar-element">
                         <p id='search-text'>Search: </p>
-                        <input type="text" id='dash-search-input'>
+                        <input type="text" id='dash-search-input' onkeyup='loadTables()'>
                     </div>
                 </div>
                 <div class="dash-table-div">
