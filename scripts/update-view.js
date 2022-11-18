@@ -1,8 +1,19 @@
 /**
+ * Max number of page buttons that should be generated on the students table
+ */
+const PAGE_LIMIT = 7;
+
+/**
  * Number of rows that the table in the student dashboard will display.
  * This value trumps all other display amount constraints.
  */
-let MAX_TABLE_ELEMENTS_STUDENT = 5;
+let pageLength = 5;
+
+let pageStart = 0;
+
+let responseLength = -1;
+
+let initialCall = 0;
 
 /**
  * Sleep for a specified duration of time
@@ -118,7 +129,7 @@ function validateSession() {
  * @param {number} user_id - user's id number
  */
 function storeSessionLogin(user_id) {
-    console.log("USER ID: " + user_id);
+    // console.log("USER ID: " + user_id);
     sessionStorage.setItem('user_id', user_id);
 }
 
@@ -139,7 +150,7 @@ function loadTables() {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-            console.log(ajax.responseText);
+            // console.log(ajax.responseText);
 
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
@@ -149,11 +160,14 @@ function loadTables() {
 
                 empty.classList.remove("disabled");
                 table.classList.add("disabled");
+                
             }
             else {
                 // Display results
                 const response = JSON.parse(ajax.responseText);
-                createTables(response);
+                responseLength = response.length;
+                // console.log("CREATE TABLES PAGE START: " + pageStart);
+                createTables(response, pageStart);
             }
         }
         else
@@ -179,13 +193,29 @@ function clearTables() {
  * @param {string} response database response value with all table exam elements
  */
 function createTables(response) {
+    // Clear all previous rows being displayed in the table
     clearTables();
 
     // Get search bar input text
     const searchInput = document.getElementById('dash-search-input');
     const searchText = searchInput.value.toLowerCase();
 
+    // Get table and table legend
     const table = document.getElementById("table");
+    const legend = document.getElementById("table-display-legend");
+
+    // Format pageLength to display entire queried response
+    if (pageLength == -1)
+        pageLength = response.length
+
+    // Start pagination values
+    legend.classList.remove("disabled");
+
+    let pageEnd = Number(pageStart) + Number(pageLength);
+    // console.log("PAGE START NOW=" + pageStart + " PAGE END = " + pageEnd);
+    legend.innerText = `Showing ${pageStart + 1} to ${pageEnd} of ${response.length} entries`
+    if (initialCall++ == 0)
+        createPageButtons(pageLength, response.length);
 
     // Display descriptors
     const row = table.insertRow(-1);
@@ -207,12 +237,12 @@ function createTables(response) {
     }
 
     // Don't display more results than gathered
-    const maxDisplay = MAX_TABLE_ELEMENTS_STUDENT > response.length ? response.length : MAX_TABLE_ELEMENTS_STUDENT;
-    console.log("max display: " + maxDisplay);
+    const maxDisplay = pageLength > response.length ? response.length : pageLength;
+    // console.log("max display: " + maxDisplay);
     let displayAmount = 0;
 
     // Display row results 
-    for (let i = 0; i < response.length; i++) {
+    for (let i = pageStart; i < response.length; i++) {
         if (displayAmount == maxDisplay)
             break;
 
@@ -245,7 +275,9 @@ function createTables(response) {
         // Create row and start populating it
         const row = table.insertRow(-1);
         row.classList.add("exam-student-row");
-        row.classList.add("row-" + (i % 2 == 0 ? "light" : "dark"));
+
+        // Use display amount to fix bug that displays incorrect row background color
+        row.classList.add("row-" + (displayAmount % 2 == 0 ? "light" : "dark"));
 
         // Display only a certain number of elements
         for (let i = 0; i < data.length; i++) {
@@ -272,8 +304,77 @@ function createTables(response) {
 function updateDisplayAmount() {
     const displayList = document.getElementById("results-amount");
     const displayAmount = displayList.options[displayList.selectedIndex].value;
-    MAX_TABLE_ELEMENTS_STUDENT = displayAmount;
+    pageLength = displayAmount;
     loadTables();
+    createPageButtons(pageLength, responseLength);
+}
+
+function createPageButtons(pageLength, responseLength) {
+    // Clear buttons container
+    const buttonLegend = document.getElementById("legend-buttons-container");
+    // console.log(`PAGE START = ${pageStart} PAGE LENGTH = ${pageLength} RESPONSE LENGTH = ${responseLength}`)
+
+    buttonLegend.innerHTML = '';
+
+    // Calcualte max buttons to show
+    const numPages = responseLength / pageLength + 2;
+    const displayAmount = numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages;
+
+    // Create array of strings that contain button innerText
+    let buttonText = [];
+    buttonText.push("Previous");
+    for (let i = 0; i < displayAmount - 2; i++) {
+        buttonText.push(String(i + 1));
+    }
+    buttonText.push("Next");
+
+    for (let i = 0; i < buttonText.length; i++) {
+        const button = document.createElement('button');
+        button.innerText = buttonText[i];
+
+        button.classList.add('legend-button');
+        button.id = `legend-button-${i}`;
+
+        if (i == 1)
+            button.classList.add('active-button');
+
+        button.onclick = function() {
+            updatePage(button.innerText, button.id);
+        };
+        buttonLegend.appendChild(button);
+    }
+}
+
+function updatePage(text, id) {
+    console.log(`TEXT: ${text} ID: ${id} PAGESTART: ${pageStart}`);
+    updateActiveButton(id);
+
+    if (text == "Previous") {
+        let value = pageStart -= pageLength;
+        if (value > 0)
+            pageStart = value;
+    }
+    else if (text == "Next") {
+        let value = pageStart += pageLength;
+        if (value < pageLength)
+            pageStart = value;
+    }
+    else {
+        pageStart = pageLength * (Number(text) - 1);
+    }
+    loadTables(pageStart);
+}
+
+function updateActiveButton(id) {
+    const buttonContainer = document.getElementById("legend-buttons-container");
+    let children = buttonContainer.children;
+
+    for (let i = 0; i < children.length; i++) {
+        if (children[i].id == id)
+            children[i].classList.add("active-button");
+        else
+            children[i].classList.remove("active-button");
+    }
 }
 
 /**

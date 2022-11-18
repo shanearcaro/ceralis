@@ -10,6 +10,8 @@
     --cell-light:   rgb(255, 255, 255);     /* Cell row light           */
     --cell-dark:    rgb(245, 245, 245);     /* Cell row dark            */
     --cell-hover:   rgb(246, 234, 166);     /* Cell row hover           */
+    --active-btn:   rgb(064, 139, 202);     /* Active button highlight  */
+    --active-hover: rgb(64, 223, 64);       /* Active button hover bg   */
 }
 /* Reset values to 0 */
 * { 
@@ -230,6 +232,20 @@ body {
     margin-left: 0.5vw;
 }
 
+.table-legend {
+    width: 97%;
+    height: max-content;
+    margin-bottom: 1rem;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#table-display-legend {
+    margin-left: 1rem;
+}
+
 /* ========== STUDENT EXAMS TABLE ROW ========== */
 .exam-student-row {
     height: 50px;
@@ -308,4 +324,30 @@ body {
 
 .disabled {
     display: none;
+}
+
+#legend-buttons-container {
+    margin-right: 1.25vw;
+}
+
+.legend-button {
+    width: max-content;
+    padding: 0.25rem 0.5rem;
+
+    border: 1px solid var(--dash-ol);
+
+    background-color: white;
+    color: black;
+}
+
+.legend-button:not(:first-child) {
+    border-left: none;
+}
+
+.legend-button:hover {
+    background-color: var(--active-hover);
+}
+
+.active-button {
+    background-color: var(--active-btn);
 }

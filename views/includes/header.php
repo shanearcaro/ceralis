@@ -9,7 +9,5 @@
                 <h1 class="banner-element" id="project-name">Autograder</h1>
             </div>
         </div>
-        <div class="banner-spacer banner-element"></div>
     </div>
-    <div class="banner-break banner-element"></div>
 </div>

@@ -35,6 +35,7 @@
                             <option value="10">10</option>
                             <option value="15">15</option>
                             <option value="20">20</option>
+                            <option value="-1">All</option>
                         </select>
                         <p id='records-text'>records per page</p>
                     </div>
@@ -46,6 +47,13 @@
                 <div class="dash-table-div">
                     <p class="disabled" id='table-empty-records'>No records</p>
                     <table id='table'><script> loadTables(); </script></table>
+                    <div class="table-legend">
+                        <div class="legend-text">
+                            <p class=disabled" id='table-display-legend'></p>
+                        </div>
+                        <div class="legend-buttons" id='legend-buttons-container'></div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
