@@ -168,6 +168,27 @@ function loadTables() {
                 responseLength = response.length;
                 // console.log("CREATE TABLES PAGE START: " + pageStart);
                 createTables(response, pageStart);
+
+                const legendButtons = document.getElementById('legend-buttons-container');
+                const searchInput = document.getElementById('dash-search-input');
+                const searchText = searchInput.value;
+                if (searchText != '') {
+                    const displayResults = document.getElementById('table-display-legend');
+                    const table = document.getElementById('table');
+                    const resultsLength = table.rows.length - 1;
+
+                    let start = 0;
+                    if (resultsLength != 0) {
+                        legendButtons.classList.remove('disabled');
+                        start = pageStart + 1;
+                        createPageButtons(start, resultsLength);
+                    }
+                    else 
+                        legendButtons.classList.add('disabled');
+
+                    let end = resultsLength < pageLength ? resultsLength : pageLength;
+                    displayResults.innerText = `Showing ${start} to ${end} of ${resultsLength} entries`;
+                }
             }
         }
         else
@@ -217,8 +238,6 @@ function createTables(response) {
     if (pageEnd > response.length)
         pageEnd = response.length;
 
-    console.log("What is page start: " + pageStart);
-        
     legend.innerText = `Showing ${pageStart + 1} to ${pageEnd} of ${response.length} entries`
     if (initialCall++ == 0)
         createPageButtons(pageLength, response.length);
@@ -226,7 +245,7 @@ function createTables(response) {
     // Display descriptors
     const row = table.insertRow(-1);
     row.classList.add("exam-student-row");
-    const headers = ['ID', 'Professor', 'Exam Title', 'Score', 'Date'];
+    const headers = ['ID', 'Professor', 'Title', 'Score', 'Date'];
 
     // Create cell class descriptors
     const prefix = "cell";
@@ -331,6 +350,10 @@ function createPageButtons(pageLength, responseLength) {
     // console.log(`PAGE START = ${pageStart} PAGE LENGTH = ${pageLength} RESPONSE LENGTH = ${responseLength}`)
 
     buttonLegend.innerHTML = '';
+    if (pageLength == 0)
+        buttonLegend.classList.add('disabled');
+    else
+        buttonLegend.classList.remove('disabled');
 
     // Calcualte max buttons to show
     const numPages = responseLength / pageLength + 2;

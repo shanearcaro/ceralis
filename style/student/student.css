@@ -300,6 +300,7 @@ body {
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    cursor: default;
 }
 
 .cell-index {
@@ -346,6 +347,7 @@ body {
 
 .legend-button:hover {
     background-color: var(--active-hover);
+    cursor: pointer;
 }
 
 .active-button {
