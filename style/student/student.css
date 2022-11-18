@@ -10,8 +10,8 @@
     --cell-light:   rgb(255, 255, 255);     /* Cell row light           */
     --cell-dark:    rgb(245, 245, 245);     /* Cell row dark            */
     --cell-hover:   rgb(246, 234, 166);     /* Cell row hover           */
-    --active-btn:   rgb(064, 139, 202);     /* Active button highlight  */
-    --active-hover: rgb(64, 223, 64);       /* Active button hover bg   */
+    --active-btn:   rgb(113, 183, 240);     /* Active button highlight  */
+    --active-hover: rgb(225, 225, 225);     /* Active button hover bg   */
 }
 /* Reset values to 0 */
 * { 

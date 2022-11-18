@@ -205,14 +205,20 @@ function createTables(response) {
     const legend = document.getElementById("table-display-legend");
 
     // Format pageLength to display entire queried response
-    if (pageLength == -1)
+    if (pageLength == -1) 
         pageLength = response.length
 
     // Start pagination values
     legend.classList.remove("disabled");
 
     let pageEnd = Number(pageStart) + Number(pageLength);
-    // console.log("PAGE START NOW=" + pageStart + " PAGE END = " + pageEnd);
+
+    // Fix display if pageLength is not a factor response.length
+    if (pageEnd > response.length)
+        pageEnd = response.length;
+
+    console.log("What is page start: " + pageStart);
+        
     legend.innerText = `Showing ${pageStart + 1} to ${pageEnd} of ${response.length} entries`
     if (initialCall++ == 0)
         createPageButtons(pageLength, response.length);
@@ -304,7 +310,17 @@ function createTables(response) {
 function updateDisplayAmount() {
     const displayList = document.getElementById("results-amount");
     const displayAmount = displayList.options[displayList.selectedIndex].value;
+
+    const legendButtons = document.getElementById('legend-buttons-container');
+    pageStart = 0;
+
+    if (displayAmount == -1)
+        legendButtons.classList.add('disabled');
+    else 
+        legendButtons.classList.remove('disabled');
+
     pageLength = displayAmount;
+
     loadTables();
     createPageButtons(pageLength, responseLength);
 }
@@ -333,7 +349,13 @@ function createPageButtons(pageLength, responseLength) {
         button.innerText = buttonText[i];
 
         button.classList.add('legend-button');
-        button.id = `legend-button-${i}`;
+
+        if (i == 0)
+            button.id = 'legend-button-previous';
+        else if (i == buttonText.length - 1)
+            button.id = 'legend-button-next';
+        else 
+            button.id = `legend-button-${i}`;
 
         if (i == 1)
             button.classList.add('active-button');
@@ -350,14 +372,18 @@ function updatePage(text, id) {
     updateActiveButton(id);
 
     if (text == "Previous") {
-        let value = pageStart -= pageLength;
+        let value = Number(pageStart -= pageLength);
         if (value > 0)
             pageStart = value;
+        else 
+            pageStart = 0;
     }
     else if (text == "Next") {
-        let value = pageStart += pageLength;
-        if (value < pageLength)
+        let value = Number(pageStart += pageLength);
+        if (value < responseLength)
             pageStart = value;
+        else 
+            pageStart = responseLength - pageLength;
     }
     else {
         pageStart = pageLength * (Number(text) - 1);
@@ -368,12 +394,39 @@ function updatePage(text, id) {
 function updateActiveButton(id) {
     const buttonContainer = document.getElementById("legend-buttons-container");
     let children = buttonContainer.children;
+    const activeClass = 'active-button';
+    console.log("Pressed button: " + id);
 
     for (let i = 0; i < children.length; i++) {
-        if (children[i].id == id)
-            children[i].classList.add("active-button");
-        else
-            children[i].classList.remove("active-button");
+        let activeButton = children[i].classList.contains(activeClass);
+
+        // If the current button is the last pressed button
+        if (activeButton) {
+            // If previous button was pressed move active button
+            if (id == 'legend-button-previous') {
+                if (i != 0) {
+                    children[i - 1].classList.add(activeClass);
+                    children[i].classList.remove(activeClass);
+                }
+            }
+            // If next button was pressed move active button
+            else if (id == 'legend-button-next') {
+                if (i != children.length - 1) {
+                    children[i + 1].classList.add(activeClass);
+                    children[i].classList.remove(activeClass);
+                    i++;
+                }
+            }
+            else {
+                children[i].classList.remove(activeClass);
+            }
+        }
+        else {
+            let childID = children[i].id;
+            if (!(childID.includes('previous') || childID.includes('next')))
+                if (children[i].id == id)
+                    children[i].classList.add(activeClass);
+        }
     }
 }
 
