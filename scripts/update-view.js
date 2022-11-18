@@ -178,16 +178,21 @@ function loadTables() {
                     const resultsLength = table.rows.length - 1;
 
                     let start = 0;
-                    if (resultsLength != 0) {
+                    if (resultsLength >= 1) {
                         legendButtons.classList.remove('disabled');
-                        start = pageStart + 1;
                         createPageButtons(start, resultsLength);
                     }
                     else 
                         legendButtons.classList.add('disabled');
+                    if (resultsLength == 1)
+                        legendButtons.classList.add('disabled');
 
                     let end = resultsLength < pageLength ? resultsLength : pageLength;
-                    displayResults.innerText = `Showing ${start} to ${end} of ${resultsLength} entries`;
+                    responseLength = resultsLength;
+                    displayResults.innerText = `Showing ${start + 1} to ${end} of ${resultsLength} entries`;
+                }
+                else {
+                    legendButtons.classList.remove('disabled');
                 }
             }
         }
@@ -199,6 +204,36 @@ function loadTables() {
     ajax.open("POST", "/post", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
+}
+
+function getSearchRows(response) {
+    let results = [];
+
+    for (let i = 0; i < response.length; i++) {
+        const exam = response[i];
+        const examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
+    
+         // If a user searches for a result, only display those
+         if (searchText != "") {
+             let found = false;
+    
+            // Check to see if exam contains search string
+            for (let j = 0; j < examElements.length; j++) {
+                let value = String(examElements[j]).toLowerCase();
+    
+                // If row contains search text, stop checking
+                if (value.includes(searchText)) {
+                    results.push(exam);
+                    break;
+                }
+            }
+    
+            // If search text is not found in the row do not display
+            if (!found)
+                continue;
+        }
+    }
+    return results;
 }
 
 /**
@@ -347,7 +382,7 @@ function updateDisplayAmount() {
 function createPageButtons(pageLength, responseLength) {
     // Clear buttons container
     const buttonLegend = document.getElementById("legend-buttons-container");
-    // console.log(`PAGE START = ${pageStart} PAGE LENGTH = ${pageLength} RESPONSE LENGTH = ${responseLength}`)
+    console.log(`PAGE START = ${pageStart} PAGE LENGTH = ${pageLength} RESPONSE LENGTH = ${responseLength}`)
 
     buttonLegend.innerHTML = '';
     if (pageLength == 0)
@@ -356,7 +391,7 @@ function createPageButtons(pageLength, responseLength) {
         buttonLegend.classList.remove('disabled');
 
     // Calcualte max buttons to show
-    const numPages = responseLength / pageLength + 2;
+    const numPages = responseLength / pageLength + 1;
     const displayAmount = numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages;
 
     // Create array of strings that contain button innerText
@@ -395,18 +430,19 @@ function updatePage(text, id) {
     updateActiveButton(id);
 
     if (text == "Previous") {
-        let value = Number(pageStart -= pageLength);
+        let value = Number(pageStart - pageLength);
+        console.log("VALUE= " + value + " RESPONSE LENGTH=" + responseLength);
         if (value > 0)
             pageStart = value;
         else 
-            pageStart = 0;
+            return;
     }
     else if (text == "Next") {
-        let value = Number(pageStart += pageLength);
+        let value = Number(pageStart + pageLength);
         if (value < responseLength)
             pageStart = value;
-        else 
-            pageStart = responseLength - pageLength;
+        else
+            return;
     }
     else {
         pageStart = pageLength * (Number(text) - 1);
