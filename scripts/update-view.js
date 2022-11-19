@@ -189,7 +189,9 @@ function loadTables() {
 
                     let end = resultsLength < pageLength ? resultsLength : pageLength;
                     responseLength = resultsLength;
-                    displayResults.innerText = `Showing ${start + 1} to ${end} of ${resultsLength} entries`;
+
+                    let startValue = end != 0 ? start + 1 : end;
+                    displayResults.innerText = `Showing ${startValue} to ${end} of ${resultsLength} entries`;
                 }
                 else {
                     legendButtons.classList.remove('disabled');
@@ -365,14 +367,7 @@ function updateDisplayAmount() {
     const displayList = document.getElementById("results-amount");
     const displayAmount = displayList.options[displayList.selectedIndex].value;
 
-    const legendButtons = document.getElementById('legend-buttons-container');
     pageStart = 0;
-
-    if (displayAmount == -1)
-        legendButtons.classList.add('disabled');
-    else 
-        legendButtons.classList.remove('disabled');
-
     pageLength = displayAmount;
 
     loadTables();
@@ -382,16 +377,13 @@ function updateDisplayAmount() {
 function createPageButtons(pageLength, responseLength) {
     // Clear buttons container
     const buttonLegend = document.getElementById("legend-buttons-container");
-    console.log(`PAGE START = ${pageStart} PAGE LENGTH = ${pageLength} RESPONSE LENGTH = ${responseLength}`)
 
     buttonLegend.innerHTML = '';
-    if (pageLength == 0)
-        buttonLegend.classList.add('disabled');
-    else
-        buttonLegend.classList.remove('disabled');
+    if (pageLength == -1)
+        return;
 
     // Calcualte max buttons to show
-    const numPages = responseLength / pageLength + 1;
+    const numPages = responseLength / pageLength + 2;
     const displayAmount = numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages;
 
     // Create array of strings that contain button innerText
@@ -419,74 +411,78 @@ function createPageButtons(pageLength, responseLength) {
             button.classList.add('active-button');
 
         button.onclick = function() {
-            updatePage(button.innerText, button.id);
+            updatePage(button.id);
         };
         buttonLegend.appendChild(button);
     }
 }
 
-function updatePage(text, id) {
-    console.log(`TEXT: ${text} ID: ${id} PAGESTART: ${pageStart}`);
+function updatePage(id) {
     updateActiveButton(id);
 
-    if (text == "Previous") {
-        let value = Number(pageStart - pageLength);
-        console.log("VALUE= " + value + " RESPONSE LENGTH=" + responseLength);
-        if (value > 0)
-            pageStart = value;
-        else 
-            return;
+    let active = document.getElementsByClassName('active-button')[0];
+    let activeID = active.id;
+
+    if (activeID == "legend-button-previous")
+        pageStart = 0;
+    else if (activeID == "legend-button-next") {
+        const numPages = Math.ceil(responseLength / pageLength) + 2;
+        const displayAmount = -2 + (numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages);
+        pageStart = pageLength * (displayAmount - 1);
     }
-    else if (text == "Next") {
-        let value = Number(pageStart + pageLength);
-        if (value < responseLength)
-            pageStart = value;
-        else
-            return;
-    }
-    else {
-        pageStart = pageLength * (Number(text) - 1);
-    }
+    else
+        pageStart = pageLength * (Number(active.innerText) - 1);
+    // console.log("PAGE START: " + pageStart);
     loadTables(pageStart);
 }
 
 function updateActiveButton(id) {
-    const buttonContainer = document.getElementById("legend-buttons-container");
-    let children = buttonContainer.children;
     const activeClass = 'active-button';
-    console.log("Pressed button: " + id);
 
-    for (let i = 0; i < children.length; i++) {
-        let activeButton = children[i].classList.contains(activeClass);
+    // ID of currently active button
+    const activeButton = document.getElementsByClassName(activeClass)[0];
 
-        // If the current button is the last pressed button
-        if (activeButton) {
-            // If previous button was pressed move active button
-            if (id == 'legend-button-previous') {
-                if (i != 0) {
-                    children[i - 1].classList.add(activeClass);
-                    children[i].classList.remove(activeClass);
-                }
-            }
-            // If next button was pressed move active button
-            else if (id == 'legend-button-next') {
-                if (i != children.length - 1) {
-                    children[i + 1].classList.add(activeClass);
-                    children[i].classList.remove(activeClass);
-                    i++;
-                }
-            }
-            else {
-                children[i].classList.remove(activeClass);
-            }
-        }
-        else {
-            let childID = children[i].id;
-            if (!(childID.includes('previous') || childID.includes('next')))
-                if (children[i].id == id)
-                    children[i].classList.add(activeClass);
-        }
+    // ID of new active button
+    let newButton = document.getElementById(id);
+    let newID = newButton.id;
+
+    console.log("Active Button: " + activeButton.id);
+    console.log("New Button: " + newID);
+
+    if (newID.includes("previous") || newID.includes("next")) {
+        const activeID = activeButton.id;
+
+        // Calcualte max buttons to show
+        const numPages = Math.ceil(responseLength / pageLength) + 2;
+        const displayAmount = -2 + (numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages);
+
+        console.log("Num Pages: " + displayAmount);
+
+        let currentPage = Number(activeButton.id.substring(activeButton.id.lastIndexOf("-") + 1));
+        currentPage += newID.includes("previous") ? -1 : 1;
+
+
+        if (currentPage == 0)
+            currentPage = "previous";
+        else if (currentPage == displayAmount + 1)
+            currentPage = "next";
+
+        if (activeID.includes("next") && newID.includes("next"))
+            currentPage = "next";
+        else if (activeID.includes("previous") && newID.includes("previous"))
+            currentPage = "previous";
+        else if (activeID.includes("next") && newID.includes("previous"))
+            currentPage = displayAmount;
+        else if (activeID.includes("previous") && newID.includes("next"))
+            currentPage = 1;
+
+        console.log("Current Page: " + currentPage);
+        newButton = document.getElementById(`legend-button-${currentPage}`);
     }
+    // Handle normally
+    activeButton.classList.remove(activeClass);
+    newButton.classList.add(activeClass);
+    console.log("\n");
 }
 
 /**
