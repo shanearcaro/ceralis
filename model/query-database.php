@@ -98,8 +98,7 @@ $request_code = $data->{'request'};
  * 
  * 16 - Select exam results
  *      studentexam_id
- *      question_id, answer, result1, result2, result3, result4, result5, \
- *         \ score, comment, studentGrade, questionPoints, question_text, points
+ *      question_id, answer, score, comment, studentGrade, questionPoints, question_text, points
  * 
  * 17 - Insert test case
  *      question_id, case_input, case_answer
@@ -108,6 +107,10 @@ $request_code = $data->{'request'};
  * 18 - Select test cases
  *      question_id
  *      (case_input, case_answer)[]
+ * 
+ * 19 - Select exam result testcases
+ *      studentexam_id, question_id
+ *      testcase_id, result
  * 
  */
 
@@ -248,8 +251,8 @@ switch($request_code) {
     
 
     case 16:
-        $query = $pdo->prepare("SELECT ce.studentexam_id, ce.question_id, ce.answer, ce.result1, ce.result2, ce.result3,
-            ce.result4, ce.result5, ce.score, ce.comment, se.score AS studentGrade, eq.questionPoints, q.question_text, e.points 
+        $query = $pdo->prepare("SELECT ce.question_id, ce.answer, ce.score, 
+            ce.comment, se.score AS studentGrade, eq.questionPoints, q.question_text, e.points 
             FROM CompletedExam AS ce
             INNER JOIN StudentExams AS se ON ce.studentexam_id=se.studentexam_id
             INNER JOIN ExamQuestions AS eq ON se.exam_id=eq.exam_id AND ce.question_id=eq.question_id
@@ -270,6 +273,14 @@ switch($request_code) {
     case 18:
         $query = $pdo->prepare("SELECT case_input, case_answer FROM TestCases WHERE question_id = ? ");
         $query->execute([$data->{'question_id'}]);
+        break;
+
+    case 19:
+        $query = $pdo->prepare("SELECT ce.answer, cer.testcase_id, cer.result FROM CompletedExamResults AS cer
+        INNER JOIN CompletedExam AS ce ON ce.studentexam_id=cer.studentexam_id AND ce.question_id=cer.question_id
+        WHERE cer.studentexam_id = ? AND cer.question_id = ? ");
+
+        $query->execute([$data->{'studentexam_id'}, $data->{'question_id'}]);
         break;
     
 }

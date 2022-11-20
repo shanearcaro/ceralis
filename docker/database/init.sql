@@ -94,16 +94,23 @@ CREATE TABLE CompletedExam (
     studentexam_id INT NOT NULL,
     question_id INT NOT NULL,
     answer VARCHAR(255) NOT NULL,
-    result1 VARCHAR(255),
-    result2 VARCHAR(255),
-    result3 VARCHAR(255),
-    result4 VARCHAR(255),
-    result5 VARCHAR(255),
     score INT NOT NULL,
     `comment` VARCHAR(255),
     FOREIGN KEY (studentexam_id) REFERENCES StudentExams(studentexam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
     PRIMARY KEY(studentexam_id, question_id)
+);
+
+
+CREATE TABLE CompletedExamResults (
+    studentexam_id INT NOT NULL,
+    question_id INT NOT NULL,
+    testcase_id INT NOT NULL,
+    result VARCHAR(255),
+    FOREIGN KEY (studentexam_id) REFERENCES StudentExams(studentexam_id),
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id),
+    FOREIGN KEY (testcase_id) REFERENCES TestCases(testcase_id),
+    PRIMARY KEY(studentexam_id, question_id, testcase_id)
 );
 
 
