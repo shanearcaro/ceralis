@@ -274,11 +274,8 @@ function createTables(response) {
     const maxDisplay = pageLength > response.length ? response.length : pageLength;
     let displayAmount = 0;
 
-    // Filter results with search text input
-    const results = getSearchRows(response);
-
     // Display row results 
-    for (let i = pageStart; i < results.length; i++) {
+    for (let i = pageStart; i < response.length; i++) {
         if (displayAmount == maxDisplay)
             break;
 
@@ -312,20 +309,35 @@ function createTables(response) {
             row.cells[j].innerHTML = examElements[j];
         
         // Create review and delete buttons
-        createActionButtons(exam, exam.exam_id);
+        createActionButtons(exam.exam_id);
     }
 }
 
-function createActionButtons(exam, index) {
+/**
+ * Create the action buttons take and review (if applicable) for each
+ * exam within the students exam table. This will allow the students to take
+ * the exam from their professor or review an already graded exam if it is ready.
+ * @param {number} examID The id for the current exam
+ */
+function createActionButtons(examID) {
+    /**
+     * TODO: This code needs to be changed later so that only a single button will be created at a time,
+     * either take or review. These buttons need to be created based on whether the user has already taken
+     * an exam and if the exam has been graded yet. The review button should be red if the exam is not ready
+     * to be reviewed yet or green if the exam has been auto graded. 
+     */
     // Create two buttons, rewview and delete
-    const buttons = [document.createElement("button"), document.createElement("button")];
     const purpose = ["take", "review"];
+    let buttons = [];
+    for (let i = 0; i < purpose.length; i++)
+        buttons.push(document.createElement("button")); 
 
-    console.log("Index: " + index);
-    const action = document.getElementById(`action-${index}`);
+    // Get current action element
+    const action = document.getElementById(`action-${examID}`);
 
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].id = `${purpose[i]}-${exam.exam_id}`;
+    // Create custom class and id list and add to table
+    for (let i = 0; i < purpose.length; i++) {
+        buttons[i].id = `${purpose[i]}-${examID}`;
         buttons[i].classList.add("button");
         buttons[i].classList.add("action-button");
         buttons[i].classList.add(`button-${purpose[i]}`);
@@ -333,7 +345,7 @@ function createActionButtons(exam, index) {
         buttons[i].innerText = purpose[i];
 
         buttons[i].onclick = function() {
-            deleteExam(exam.exam_id);
+            deleteExam(examID);
         };
         action.appendChild(buttons[i]);
     }
