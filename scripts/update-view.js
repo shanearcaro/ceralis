@@ -15,6 +15,8 @@ let responseLength = -1;
 
 let initialCall = 0;
 
+let activeButtonID = "legend-button-1";
+
 /**
  * Sleep for a specified duration of time
  * @param {int} time - the number of milliseconds to sleep
@@ -160,42 +162,13 @@ function loadTables() {
 
                 empty.classList.remove("disabled");
                 table.classList.add("disabled");
-                
             }
             else {
                 // Display results
                 const response = JSON.parse(ajax.responseText);
-                responseLength = response.length;
-                // console.log("CREATE TABLES PAGE START: " + pageStart);
-                createTables(response, pageStart);
+                createTables(getSearchRows(response), pageStart);
 
-                const legendButtons = document.getElementById('legend-buttons-container');
-                const searchInput = document.getElementById('dash-search-input');
-                const searchText = searchInput.value;
-                if (searchText != '') {
-                    const displayResults = document.getElementById('table-display-legend');
-                    const table = document.getElementById('table');
-                    const resultsLength = table.rows.length - 1;
-
-                    let start = 0;
-                    if (resultsLength >= 1) {
-                        legendButtons.classList.remove('disabled');
-                        createPageButtons(start, resultsLength);
-                    }
-                    else 
-                        legendButtons.classList.add('disabled');
-                    if (resultsLength == 1)
-                        legendButtons.classList.add('disabled');
-
-                    let end = resultsLength < pageLength ? resultsLength : pageLength;
-                    responseLength = resultsLength;
-
-                    let startValue = end != 0 ? start + 1 : end;
-                    displayResults.innerText = `Showing ${startValue} to ${end} of ${resultsLength} entries`;
-                }
-                else {
-                    legendButtons.classList.remove('disabled');
-                }
+                setActiveButton(activeButtonID);
             }
         }
         else
@@ -206,36 +179,6 @@ function loadTables() {
     ajax.open("POST", "/post", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
-}
-
-function getSearchRows(response) {
-    let results = [];
-
-    for (let i = 0; i < response.length; i++) {
-        const exam = response[i];
-        const examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
-    
-         // If a user searches for a result, only display those
-         if (searchText != "") {
-             let found = false;
-    
-            // Check to see if exam contains search string
-            for (let j = 0; j < examElements.length; j++) {
-                let value = String(examElements[j]).toLowerCase();
-    
-                // If row contains search text, stop checking
-                if (value.includes(searchText)) {
-                    results.push(exam);
-                    break;
-                }
-            }
-    
-            // If search text is not found in the row do not display
-            if (!found)
-                continue;
-        }
-    }
-    return results;
 }
 
 /**
@@ -254,20 +197,13 @@ function createTables(response) {
     // Clear all previous rows being displayed in the table
     clearTables();
 
-    // Get search bar input text
-    const searchInput = document.getElementById('dash-search-input');
-    const searchText = searchInput.value.toLowerCase();
-
     // Get table and table legend
     const table = document.getElementById("table");
     const legend = document.getElementById("table-display-legend");
 
     // Format pageLength to display entire queried response
     if (pageLength == -1) 
-        pageLength = response.length
-
-    // Start pagination values
-    legend.classList.remove("disabled");
+        pageLength = response.length;
 
     let pageEnd = Number(pageStart) + Number(pageLength);
 
@@ -275,9 +211,9 @@ function createTables(response) {
     if (pageEnd > response.length)
         pageEnd = response.length;
 
-    legend.innerText = `Showing ${pageStart + 1} to ${pageEnd} of ${response.length} entries`
-    if (initialCall++ == 0)
-        createPageButtons(pageLength, response.length);
+    let start = response.length == 0 ? 0 : pageStart + 1;
+    legend.innerText = `Showing ${start} to ${pageEnd} of ${response.length} entries`;
+    createPageButtons(pageLength, response.length);
 
     // Display descriptors
     const row = table.insertRow(-1);
@@ -303,33 +239,14 @@ function createTables(response) {
     // console.log("max display: " + maxDisplay);
     let displayAmount = 0;
 
+    const results = getSearchRows(response);
     // Display row results 
-    for (let i = pageStart; i < response.length; i++) {
+    for (let i = pageStart; i < results.length; i++) {
         if (displayAmount == maxDisplay)
             break;
 
         const exam = response[i];
         const examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
-
-        // If a user searches for a result, only display those
-        if (searchText != "") {
-            let found = false;
-
-            // Check to see if exam contains search string
-            for (let j = 0; j < examElements.length; j++) {
-                let value = String(examElements[j]).toLowerCase();
-
-                // If row contains search text, stop checking
-                if (value.includes(searchText)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            // If search text is not found in the row do not display
-            if (!found)
-                continue;
-        }
         
         // Counter for how many rows are being displayed
         displayAmount++;
@@ -350,14 +267,50 @@ function createTables(response) {
         }
         
         // Display row information
-        row.cells[0].innerHTML = exam.exam_id;
-        row.cells[1].innerHTML = exam.name;
-        row.cells[2].innerHTML = exam.title;
-        row.cells[3].innerHTML = formatScore(exam.score, exam.points);
-
-        // Need to format the date
-        row.cells[4].innerHTML = formatDate(exam.date);
+        for (let i = 0; i < examElements.length; i++)
+            row.cells[i].innerHTML = examElements[i];
     }
+}
+
+function getSearchRows(response) {
+    // Get search bar input text
+    const searchInput = document.getElementById('dash-search-input');
+    const searchText = searchInput.value.toLowerCase();
+
+    if (searchText == "") {
+        responseLength = response.length;
+        return response;
+    }
+
+    let results = [];
+    console.log("Response Length before filter: " + response.length);
+
+    for (let i = 0; i < response.length; i++) {
+        const exam = response[i];
+        const examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
+        
+         // If a user searches for a result, only display those
+        let found = false;
+    
+        // Check to see if exam contains search string
+        for (let j = 0; j < examElements.length; j++) {
+            let value = String(examElements[j]).toLowerCase();
+    
+            // If row contains search text, stop checking
+            if (value.includes(searchText)) {
+                results.push(exam);
+                break;
+            }
+        }
+    
+        // If search text is not found in the row do not display
+        if (!found)
+            continue;
+    }
+
+    responseLength = results.length;
+    console.log("Filter Length: " + responseLength);
+    return results;
 }
 
 /**
@@ -377,14 +330,19 @@ function updateDisplayAmount() {
 function createPageButtons(pageLength, responseLength) {
     // Clear buttons container
     const buttonLegend = document.getElementById("legend-buttons-container");
+    console.log("Response Length: " + responseLength + " Page Length: " + pageLength);
 
     buttonLegend.innerHTML = '';
     if (pageLength == -1)
         return;
 
     // Calcualte max buttons to show
+
     const numPages = responseLength / pageLength + 2;
+    console.log("Num Pages: " + numPages);
     const displayAmount = numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages;
+    if (displayAmount <= 3)
+        return;
 
     // Create array of strings that contain button innerText
     let buttonText = [];
@@ -407,9 +365,6 @@ function createPageButtons(pageLength, responseLength) {
         else 
             button.id = `legend-button-${i}`;
 
-        if (i == 1)
-            button.classList.add('active-button');
-
         button.onclick = function() {
             updatePage(button.id);
         };
@@ -417,12 +372,19 @@ function createPageButtons(pageLength, responseLength) {
     }
 }
 
+function setActiveButton() {
+    document.getElementById(activeButtonID).classList.add('active-button');
+}
+
 function updatePage(id) {
+    // Set the new button to the active id
     updateActiveButton(id);
 
+    // Use the new active button for calculations
     let active = document.getElementsByClassName('active-button')[0];
     let activeID = active.id;
 
+    // Preform logic to determine what the first row index should be
     if (activeID == "legend-button-previous")
         pageStart = 0;
     else if (activeID == "legend-button-next") {
@@ -432,7 +394,8 @@ function updatePage(id) {
     }
     else
         pageStart = pageLength * (Number(active.innerText) - 1);
-    // console.log("PAGE START: " + pageStart);
+
+    // Load the tables
     loadTables(pageStart);
 }
 
@@ -446,9 +409,6 @@ function updateActiveButton(id) {
     let newButton = document.getElementById(id);
     let newID = newButton.id;
 
-    console.log("Active Button: " + activeButton.id);
-    console.log("New Button: " + newID);
-
     if (newID.includes("previous") || newID.includes("next")) {
         const activeID = activeButton.id;
 
@@ -456,9 +416,7 @@ function updateActiveButton(id) {
         const numPages = Math.ceil(responseLength / pageLength) + 2;
         const displayAmount = -2 + (numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages);
 
-        console.log("Num Pages: " + displayAmount);
-
-        let currentPage = Number(activeButton.id.substring(activeButton.id.lastIndexOf("-") + 1));
+        let currentPage = Number(activeID.substring(activeID.lastIndexOf("-") + 1));
         currentPage += newID.includes("previous") ? -1 : 1;
 
 
@@ -467,13 +425,12 @@ function updateActiveButton(id) {
         else if (currentPage == displayAmount + 1)
             currentPage = displayAmount;
 
-        console.log("Current Page: " + currentPage);
         newButton = document.getElementById(`legend-button-${currentPage}`);
     }
     // Handle normally
     activeButton.classList.remove(activeClass);
     newButton.classList.add(activeClass);
-    console.log("\n");
+    activeButtonID = newButton.id;
 }
 
 /**
@@ -482,9 +439,9 @@ function updateActiveButton(id) {
  * @returns date only as string
  */
 function formatDate(datetime) {
-        // Date is in format YYYY-MM-DD HOURS:MINUTES:SECONDS
-        const date = new Date(datetime);
-        return date.toLocaleDateString();
+    // Date is in format YYYY-MM-DD HOURS:MINUTES:SECONDS
+    const date = new Date(datetime);
+    return date.toLocaleDateString();
 }
 
 /**
