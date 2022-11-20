@@ -29,35 +29,49 @@ $request_code = $data->{'request'};
  *  Code directory
  * ================
  * Request Number - Description
- *      [Recieving variables]
- *      [Returning variables]
+ *     [Recieving variables]
+ *     [Returning variables]
  * 
  * 0 - Authenticate login
- *      [username, password]
- *      [user_id, position]
+ *     [username, password]
+ *     [user_id, position]
  * 
  * 1 - Select student tables
- *      []
- *      [exam_id, user_id, title, points, e.date, score, se.date]
+ *     []
+ *     [exam_id, user_id, title, points, e.date, score, se.date]
+ * 
+ * 2 - Delete Exam
+ *     [userid, examid]
+ *     []
  */
 
 //  Execute queries based on request 
 switch($request_code) {
     case 0:
         $query = $pdo->prepare(
-            "SELECT user_id, position FROM Users 
+            "SELECT user_id, position 
+            FROM Users 
             WHERE username = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
     case 1:
+        // echo "User ID: " . $data->{'userid'};
         $query = $pdo->prepare(
             "SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
             FROM Exams AS e 
-            INNER JOIN StudentExams AS se ON e.exam_id=se.exam_id 
-            INNER JOIN Users AS u ON e.user_id=u.user_id
+            INNER JOIN StudentExams AS se ON e.exam_id = se.exam_id 
+            INNER JOIN Users AS u ON e.user_id = u.user_id
+            WHERE se.user_id = ?
             ORDER BY e.exam_id ASC");
-        $query->execute();
+        $query->execute([$data->{'userid'}]);
         break;
+    case 2:
+        $query = $pdo->prepare(
+            "DELETE FROM StudentExams 
+            WHERE user_id = ? AND exam_id= ?");
+        $query->execute([$data->{'userid'}, $data->{'examid'}]);
+        echo json_encode(true);
+        exit();
 }
 
 // Fetch data and return

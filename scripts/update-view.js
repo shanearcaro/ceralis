@@ -163,7 +163,9 @@ function disableBack() {
  * Load the student dashboard exams table
  */
 function loadTables() {
-    const credentials = `request=${1}`;
+    const userid = sessionStorage.getItem("user_id");
+
+    const credentials = `userid=${userid}&request=${1}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
@@ -182,6 +184,7 @@ function loadTables() {
             }
             else {
                 // Display results
+                console.log("Response Text: [" + ajax.responseText + "]");
                 const response = JSON.parse(ajax.responseText);
                 createTables(getSearchRows(response), pageStart);
 
@@ -254,7 +257,7 @@ function createTables(response) {
     // Create cell class descriptors
     const prefix = "cell";
     const delim = "-";
-    const data = ["index", "title", "name", "points", "date", "action"];
+    const data = ["index", "name", "title", "points", "date", "action"];
     
     // Generate cell identification 
     for (let i = 0; i < headers.length; i++) {
@@ -309,16 +312,31 @@ function createTables(response) {
             row.cells[j].innerHTML = examElements[j];
         
         // Create review and delete buttons
-        createActionButtons(exam);
+        createActionButtons(exam, exam.exam_id);
     }
 }
 
-function createActionButtons(exam) {
+function createActionButtons(exam, index) {
     // Create two buttons, rewview and delete
     const buttons = [document.createElement("button"), document.createElement("button")];
+    const purpose = ["take", "review"];
 
-    buttons[0].id = `review-${exam.exam_id}`;
-    buttons[1].id = `delete-${exam.exam_id}`;
+    console.log("Index: " + index);
+    const action = document.getElementById(`action-${index}`);
+
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].id = `${purpose[i]}-${exam.exam_id}`;
+        buttons[i].classList.add("button");
+        buttons[i].classList.add("action-button");
+        buttons[i].classList.add(`button-${purpose[i]}`);
+
+        buttons[i].innerText = purpose[i];
+
+        buttons[i].onclick = function() {
+            deleteExam(exam.exam_id);
+        };
+        action.appendChild(buttons[i]);
+    }
 }
 
 /**
@@ -528,6 +546,35 @@ function updateActiveButton(id) {
 
     // Update global activeButtonID 
     activeButtonID = newButton.id;
+}
+
+function deleteExam(examID) {
+    const userid = sessionStorage.getItem("user_id");
+    const requestCode = 2;
+
+    // Begin AJAX call
+    const credentials = `userid=${userid}&examid=${examID}&request=${requestCode}`;
+    const ajax = new XMLHttpRequest();
+
+    // Check AJAX
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            // console.log(ajax.responseText);
+
+            // If exams exist print table dynamically
+            if (ajax.responseText == "true") {
+                // clearTables();
+                // loadTables();
+            }
+        }
+        else
+            return;
+    }
+
+    // Send request
+    // ajax.open("POST", "/post", true);
+    // ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // ajax.send(credentials);
 }
 
 /**
