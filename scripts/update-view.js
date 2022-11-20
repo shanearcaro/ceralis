@@ -346,12 +346,20 @@ function updateDisplayAmount() {
     // Reload table and page buttons
     loadTables();
     createPageButtons(pageLength, responseLength);
+
+    // Set the active button to the first available button
+    activeButtonID = "legend-button-1";
+    setActiveButton();
 }
 
+/**
+ * Generates the pages buttons at the bottom right of the table.
+ * @param {number} pageLength Number of elements to be displayed on a single page
+ * @param {number} responseLength Number of elements available to be displayed
+ */
 function createPageButtons(pageLength, responseLength) {
     // Clear buttons container
     const buttonLegend = document.getElementById("legend-buttons-container");
-    console.log("Response Length: " + responseLength + " Page Length: " + pageLength);
 
     // Reset buttons conatiner
     buttonLegend.innerHTML = '';
