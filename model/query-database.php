@@ -112,6 +112,10 @@ $request_code = $data->{'request'};
  *      studentexam_id, question_id
  *      testcase_id, result
  * 
+ * 20 - Insert exam result testcases
+ *      studentexam_id, question_id, testcase_id, result
+ *      insertionStatus
+ * 
  */
 
 switch($request_code) {
@@ -261,6 +265,7 @@ switch($request_code) {
         $query->execute([$data->{'question_id'}]);
         break;
 
+
     case 19:
         $query = $pdo->prepare("SELECT ce.answer, cer.testcase_id, cer.result FROM CompletedExamResults AS cer
             INNER JOIN CompletedExam AS ce ON ce.studentexam_id=cer.studentexam_id AND ce.question_id=cer.question_id
@@ -268,6 +273,12 @@ switch($request_code) {
         $query->execute([$data->{'studentexam_id'}, $data->{'question_id'}]);
         break;
     
+
+    case 20:
+        $query = $pdo->prepare("INSERT INTO CompletedExamResults(studentexam_id, question_id, testcase_id, result) VALUES (?, ?, ?, ?)");
+        $query->execute([$data->{'studentexam_id'}, $data->{'question_id'}, $data->{'testcase_id'}, $data->{'result'}]);
+        break;
+
 }
 
 $response = $query->fetch();
