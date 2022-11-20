@@ -23,11 +23,16 @@ let pageStart = 0;
 let responseLength = -1;
 
 /**
+ * Default active button ID. The first page should always be used as the default active
+ * page whenever the button legend changes state.
+ */
+const defaultActiveButton = "legend-button-1";
+/**
  * ID of the current active page button. This needs to be separate so that its state can be
  * stored and used later. Previously a prevent_initial_call value was used to prevent unintended
  * behavior but this caused more problems.
  */
-let activeButtonID = "legend-button-1";
+let activeButtonID = defaultActiveButton;
 
 /**
  * Sleep for a specified duration of time
@@ -225,7 +230,17 @@ function createTables(response) {
         pageEnd = response.length;
 
     // Create the page legend text 
-    let start = response.length == 0 ? 0 : pageStart + 1;
+    let start = pageStart + 1;
+
+    if (start > pageEnd) {
+        start = 1;
+        pageStart = 1;
+    }
+    if (response.length == 0) {
+        start = 0;
+        pageStart = 0;
+    }
+        
     legend.innerText = `Showing ${start} to ${pageEnd} of ${response.length} entries`;
 
     // Update the number of page buttons on screen
@@ -234,12 +249,12 @@ function createTables(response) {
     // Display descriptors
     const row = table.insertRow(-1);
     row.classList.add("exam-student-row");
-    const headers = ['ID', 'Professor', 'Title', 'Score', 'Date'];
+    const headers = ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
 
     // Create cell class descriptors
     const prefix = "cell";
     const delim = "-";
-    const data = ["index", "title", "name", "points", "date"];
+    const data = ["index", "title", "name", "points", "date", "action"];
     
     // Generate cell identification 
     for (let i = 0; i < headers.length; i++) {
@@ -248,6 +263,7 @@ function createTables(response) {
         cell.classList.add(prefix);
         cell.classList.add('row-cell');
         cell.classList.add('header-text');
+        cell.id = `${data[i]}`;
         cell.innerHTML = headers[i];
     }
 
@@ -278,17 +294,31 @@ function createTables(response) {
         row.classList.add("row-" + (displayAmount % 2 == 0 ? "light" : "dark"));
 
         // Display only a certain number of elements
-        for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < data.length; j++) {
             const cell = row.insertCell(-1);
-            cell.classList.add(prefix + delim + data[i]);
+            cell.classList.add(prefix + delim + data[j]);
             cell.classList.add(prefix);
             cell.classList.add('row-cell');
+
+            if (j == data.length - 1)
+                cell.id = `${data[j]}-${exam.exam_id}`
         }
         
         // Display row information
-        for (let i = 0; i < examElements.length; i++)
-            row.cells[i].innerHTML = examElements[i];
+        for (let j = 0; j < examElements.length; j++)
+            row.cells[j].innerHTML = examElements[j];
+        
+        // Create review and delete buttons
+        createActionButtons(exam);
     }
+}
+
+function createActionButtons(exam) {
+    // Create two buttons, rewview and delete
+    const buttons = [document.createElement("button"), document.createElement("button")];
+
+    buttons[0].id = `review-${exam.exam_id}`;
+    buttons[1].id = `delete-${exam.exam_id}`;
 }
 
 /**
@@ -308,7 +338,7 @@ function getSearchRows(response) {
         responseLength = response.length;
         return response;
     }
-
+    
     // Create filtered response
     let filteredResponse = [];
     for (let i = 0; i < response.length; i++) {
@@ -348,8 +378,7 @@ function updateDisplayAmount() {
     createPageButtons(pageLength, responseLength);
 
     // Set the active button to the first available button
-    activeButtonID = "legend-button-1";
-    setActiveButton();
+    resetPageButtons()
 }
 
 /**
@@ -411,6 +440,18 @@ function createPageButtons(pageLength, responseLength) {
  */
 function setActiveButton() {
     document.getElementById(activeButtonID).classList.add('active-button');
+}
+
+/**
+ * When the user starts a search the page buttons and the tables need to be updated.
+ * This function will reset the page button variables to its default state to prevent
+ * the active-button id from being set to a button that may not have been created in
+ * the new state. Then load the proper tables at the new page start.
+ */
+function resetPageButtons() {
+    activeButtonID = defaultActiveButton;
+    pageStart = 0;
+    loadTables();
 }
 
 /**
