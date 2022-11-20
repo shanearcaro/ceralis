@@ -11,12 +11,6 @@ CREATE TABLE IF NOT EXISTS Users (
     PRIMARY KEY(user_id)
 );
 
-INSERT INTO Users(name, password, position) VALUES
-('student1', 'studentp1', 'student'),
-('teacher1', 'teacherp1', 'teacher'),
-('student2', 'studentp2', 'student'),
-('teacher2', 'teacherp2', 'teacher');
-
 
 CREATE TABLE Exams (
     exam_id INT AUTO_INCREMENT NOT NULL,
@@ -29,22 +23,12 @@ CREATE TABLE Exams (
     PRIMARY KEY(exam_id)
 );
 
-INSERT INTO Exams(creator_id, title, points, question_count) VALUES
-(2, 'testexam1', 80, 2),
-(4, 'testexam2', 60, 2);
-
 
 CREATE TABLE Types (
     type_id INT AUTO_INCREMENT NOT NULL,
     typename VARCHAR(20) NOT NULL,
     PRIMARY KEY(type_id)
 );
-
-INSERT INTO Types(typename) VALUES
-('Conditionals'),
-('Strings'),
-('Recursion'),
-('ForLoops');
 
 
 CREATE TABLE Questions (
@@ -60,12 +44,6 @@ CREATE TABLE Questions (
     PRIMARY KEY(question_id)
 );
 
-INSERT INTO Questions(creator_id, question_type, difficulty, question_text) VALUES
-(2, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),
-(2, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found'),
-(4, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),
-(4, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found');
-
 
 CREATE TABLE TestCases (
     testcase_id INT AUTO_INCREMENT NOT NULL,
@@ -76,20 +54,6 @@ CREATE TABLE TestCases (
     PRIMARY KEY(testcase_id)
 );
 
-INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
-(1, 'John~Howdy', 'Howdy, John'),
-(1, 'apple~orange', 'orange, apple'),
-(2, '[3,7,2,9,8,1]', '9'),
-(2, '[1,2,3,7,5,1]', '7'),
-(2, '[1,300,2,9,8,1]', '300'),
-(2, '[1,800,300,9,8,1]', '800'),
-(3, 'John~Howdy', 'Howdy, John'),
-(3, 'apple~orange', 'orange, apple'),
-(4, '[3,7,2,9,8,1]', '9'),
-(4, '[1,2,3,7,5,1]', '7'),
-(4, '[1,300,2,9,8,1]', '300'),
-(4, '[1,800,300,9,8,1]', '800');
-
 
 CREATE TABLE IF NOT EXISTS ExamQuestions (
     exam_id INT NOT NULL,
@@ -99,12 +63,6 @@ CREATE TABLE IF NOT EXISTS ExamQuestions (
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
     PRIMARY KEY(exam_id, question_id)
 );
-
-INSERT INTO ExamQuestions(exam_id, question_id, questionPoints) VALUES
-(1, 1, 50),
-(1, 2, 30),
-(2, 3, 20),
-(2, 4, 40);
 
 
 CREATE TABLE StudentExams (
@@ -147,3 +105,42 @@ CREATE TABLE CompletedExam (
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
     PRIMARY KEY(studentexam_id, question_id)
 );
+
+
+
+INSERT INTO Users(name, password, position) VALUES
+('student1', 'studentp1', 'student'),
+('teacher1', 'teacherp1', 'teacher'),
+('student2', 'studentp2', 'student'),
+('teacher2', 'teacherp2', 'teacher');
+/*
+INSERT INTO Exams(creator_id, title, points, question_count) VALUES
+(2, 'testexam1', 80, 2),
+(4, 'testexam2', 60, 2);
+
+INSERT INTO Types(typename) VALUES
+('Conditionals'),
+('Strings'),
+('Recursion'),
+('ForLoops');
+
+INSERT INTO Questions(creator_id, question_type, difficulty, question_text) VALUES
+(2, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),
+(2, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found'),
+(4, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),
+(4, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found');
+
+INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
+(1, 'John~Howdy', 'Howdy, John'),
+(1, 'apple~orange', 'orange, apple'),
+(2, '[3,7,2,9,8,1]', '9'),
+(2, '[1,2,3,7,5,1]', '7'),
+(2, '[1,300,2,9,8,1]', '300'),
+(2, '[1,800,300,9,8,1]', '800'),
+(3, 'John~Howdy', 'Howdy, John'),
+(3, 'apple~orange', 'orange, apple'),
+(4, '[3,7,2,9,8,1]', '9'),
+(4, '[1,2,3,7,5,1]', '7'),
+(4, '[1,300,2,9,8,1]', '300'),
+(4, '[1,800,300,9,8,1]', '800');
+*/
