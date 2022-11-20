@@ -14,12 +14,12 @@ CREATE TABLE IF NOT EXISTS Users (
 
 CREATE TABLE Exams (
     exam_id INT AUTO_INCREMENT NOT NULL,
-    creator_id INT NOT NULL,
+    user_id INT NOT NULL,
     title VARCHAR(50) NOT NULL,
     points INT NOT NULL,
     question_count INT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(creator_id) REFERENCES Users(user_id),
+    FOREIGN KEY(user_id) REFERENCES Users(user_id),
     PRIMARY KEY(exam_id)
 );
 
@@ -33,13 +33,13 @@ CREATE TABLE Types (
 
 CREATE TABLE Questions (
     question_id INT AUTO_INCREMENT NOT NULL,
-    creator_id INT NOT NULL,
+    user_id INT NOT NULL,
     question_type INT NOT NULL default 0,
     difficulty VARCHAR(50) NOT NULL DEFAULT 'Medium',
     `constraint` VARCHAR(50) DEFAULT NULL,
     question_text VARCHAR(999) not null,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(creator_id) REFERENCES Users(user_id),
+    FOREIGN KEY(user_id) REFERENCES Users(user_id),
     FOREIGN KEY(question_type) REFERENCES Types(type_id),
     PRIMARY KEY(question_id)
 );
@@ -114,7 +114,7 @@ INSERT INTO Users(name, password, position) VALUES
 ('student2', 'studentp2', 'student'),
 ('teacher2', 'teacherp2', 'teacher');
 /*
-INSERT INTO Exams(creator_id, title, points, question_count) VALUES
+INSERT INTO Exams(user_id, title, points, question_count) VALUES
 (2, 'testexam1', 80, 2),
 (4, 'testexam2', 60, 2);
 
@@ -124,7 +124,7 @@ INSERT INTO Types(typename) VALUES
 ('Recursion'),
 ('ForLoops');
 
-INSERT INTO Questions(creator_id, question_type, difficulty, question_text) VALUES
+INSERT INTO Questions(user_id, question_type, difficulty, question_text) VALUES
 (2, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),
 (2, 4, 'Medium', 'Write a function named largest that takes one argument: list of ints lst, it should iterate through the given list and return the largest value found'),
 (4, 2, 'Easy', 'Write a function named sayHello that takes two arguments: string name and string greeting, it should return the greeting and the name as a single string'),

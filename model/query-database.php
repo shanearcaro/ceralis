@@ -78,7 +78,7 @@ $request_code = $data->{'request'};
  * 
  * 11 - Select students exam (sent name is teachers name) (aka selectExamsStudent.php)
  *      user_id
- *      exam_id, points, question_count, creator_id, name
+ *      exam_id, points, question_count, user_id, name
  * 
  * 12 - Select exam submissions (given user id students, sent name is teachers) (points is out-of-XX) (aka selectStudentExams.php)
  *      user_id
@@ -120,7 +120,7 @@ switch($request_code) {
 
 
     case 1:
-        $query = $pdo->prepare("INSERT INTO Questions (creator_id, question_type, difficulty, constraint, question_text) 
+        $query = $pdo->prepare("INSERT INTO Questions (user_id, question_type, difficulty, constraint, question_text) 
             VALUES (?, ?, ?, ?, ?)");
 
         $query->execute([$data->{'user_id'}, $data->{'questiontype'}, $data->{'difficulty'}, 
@@ -131,14 +131,14 @@ switch($request_code) {
         
     case 2:
         $query = $pdo->prepare("SELECT question_id, created, question_type, difficulty, question_text
-            FROM Questions WHERE creator_id= ? ");
+            FROM Questions WHERE user_id= ? ");
 
         $query->execute([$data->{'user_id'}]);
         break;
 
 
     case 3:
-        $query = $pdo->prepare("INSERT INTO Exams (creator_id, title, points, question_count) VALUES (?, ?, ?, ?)");
+        $query = $pdo->prepare("INSERT INTO Exams (user_id, title, points, question_count) VALUES (?, ?, ?, ?)");
         $query->execute([$data->{'user_id'}, $data->{'title'}, $data->{'points'}, $data->{'question_count'}]);
         break;
 
@@ -193,7 +193,7 @@ switch($request_code) {
         $query = $pdo->prepare("SELECT se.studentexam_id, se.user_id, se.exam_id, e.score, u.name FROM StudentExams AS se 
             INNER JOIN Exams AS e on se.exam_id=e.exam_id 
             INNER JOIN Users AS u on se.user_id=u.user_id 
-            WHERE se.score=-1 AND e.creator_id = ? 
+            WHERE se.score=-1 AND e.user_id = ? 
             ORDER BY se.examID ASC");
 
         $query->execute([$data->{'user_id'}]);
@@ -201,8 +201,8 @@ switch($request_code) {
 
 
     case 11:
-        $query = $pdo->prepare("SELECT e.exam_id, e.points, e.question_count, e.creator_id, u.name FROM Exams as e 
-            INNER JOIN Users as u ON u.user_id=e.creator_id 
+        $query = $pdo->prepare("SELECT e.exam_id, e.points, e.question_count, e.user_id, u.name FROM Exams as e 
+            INNER JOIN Users as u ON u.user_id=e.user_id 
             WHERE exam_id NOT IN (
                 SELECT sei.exam_id FROM Exams AS ei JOIN StudentExams AS sei ON ei.exam_id=sei.exam_id 
                 WHERE sei.user_id = ? 
@@ -216,7 +216,7 @@ switch($request_code) {
     case 12:
         $query = $pdo->prepare("SELECT se.studentexam_id, u.name, se.user_id, se.exam_id, se.score, e.points FROM StudentExams AS se
             INNER JOIN Exams AS e on se.exam_id=e.exam_id
-            INNER JOIN Users AS u ON e.creator_id=u.user_id
+            INNER JOIN Users AS u ON e.user_id=u.user_id
             WHERE se.score != -1 AND se.user_id = ?
             ORDER BY se.exam_id ASC");
         
