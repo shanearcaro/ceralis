@@ -378,7 +378,7 @@ function updateDisplayAmount() {
     createPageButtons(pageLength, responseLength);
 
     // Set the active button to the first available button
-    resetPageButtons()
+    resetPageButtons();
 }
 
 /**
@@ -439,7 +439,11 @@ function createPageButtons(pageLength, responseLength) {
  * Update the current active button
  */
 function setActiveButton() {
-    document.getElementById(activeButtonID).classList.add('active-button');
+    let button = document.getElementById(activeButtonID);
+
+    // Only update button if it exists
+    if (button != null)
+        document.getElementById(activeButtonID).classList.add('active-button');
 }
 
 /**
