@@ -1,4 +1,4 @@
-#logout-button {
+.button {
     width: 100%;
 
     border: none;
@@ -15,6 +15,6 @@
     align-items: center;
 }
 
-#logout-button:hover {
+.button:hover {
     cursor: pointer;
 }

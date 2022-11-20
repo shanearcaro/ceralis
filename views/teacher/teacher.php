@@ -1,6 +1,3 @@
-<!-- Validate user authentication -->
-<?php require_once("controller/authenticate-login.php"); ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

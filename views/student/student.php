@@ -21,7 +21,7 @@
                 <ul class="panel-list">
                     <div class="panel-div panel-hover"><li class="panel-element" id='panel-dashboard'>DASHBOARD</li></div>
                     <div class="panel-div panel-hover"><li class="panel-element" id='panel-exam'>TAKE EXAM</li></div>
-                    <div class="panel-div"><button class="panel-element" id='logout-button' onclick="logout()">LOG OUT</button></div>
+                    <div class="panel-div"><button class="panel-element button" id='logout-button' onclick="logout()">LOG OUT</button></div>
                 </ul>
             </div>
         </div>
@@ -41,7 +41,7 @@
                     </div>
                     <div class="searchbar-search searchbar-element">
                         <p id='search-text'>Search: </p>
-                        <input type="text" id='dash-search-input' onkeyup='loadTables()'>
+                        <input type="text" id='dash-search-input' onkeyup='resetPageButtons()'>
                     </div>
                 </div>
                 <div class="dash-table-div">

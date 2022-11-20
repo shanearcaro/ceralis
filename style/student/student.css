@@ -7,11 +7,15 @@
     --content-bg:   rgb(247, 247, 247);     /* Main content background  */
     --dash-bg:      rgb(246, 246, 246);     /* Table title background   */
     --dash-ol:      rgb(200, 200, 200);     /* Table title outline      */
+    --page-ol:      rgb(160, 160, 160);     /* Page buttons outline     */
     --cell-light:   rgb(255, 255, 255);     /* Cell row light           */
     --cell-dark:    rgb(245, 245, 245);     /* Cell row dark            */
     --cell-hover:   rgb(246, 234, 166);     /* Cell row hover           */
-    --active-btn:   rgb(113, 183, 240);     /* Active button highlight  */
-    --active-hover: rgb(225, 225, 225);     /* Active button hover bg   */
+    --active-btn:   rgb(79, 161, 236);      /* Active button highlight  */
+    --active-btn-h: rgb(91, 143, 185);      /* Active button highlight  */
+    --active-hover: rgb(190, 190, 190);     /* Active button hover bg   */
+    --take-color:   rgb(72, 147, 218);      /* Action button take bg    */
+    --review-color: rgb(218, 83, 72);       /* Action button review bg  */
 }
 /* Reset values to 0 */
 * { 
@@ -119,9 +123,10 @@ body {
     margin: auto;
     bottom: 0;
     
-    width: 75%;
+    width: 60%;
     height: max-content;
     min-height: max-content;
+    margin-top: 5rem;
     margin-bottom: 10rem;
 
 }
@@ -300,27 +305,68 @@ body {
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    cursor: default;
 }
 
 .cell-index {
-    width: 10%;
+    width: 7%;
 }
 
 .cell-title {
-    width: 20%;
+    width: 22%;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
 }
 
 .cell-name {
-    width: 20%;
+    width: 18%;
 }
 
 .cell-points {
-    width: 10%;
+    width: 8%;
 }
 
 .cell-date {
-    width: 40%;
+    width: 20%;
+}
+
+.cell-action {
+    width: 25%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.action-button {
+    width: 35%;
+    height: 50%;
+
+    text-transform: capitalize;
+
+    border: none;
+    border-radius: 3px;
+
+    font-weight: 700;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.action-button:hover {
+    cursor: pointer;
+}
+
+.button-take {
+    background-color: var(--take-color);
+}
+
+.button-review {
+    background-color: var(--review-color);
 }
 
 .disabled {
@@ -335,7 +381,7 @@ body {
     width: max-content;
     padding: 0.25rem 0.5rem;
 
-    border: 1px solid var(--dash-ol);
+    border: 1px solid var(--page-ol);
 
     background-color: white;
     color: black;
@@ -345,9 +391,12 @@ body {
     border-left: none;
 }
 
-.legend-button:hover {
+.legend-button:not(.active-button):hover {
     background-color: var(--active-hover);
-    cursor: pointer;
+}
+
+.legend-button:hover {
+    background-color: var(--active-btn-h);
 }
 
 .active-button {
