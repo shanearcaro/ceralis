@@ -56,8 +56,8 @@ $request_code = $data->{'request'};
  *      exam_id
  *      question_id, question_text, questionPoints
  * 
- * 6 - Update score (by StudentExams.submission_id)
- *      submission_id, score
+ * 6 - Update score (by StudentExams.studentexam_id)
+ *      studentexam_id, score
  *      insertionStatus
  * 
  * 7 - Update score (by user_id and exam_id)
@@ -65,7 +65,7 @@ $request_code = $data->{'request'};
  *      insertionStatus 
  * 
  * 8 - Select completed exam
- *      submission_id
+ *      studentexam_id
  *      question_id, answer, questionPoints, created, question_text
  *
  * 9 - Select name
@@ -74,7 +74,7 @@ $request_code = $data->{'request'};
  * 
  * 10 - Select teachers exam (given user id teachers, sent user id and name is students)
  *      user_id
- *      submission_id, user_id, exam_id, score, name
+ *      studentexam_id, user_id, exam_id, score, name
  * 
  * 11 - Select students exam (sent name is teachers name) (aka selectExamsStudent.php)
  *      user_id
@@ -82,22 +82,22 @@ $request_code = $data->{'request'};
  * 
  * 12 - Select exam submissions (given user id students, sent name is teachers) (points is out-of-XX) (aka selectStudentExams.php)
  *      user_id
- *      submission_id, name, user_id, exam_id, score, points
+ *      studentexam_id, name, user_id, exam_id, score, points
  * 
- * 13 - Get submission_id (from StudentExams) (Used formerly by both insertCompleteExam.php and selectExamResults.php)
+ * 13 - Get studentexam_id (from StudentExams) (Used formerly by both insertCompleteExam.php and selectExamResults.php)
  *      user_id, exam_id
- *      submission_id
+ *      studentexam_id
  * 
  * 14 - Get question_id list (from ExamQuestions) (Used formerly by insertCompleteExam.php)
  *      exam_id
  *      question_id[]
  * 
  * 15 - Insert completed exam (Loop previously handled in insertCompleteExam.php needs to be implemented middle-end)
- *      submission_id, question_id, answer, question_count, result1, result2, result3, result4, result5, score, comment
+ *      studentexam_id, question_id, answer, question_count, result1, result2, result3, result4, result5, score, comment
  *      insertionStatus
  * 
  * 16 - Select exam results
- *      submission_id
+ *      studentexam_id
  *      question_id, answer, result1, result2, result3, result4, result5, \
  *         \ score, comment, studentGrade, questionPoints, question_text, points
  * 
@@ -160,8 +160,8 @@ switch($request_code) {
 
 
     case 6:
-        $query = $pdo->prepare("UPDATE StudentExams SET score = ? WHERE submission_id= ? ");
-        $query->execute([$data->{'score'}, $data->{'submission_id'}]);
+        $query = $pdo->prepare("UPDATE StudentExams SET score = ? WHERE studentexam_id= ? ");
+        $query->execute([$data->{'score'}, $data->{'studentexam_id'}]);
         break;
 
 
@@ -172,25 +172,25 @@ switch($request_code) {
 
 
     case 8:
-        $query = $pdo->prepare("SELECT ce.submission_id, ce.question_id, ce.answer, eq.questionPoints, q.question_text, 
+        $query = $pdo->prepare("SELECT ce.studentexam_id, ce.question_id, ce.answer, eq.questionPoints, q.question_text, 
             FROM CompletedExam AS ce 
-            INNER JOIN StudentExams AS se ON ce.submission_id=se.submission_id 
+            INNER JOIN StudentExams AS se ON ce.studentexam_id=se.studentexam_id 
             INNER JOIN ExamQuestions AS eq ON se.exam_id=eq.exam_id AND ce.question_id=eq.question_id 
             INNER JOIN Questions AS q ON ce.question_id=q.question_id 
-            WHERE ce.submission_id= ? ");
+            WHERE ce.studentexam_id= ? ");
 
-        $query->execute([$data->{'submission_id'}]);
+        $query->execute([$data->{'studentexam_id'}]);
         break;
 
 
     case 9:
         $query = $pdo->prepare("SELECT name FROM Users WHERE user_id = ? ");
-        $query->execute([$data->{'submission_id'}]);
+        $query->execute([$data->{'studentexam_id'}]);
         break;
 
 
     case 10:
-        $query = $pdo->prepare("SELECT se.submission_id, se.user_id, se.exam_id, e.score, u.name FROM StudentExams AS se 
+        $query = $pdo->prepare("SELECT se.studentexam_id, se.user_id, se.exam_id, e.score, u.name FROM StudentExams AS se 
             INNER JOIN Exams AS e on se.exam_id=e.exam_id 
             INNER JOIN Users AS u on se.user_id=u.user_id 
             WHERE se.score=-1 AND e.creator_id = ? 
@@ -214,7 +214,7 @@ switch($request_code) {
     
 
     case 12:
-        $query = $pdo->prepare("SELECT se.submission_id, u.name, se.user_id, se.exam_id, se.score, e.points FROM StudentExams AS se
+        $query = $pdo->prepare("SELECT se.studentexam_id, u.name, se.user_id, se.exam_id, se.score, e.points FROM StudentExams AS se
             INNER JOIN Exams AS e on se.exam_id=e.exam_id
             INNER JOIN Users AS u ON e.creator_id=u.user_id
             WHERE se.score != -1 AND se.user_id = ?
@@ -225,7 +225,7 @@ switch($request_code) {
     
 
     case 13:
-        $query = $pdo->prepare("SELECT submission_id FROM StudentExams WHERE user_id = ? AND exam_id = ? ");
+        $query = $pdo->prepare("SELECT studentexam_id FROM StudentExams WHERE user_id = ? AND exam_id = ? ");
         $query->execute([$data->{'user_id'}, $data->{'exam_id'}]);
         break;
 
@@ -237,10 +237,10 @@ switch($request_code) {
 
 
     case 15: 
-        $query = $pdo->prepare("INSERT INTO CompletedExam (submission_id, question_id, answer, result1, result2, 
+        $query = $pdo->prepare("INSERT INTO CompletedExam (studentexam_id, question_id, answer, result1, result2, 
             result3, result4, result5, score, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
 
-        $query->execute([$data->{'submission_id'}, $data->{'question_id'}, $data->{'answer'}, 
+        $query->execute([$data->{'studentexam_id'}, $data->{'question_id'}, $data->{'answer'}, 
             $data->{'result1'}, $data->{'result2'}, $data->{'result3'}, $data->{'result4'}, 
             $data->{'result5'}, $data->{'score'}, $data->{'comment'}]);
 
@@ -248,16 +248,16 @@ switch($request_code) {
     
 
     case 16:
-        $query = $pdo->prepare("SELECT ce.submission_id, ce.question_id, ce.answer, ce.result1, ce.result2, ce.result3,
+        $query = $pdo->prepare("SELECT ce.studentexam_id, ce.question_id, ce.answer, ce.result1, ce.result2, ce.result3,
             ce.result4, ce.result5, ce.score, ce.comment, se.score AS studentGrade, eq.questionPoints, q.question_text, e.points 
             FROM CompletedExam AS ce
-            INNER JOIN StudentExams AS se ON ce.submission_id=se.submission_id
+            INNER JOIN StudentExams AS se ON ce.studentexam_id=se.studentexam_id
             INNER JOIN ExamQuestions AS eq ON se.exam_id=eq.exam_id AND ce.question_id=eq.question_id
             INNER JOIN Questions AS q ON ce.question_id=q.question_id
             INNER JOIN Exams AS e ON e.exam_id=se.exam_id
-            WHERE ce.submission_id = ? ");
+            WHERE ce.studentexam_id = ? ");
 
-        $query->execute([$data->{'submission_id'}]);
+        $query->execute([$data->{'studentexam_id'}]);
         break;
     
 

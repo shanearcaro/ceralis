@@ -68,12 +68,12 @@ INSERT INTO Questions(creator_id, question_type, difficulty, question_text) VALU
 
 
 CREATE TABLE TestCases (
-    case_id INT AUTO_INCREMENT NOT NULL,
+    testcase_id INT AUTO_INCREMENT NOT NULL,
     question_id INT NOT NULL,
     case_input VARCHAR(50),
     case_answer VARCHAR(50),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
-    PRIMARY KEY(case_id)
+    PRIMARY KEY(testcase_id)
 );
 
 INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
@@ -92,13 +92,13 @@ INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
 
 
 CREATE TABLE IF NOT EXISTS ExamQuestions (
-    link_id INT AUTO_INCREMENT NOT NULL,
+    examquestion_id INT AUTO_INCREMENT NOT NULL,
     exam_id INT NOT NULL,
     question_id INT NOT NULL,
     questionPoints INT NOT NULL,
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
-    PRIMARY KEY(link_id)
+    PRIMARY KEY(examquestion_id)
 );
 
 INSERT INTO ExamQuestions(exam_id, question_id, questionPoints) VALUES
@@ -109,13 +109,13 @@ INSERT INTO ExamQuestions(exam_id, question_id, questionPoints) VALUES
 
 
 CREATE TABLE StudentExams (
-    submission_id INT AUTO_INCREMENT NOT NULL,
+    studentexam_id INT AUTO_INCREMENT NOT NULL,
     user_id INT NOT NULL,
     exam_id INT NOT NULL,
     score INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES Users(user_id),
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
-    PRIMARY KEY(submission_id)
+    PRIMARY KEY(studentexam_id)
 );
 
 
@@ -134,8 +134,8 @@ CREATE TABLE QuestionAnswers (
 
 
 CREATE TABLE CompletedExam (
-    completion_id INT AUTO_INCREMENT NOT NULL,
-    submission_id INT NOT NULL,
+    completedexam_id INT AUTO_INCREMENT NOT NULL,
+    studentexam_id INT NOT NULL,
     question_id INT NOT NULL,
     answer VARCHAR(255) NOT NULL,
     result1 VARCHAR(255),
@@ -145,7 +145,7 @@ CREATE TABLE CompletedExam (
     result5 VARCHAR(255),
     score INT NOT NULL,
     `comment` VARCHAR(255),
-    FOREIGN KEY (submission_id) REFERENCES StudentExams(submission_id),
+    FOREIGN KEY (studentexam_id) REFERENCES StudentExams(studentexam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
-    PRIMARY KEY(completion_id)
+    PRIMARY KEY(completedexam_id)
 );
