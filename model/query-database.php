@@ -29,21 +29,37 @@ $request_code = $data->{'request'};
  *  Code directory
  * ================
  * Request Number - Description
- *      Recieving variables
- *      Returning variables
+ *      [Recieving variables]
+ *      [Returning variables]
  * 
- * 0 - Login request
- *      username, password
- *      user_id, position
+ * 0 - Authenticate login
+ *      [username, password]
+ *      [user_id, position]
+ * 
+ * 1 - Select student tables
+ *      []
+ *      [exam_id, user_id, title, points, e.date, score, se.date]
  */
 
+//  Execute queries based on request 
 switch($request_code) {
     case 0:
-        $query = $pdo->prepare("SELECT user_id, position FROM Users WHERE name = ? AND password= ?");
+        $query = $pdo->prepare(
+            "SELECT user_id, position FROM Users 
+            WHERE username = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
-
+    case 1:
+        $query = $pdo->prepare(
+            "SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
+            FROM Exams AS e 
+            INNER JOIN StudentExams AS se ON e.exam_id=se.exam_id 
+            INNER JOIN Users AS u ON e.user_id=u.user_id
+            ORDER BY e.exam_id ASC");
+        $query->execute();
+        break;
 }
 
-$response = $query->fetch();
-echo json_encode($response);
+// Fetch data and return
+$response = $query->fetchAll();
+echo json_encode($query->rowCount() == 0 ? false : $response);

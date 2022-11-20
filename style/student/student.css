@@ -1,5 +1,18 @@
 @import url("/style/includes/logout-button.css");
 
+/* DEFINE COLORS */
+:root {
+    
+    --panel-hover:  rgb(220, 220, 220);     /* Banner element highlight */
+    --content-bg:   rgb(247, 247, 247);     /* Main content background  */
+    --dash-bg:      rgb(246, 246, 246);     /* Table title background   */
+    --dash-ol:      rgb(200, 200, 200);     /* Table title outline      */
+    --cell-light:   rgb(255, 255, 255);     /* Cell row light           */
+    --cell-dark:    rgb(245, 245, 245);     /* Cell row dark            */
+    --cell-hover:   rgb(246, 234, 166);     /* Cell row hover           */
+    --active-btn:   rgb(113, 183, 240);     /* Active button highlight  */
+    --active-hover: rgb(225, 225, 225);     /* Active button hover bg   */
+}
 /* Reset values to 0 */
 * { 
     margin: 0px; 
@@ -9,47 +22,54 @@
 }
 
 body {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    min-width: max-content;
+    min-height: max-content;
 }
 
+/* ========== ENTIRE PAGE EXCLUDING HEADER ========== */
 .content-area {
     position: absolute;
     width: inherit;
     height: 90%;
     bottom: 0;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    min-height: max-content;
 }
 
+/* ========== START OF DASHBOARD PANEL ========== */
 .content-panel {
-    position: absolute;
+    position: relative;
     top: 0;
-    width: 100%;
-    height: 10%;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 5rem;
+    
+    min-width: max-content;
+    min-height: 10%;
 
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
 
-    background-color: rgb(247, 247, 247);
-}
-
-.panel-spacer {
-    width: 75%;
-    height: 100%;
+    padding-right: 2rem;
+    background-color: var(--content-bg);
 }
 
 .panel-list-area {
-    width: 25%;
     height: 100%;
+    min-height: 100%;
+    min-width: max-content;
 
     display: flex;
+    margin-right: 12.5vw;
 }
 
 .panel-list {
     width: 100%;
+    height: 100%;
 
     display: flex;
     flex-direction: row;
@@ -59,5 +79,277 @@ body {
 
     margin-top: auto;
     margin-bottom: auto;
-    padding-right: 20%;
+}
+
+.panel-hover {
+    height: 100%;
+}
+
+.panel-div {
+    width: 33%;
+    min-width: max-content;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.panel-hover:hover {
+    background-color: var(--panel-hover);
+}
+
+.panel-element {
+    min-width: max-content;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    height: 25%;
+}
+
+.panel-element:hover {
+    color: red;
+    cursor: pointer;
+}
+/* ========== END OF DASHBOARD PANEL ========== */
+
+/* ========== CONTENT TABLE AREA ========== */
+.content-dash {
+    position: relative;
+    margin: auto;
+    bottom: 0;
+    
+    width: 75%;
+    height: max-content;
+    min-height: max-content;
+    margin-bottom: 10rem;
+
+}
+
+/* ========== START OF STUDENT EXAMS TABLE ========== */
+.dash-table-area {
+    position: relative;
+    min-width: max-content;
+
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+
+    border: 1px solid var(--dash-ol);
+}
+
+/* ========== STUDENT EXAMS TABLE TITLE ========== */
+.dash-title {
+    width: 100%;
+    height: 10%;
+    min-height: 25px;
+
+    border-bottom: 1px solid var(--dash-ol);
+    background-color: var(--dash-bg);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#dash-table-title {
+    font-size: 1rem;
+    font-weight: 300;
+    padding-left: 0.5vw;
+}
+
+/* ========== STUDENT EXAMS TABLE SEARCHBAR ========== */
+.dash-searchbar {
+    min-width: 400px;
+    min-height: 25px;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    padding-top: 1vh;
+    margin: 0.5rem 2.25vw 0;
+}
+
+.searchbar-element {
+    width: max-content;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#search-text {
+    margin-right: 1vw;
+}
+
+#dash-search-input {
+    height: 20px;
+    padding-left: 0.25rem;
+}
+
+#results-amount {
+    height: 20px;
+
+    border-radius: 0px;
+    border: 1px solid var(--dash-ol);
+    background-color: white;
+    
+    text-align: center;
+    padding-left: 0.25vw;
+}
+
+/* ========== STUDENT EXAMS TABLE ========== */
+.dash-table-div {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#table {
+    width: 97%;
+    height: 93%;
+
+    margin: 1rem 1rem;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+#table-empty-records {
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+#records-text {
+    min-width: max-content;
+    margin-left: 0.5vw;
+}
+
+.table-legend {
+    width: 97%;
+    height: max-content;
+    margin-bottom: 1rem;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#table-display-legend {
+    margin-left: 1rem;
+}
+
+/* ========== STUDENT EXAMS TABLE ROW ========== */
+.exam-student-row {
+    height: 50px;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
+
+.exam-student-row:hover:not(:first-child) {
+    background-color: var(--cell-hover);
+}
+
+.exam-student-row:first-child {
+    margin-top: 1.5vh;
+}
+
+.exam-student-row:last-child {
+    margin-bottom: 1.5vh;
+}
+
+.cell {
+    border: 1px solid var(--dash-ol);
+}
+
+.exam-student-row:not(:first-child) > .cell {
+    border-top: 0px
+}
+
+.cell:not(:first-child) {
+    border-left: none;
+}
+
+.row-light {
+    background-color: var(--cell-light);
+}
+
+.row-dark {
+    background-color: var(--cell-dark);
+}
+
+.header-text {
+    font-weight: 700;
+}
+
+.row-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    cursor: default;
+}
+
+.cell-index {
+    width: 10%;
+}
+
+.cell-title {
+    width: 20%;
+}
+
+.cell-name {
+    width: 20%;
+}
+
+.cell-points {
+    width: 10%;
+}
+
+.cell-date {
+    width: 40%;
+}
+
+.disabled {
+    display: none;
+}
+
+#legend-buttons-container {
+    margin-right: 1.25vw;
+}
+
+.legend-button {
+    width: max-content;
+    padding: 0.25rem 0.5rem;
+
+    border: 1px solid var(--dash-ol);
+
+    background-color: white;
+    color: black;
+}
+
+.legend-button:not(:first-child) {
+    border-left: none;
+}
+
+.legend-button:hover {
+    background-color: var(--active-hover);
+    cursor: pointer;
+}
+
+.active-button {
+    background-color: var(--active-btn);
 }
