@@ -4,10 +4,10 @@ USE sma237;
 DROP TABLE IF EXISTS `Users`, `Exams`, `Types`, `Questions`, `TestCases`, `ExamQuestions`, `StudentExams`, `QuestionAnswers`, `CompletedExam`;
 
 CREATE TABLE IF NOT EXISTS Users (
-    user_id int AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    name varchar(50) unique NOT NULL,
-    password varchar(50) NOT NULL,
-    position varchar(50) NOT NULL
+    user_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    position VARCHAR(50) NOT NULL
 );
 
 INSERT INTO Users(name, password, position) VALUES
@@ -18,11 +18,11 @@ INSERT INTO Users(name, password, position) VALUES
 
 
 CREATE TABLE Exams (
-    exam_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    creator_id int NOT NULL,
-    title varchar(50) NOT NULL,
-    points int NOT NULL,
-    question_count int NOT NULL,
+    exam_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    creator_id INT NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    points INT NOT NULL,
+    question_count INT NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(creator_id) REFERENCES Users(user_id)
 );
@@ -33,8 +33,8 @@ INSERT INTO Exams(creator_id, title, points, question_count) VALUES
 
 
 CREATE TABLE Types (
-    type_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    typename varchar(20) not null
+    type_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    typename VARCHAR(20) NOT NULL
 );
 
 INSERT INTO Types(typename) VALUES
@@ -45,12 +45,12 @@ INSERT INTO Types(typename) VALUES
 
 
 CREATE TABLE Questions (
-    question_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    creator_id int NOT NULL,
-    question_type int NOT NULL default 0,
-    difficulty varchar(50) NOT NULL DEFAULT 'Medium',
-    `constraint` varchar(50) DEFAULT NULL,
-    question_text varchar(999) not null,
+    question_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    creator_id INT NOT NULL,
+    question_type INT NOT NULL default 0,
+    difficulty VARCHAR(50) NOT NULL DEFAULT 'Medium',
+    `constraint` VARCHAR(50) DEFAULT NULL,
+    question_text VARCHAR(999) not null,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(creator_id) REFERENCES Users(user_id),
     FOREIGN KEY(question_type) REFERENCES Types(type_id)
@@ -64,10 +64,10 @@ INSERT INTO Questions(creator_id, question_type, difficulty, question_text) VALU
 
 
 CREATE TABLE TestCases (
-    case_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    question_id int NOT NULL,
-    case_input varchar(50),
-    case_answer varchar(50),
+    case_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    question_id INT NOT NULL,
+    case_input VARCHAR(50),
+    case_answer VARCHAR(50),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id)
 );
 
@@ -87,7 +87,7 @@ INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
 
 
 CREATE TABLE IF NOT EXISTS ExamQuestions (
-    link_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    link_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     exam_id INT NOT NULL,
     question_id INT NOT NULL,
     questionPoints INT NOT NULL,
@@ -103,22 +103,22 @@ INSERT INTO ExamQuestions(exam_id, question_id, questionPoints) VALUES
 
 
 CREATE TABLE StudentExams (
-    submission_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    user_id int NOT NULL,
-    exam_id int NOT NULL,
-    score int NOT NULL,
+    submission_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    user_id INT NOT NULL,
+    exam_id INT NOT NULL,
+    score INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES Users(user_id),
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id)
 );
 
 
 CREATE TABLE QuestionAnswers (
-    student_id int NOT NULL,
-    exam_id int NOT NULL,
-    question_id int NOT NULL,
-    points int NOT NULL,
-    answer varchar(2000),
-    comment varchar(500),
+    student_id INT NOT NULL,
+    exam_id INT NOT NULL,
+    question_id INT NOT NULL,
+    points INT NOT NULL,
+    answer VARCHAR(2000),
+    comment VARCHAR(500),
     FOREIGN KEY (student_id) REFERENCES Users(User_id),
     FOREIGN KEY(exam_id) REFERENCES Exams(exam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
@@ -127,17 +127,17 @@ CREATE TABLE QuestionAnswers (
 
 
 CREATE TABLE CompletedExam (
-    completion_id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    completion_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     submission_id INT NOT NULL,
     question_id INT NOT NULL,
-    answer varchar(255) NOT NULL,
-    result1 varchar(255),
-    result2 varchar(255),
-    result3 varchar(255),
-    result4 varchar(255),
-    result5 varchar(255),
+    answer VARCHAR(255) NOT NULL,
+    result1 VARCHAR(255),
+    result2 VARCHAR(255),
+    result3 VARCHAR(255),
+    result4 VARCHAR(255),
+    result5 VARCHAR(255),
     score INT NOT NULL,
-    `comment` varchar(255),
+    `comment` VARCHAR(255),
     FOREIGN KEY (submission_id) REFERENCES StudentExams(submission_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id)
 );
