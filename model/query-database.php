@@ -93,7 +93,7 @@ $request_code = $data->{'request'};
  *      question_id[]
  * 
  * 15 - Insert completed exam (Loop previously handled in insertCompleteExam.php needs to be implemented middle-end)
- *      studentexam_id, question_id, answer, question_count, result1, result2, result3, result4, result5, score, comment
+ *      studentexam_id, question_id, answer, question_count, score, comment
  *      insertionStatus
  * 
  * 16 - Select exam results
@@ -231,11 +231,9 @@ switch($request_code) {
 
 
     case 15: 
-        $query = $pdo->prepare("INSERT INTO CompletedExam (studentexam_id, question_id, answer, result1, result2, 
-            result3, result4, result5, score, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
-        $query->execute([$data->{'studentexam_id'}, $data->{'question_id'}, $data->{'answer'}, 
-            $data->{'result1'}, $data->{'result2'}, $data->{'result3'}, $data->{'result4'}, 
-            $data->{'result5'}, $data->{'score'}, $data->{'comment'}]);
+        $query = $pdo->prepare("INSERT INTO CompletedExam (studentexam_id, question_id, answer, score, comment) 
+            VALUES (?, ?, ?, ?, ?");
+        $query->execute([$data->{'studentexam_id'}, $data->{'question_id'}, $data->{'answer'}, $data->{'score'}, $data->{'comment'}]);
         break;
     
 
