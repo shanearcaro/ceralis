@@ -1,7 +1,7 @@
 /**
  * Max number of page buttons that should be generated on the students table
  */
-const PAGE_LIMIT = 7;
+const PAGE_LIMIT = 15;
 
 /**
  * Number of rows that the table in the student dashboard will display.
@@ -463,18 +463,9 @@ function updateActiveButton(id) {
 
 
         if (currentPage == 0)
-            currentPage = "previous";
-        else if (currentPage == displayAmount + 1)
-            currentPage = "next";
-
-        if (activeID.includes("next") && newID.includes("next"))
-            currentPage = "next";
-        else if (activeID.includes("previous") && newID.includes("previous"))
-            currentPage = "previous";
-        else if (activeID.includes("next") && newID.includes("previous"))
-            currentPage = displayAmount;
-        else if (activeID.includes("previous") && newID.includes("next"))
             currentPage = 1;
+        else if (currentPage == displayAmount + 1)
+            currentPage = displayAmount;
 
         console.log("Current Page: " + currentPage);
         newButton = document.getElementById(`legend-button-${currentPage}`);
