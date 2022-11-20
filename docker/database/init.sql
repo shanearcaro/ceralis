@@ -92,13 +92,12 @@ INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
 
 
 CREATE TABLE IF NOT EXISTS ExamQuestions (
-    examquestion_id INT AUTO_INCREMENT NOT NULL,
     exam_id INT NOT NULL,
     question_id INT NOT NULL,
     questionPoints INT NOT NULL,
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
-    PRIMARY KEY(examquestion_id)
+    PRIMARY KEY(exam_id, question_id)
 );
 
 INSERT INTO ExamQuestions(exam_id, question_id, questionPoints) VALUES
@@ -134,7 +133,6 @@ CREATE TABLE QuestionAnswers (
 
 
 CREATE TABLE CompletedExam (
-    completedexam_id INT AUTO_INCREMENT NOT NULL,
     studentexam_id INT NOT NULL,
     question_id INT NOT NULL,
     answer VARCHAR(255) NOT NULL,
@@ -147,5 +145,5 @@ CREATE TABLE CompletedExam (
     `comment` VARCHAR(255),
     FOREIGN KEY (studentexam_id) REFERENCES StudentExams(studentexam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
-    PRIMARY KEY(completedexam_id)
+    PRIMARY KEY(studentexam_id, question_id)
 );
