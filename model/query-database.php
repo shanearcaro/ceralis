@@ -65,7 +65,7 @@ switch($request_code) {
             ORDER BY e.exam_id ASC");
         $query->execute([$data->{'userid'}]);
         break;
-    case 2:
+    case 3:
         $query = $pdo->prepare(
             "DELETE FROM StudentExams 
             WHERE user_id = ? AND exam_id= ?");

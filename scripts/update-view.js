@@ -42,6 +42,11 @@ let responseLength = -1;
 let activeButtonID = ACTIVE_BUTTON;
 
 /**
+ * The request code for loading the table. A request code of 1 is a request to load the students table.
+ */
+let requestCode = -1;
+
+/**
  * Sleep for a specified duration of time
  * @param {int} time - the number of milliseconds to sleep
  * @returns promise
@@ -170,9 +175,12 @@ function disableBack() {
  */
 function loadTables() {
     // Load table based on request code so it can be used for teacher table as well
-    const requestCode = Number(document.getElementById("table-rc").innerText);
+    requestCode = Number(document.getElementById("table-rc").innerText);
+
+    // User id
     const userid = sessionStorage.getItem("user_id");
 
+    // Format request
     const credentials = `userid=${userid}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
 
@@ -260,12 +268,14 @@ function createTables(response) {
     // Display descriptors
     const row = table.insertRow(-1);
     row.classList.add("exam-row");
-    const headers = ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
+
+    // Horizontal header infromation
+    const headers = getHeader();
+    const data = getTag();
 
     // Create cell class descriptors
     const prefix = "cell";
     const delim = "-";
-    const data = ["index", "name", "title", "points", "date", "action"];
     
     // Generate cell identification 
     for (let i = 0; i < headers.length; i++) {
@@ -289,7 +299,7 @@ function createTables(response) {
 
         // Current exam
         const exam = response[i];
-        const examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
+        const elements = getElement(exam);
         
         // Counter for how many rows are being displayed
         displayAmount++;
@@ -313,8 +323,8 @@ function createTables(response) {
         }
         
         // Display row information
-        for (let j = 0; j < examElements.length; j++)
-            row.cells[j].innerHTML = examElements[j];
+        for (let j = 0; j < elements.length; j++)
+            row.cells[j].innerHTML = elements[j];
         
         // Create review and delete buttons
         createActionButtons(exam.exam_id);
@@ -338,7 +348,8 @@ function createActionButtons(examID) {
      * able to delete exams from the table if they want. The other button will either be the take exam or reivew exam button.
      */
     // Create two buttons, rewview and delete
-    const purpose = ["take", "review", "delete"];
+    const purpose = getPurpose();
+    
     let buttons = [];
     for (let i = 0; i < purpose.length; i++)
         buttons.push(document.createElement("button")); 
@@ -601,7 +612,7 @@ function updateActiveButton(id) {
  */
 function deleteExam(examID) {
     const userid = sessionStorage.getItem("user_id");
-    const requestCode = 2;
+    const requestCode = 3;
 
     // Begin AJAX call
     const credentials = `userid=${userid}&examid=${examID}&request=${requestCode}`;
@@ -672,6 +683,59 @@ function resetActiveButton() {
         // If a page can't get set, reset activeButton to default
         if (!updated)
             activeButton = ACTIVE_BUTTON;
+    }
+}
+
+/**
+ * Get all header information for a specific request type. 
+ * @returns header information array
+ */
+function getHeader() {
+    switch (requestCode) {
+        case 1:
+            return ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
+        case 2:
+            return ['TEMP', 'TEMP', 'TEMP', 'TEMP', 'TEMP', "TEMP"];
+    }
+}
+
+/**
+ * Get all tag information for a specific request type.
+ * @returns tag information array
+ */
+function getTag() {
+    switch (requestCode) {
+        case 1:
+            return ["index", "name", "title", "points", "date", "action"];
+        case 2:
+            return ["index", "name", "title", "points", "date", "action"];
+    }
+}
+
+/**
+ * Given an object get all element information for a specific request type.
+ * @param {object} element object to get attributes from
+ * @returns element information array
+ */
+function getElement(element) {
+    switch (requestCode) {
+        case 1:
+            return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
+        case 2:
+            return [element.name, element.name, element.name, formatScore(element.score, element.points), formatDate(element.date)];
+    }
+}
+
+/**
+ * Get all purpose information for a specific request type
+ * @returns purpose information array
+ */
+function getPurpose() {
+    switch (requestCode) {
+        case 1:
+            return ["take", "review", "delete"];
+        case 2:
+            return ["TEMP", "TEMP", "TEMP"];
     }
 }
 
