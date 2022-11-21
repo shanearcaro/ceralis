@@ -166,12 +166,14 @@ function disableBack() {
 }
 
 /**
- * Load the student dashboard exams table
+ * Load the tables based on a request
  */
 function loadTables() {
+    // Load table based on request code so it can be used for teacher table as well
+    const requestCode = Number(document.getElementById("table-rc").innerText);
     const userid = sessionStorage.getItem("user_id");
 
-    const credentials = `userid=${userid}&request=${1}`;
+    const credentials = `userid=${userid}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
@@ -202,7 +204,7 @@ function loadTables() {
 }
 
 /**
- * Clear the student exams table
+ * Clear the table
  */
 function clearTables() {
     const table = document.getElementById("table");
@@ -210,7 +212,7 @@ function clearTables() {
 }
 
 /**
- * Populate all the rows within the student dashboard exams table
+ * Populate all the rows within table
  * @param {string} response database response value with all table exam elements
  */
 function createTables(response) {
@@ -257,7 +259,7 @@ function createTables(response) {
 
     // Display descriptors
     const row = table.insertRow(-1);
-    row.classList.add("exam-student-row");
+    row.classList.add("exam-row");
     const headers = ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
 
     // Create cell class descriptors
@@ -294,7 +296,7 @@ function createTables(response) {
 
         // Create row and start populating it
         const row = table.insertRow(-1);
-        row.classList.add("exam-student-row");
+        row.classList.add("exam-row");
 
         // Use display amount to fix bug that displays incorrect row background color
         row.classList.add("row-" + (displayAmount % 2 == 0 ? "light" : "dark"));

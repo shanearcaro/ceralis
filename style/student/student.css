@@ -254,7 +254,7 @@ body {
 }
 
 /* ========== STUDENT EXAMS TABLE ROW ========== */
-.exam-student-row {
+.exam-row {
     height: 50px;
     
     display: flex;
@@ -266,15 +266,15 @@ body {
     margin-right: 1vw;
 }
 
-.exam-student-row:hover:not(:first-child) {
+.exam-row:hover:not(:first-child) {
     background-color: var(--cell-hover);
 }
 
-.exam-student-row:first-child {
+.exam-row:first-child {
     margin-top: 1.5vh;
 }
 
-.exam-student-row:last-child {
+.exam-row:last-child {
     margin-bottom: 1.5vh;
 }
 
@@ -282,7 +282,7 @@ body {
     border: 1px solid var(--dash-ol);
 }
 
-.exam-student-row:not(:first-child) > .cell {
+.exam-row:not(:first-child) > .cell {
     border-top: 0px
 }
 

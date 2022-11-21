@@ -16,6 +16,7 @@
 <body onload="disableBack()">
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
     <div class="content-area">
+        <p class="disabled" id="table-rc">1</p>
         <div class="content-panel">
             <div class="panel-list-area">
                 <ul class="panel-list">
@@ -53,7 +54,6 @@
                         </div>
                         <div class="legend-buttons" id='legend-buttons-container'></div>
                     </div>
-                    
                 </div>
             </div>
         </div>
