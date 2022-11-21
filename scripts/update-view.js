@@ -419,9 +419,6 @@ function updateDisplayAmount() {
     // Reload table and page buttons
     loadTables();
     createPageButtons(pageLength, responseLength);
-
-    // // Set the active button to the first available button
-    // resetPageButtons();
 }
 
 /**
@@ -488,6 +485,10 @@ function createPageButtons(pageLength, responseLength) {
         // Check which button is active
         let active = getActiveID();
 
+        // If active button isn't lost with lost page don't update
+        if (active <= displayAmount - 2)
+            return;
+
         // Update current page
         let newID = active - 1;
 
@@ -524,18 +525,6 @@ function setActiveButton(id) {
 }
 
 /**
- * When the user starts a search the page buttons and the tables need to be updated.
- * This function will reset the page button variables to its default state to prevent
- * the active-button id from being set to a button that may not have been created in
- * the new state. Then load the proper tables at the new page start.
- */
-function resetPageButtons() {
-    activeButtonID = ACTIVE_BUTTON;
-    pageStart = 0;
-    loadTables();
-}
-
-/**
  * This function will be called when the user clicks on a button to update the view on the student's
  * exam table. The table will need to be reloaded with a new starting index. 
  * @param {string} id button id
@@ -544,7 +533,7 @@ function updatePage(id) {
     // Set the new button to the active id
     updateActiveButton(id);
 
-    // Use the new active button for calculations
+    // Use the new active button for calculationsf
     let active = document.getElementsByClassName(ACTIVE_CLASS)[0];
     let activeID = active.id;
 
@@ -621,7 +610,7 @@ function deleteExam(examID) {
         if (ajax.readyState == 4 && ajax.status == 200) {
             // If exams exist print table dynamically
             if (ajax.responseText == "true") 
-                resetPageButtons();
+                loadTables();
         }
     }
 
