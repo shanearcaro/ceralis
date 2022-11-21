@@ -223,28 +223,28 @@ function createTables(response) {
     if (pageLength == -1) 
         pageLength = response.length;
 
+    // Calculate pageEnd from pageStart
     let pageEnd = Number(pageStart) + Number(pageLength);
 
-    // Fix display if pageLength is not a factor response.length
+    // Fix pageEnd if pageLength is not a factor of response.length
     if (pageEnd > response.length)
         pageEnd = response.length;
 
-    // Create the page legend text 
+    // Calculate start from pageStart 
     let start = pageStart + 1;
-
     
-    // Fix default values
-    if (start > pageEnd) {
-        start = 1;
-        pageStart = 1;
-    }
+    // Fix pageStart if pageLength is not a factor of response.length
+    if (start > pageEnd)
+        pageStart = pageEnd - pageLength;
 
-    // Fix default values
-    if (response.length == 0) {
-        start = 0;
+    // If no response then reset pageStart to 0
+    if (response.length == 0)
         pageStart = 0;
-    }
-    console.log("Page Start: " + pageStart + " Start: " + start + " Page End: " + pageEnd);
+
+    // Set start to proper starting display value
+    start = pageStart + 1;
+
+    // Set legend text
     legend.innerText = `Showing ${start} to ${pageEnd} of ${response.length} entries`;
 
     // Update the number of page buttons on screen
@@ -395,12 +395,6 @@ function getSearchRows(response) {
 
     // Update responseLength with new filtered length
     responseLength = filteredResponse.length;
-
-    const legend = document.getElementById("table-display-legend");
-    // if (responseLength > 0)
-    //     legend.classList.remove("disabled");
-    // else
-    //     legend.classList.add("disabled");
     return filteredResponse;
 }
 
@@ -419,8 +413,8 @@ function updateDisplayAmount() {
     loadTables();
     createPageButtons(pageLength, responseLength);
 
-    // Set the active button to the first available button
-    resetPageButtons();
+    // // Set the active button to the first available button
+    // resetPageButtons();
 }
 
 /**
@@ -483,24 +477,36 @@ function createPageButtons(pageLength, responseLength) {
     const current = buttonLegend.childElementCount;
 
     // If page count is shorter than what it was previously
+    console.log("Current: " + current + " Previous: " + previous);
     if (current < previous) {
+        console.log("HELLO?????");
         // Check which button is active
         let active = getActiveID();
 
         // Update current page
         let newID = active - 1;
         newID = newID > 0 ? newID : 1;
-        activeButtonID = `legend-button-${newID}`;
         console.log("Page Length: " + pageLength + " New ID: " + newID);
-        pageStart = pageLength * (newID - 2) + 1;
+        pageStart = pageLength * (newID - 1);
+        console.log("What is pageStart here? : " + pageStart);
         pageEnd = responseLength - pageStart;
+        setActiveButton(`legend-button-${newID}`);
     }
 }
 
 /**
  * Update the current active button
  */
-function setActiveButton() {
+function setActiveButton(id) {
+    // Update global activeButtonID
+    activeButtonID = id;
+
+    // Remove current active button's active status
+    const currentActiveButton = document.getElementsByClassName('active-button');
+    if (currentActiveButton.length > 0)
+        currentActiveButton[0].classList.remove('active-button')
+
+    // Get new active button
     let button = document.getElementById(activeButtonID);
 
     // Only update button if it exists
