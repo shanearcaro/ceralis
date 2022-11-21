@@ -4,6 +4,18 @@
 const PAGE_LIMIT = 15;
 
 /**
+ * Default active button ID. The first page should always be used as the default active
+ * page whenever the button legend changes state.
+ */
+const ACTIVE_BUTTON = "legend-button-1";
+
+/**
+ * Default active button class that is always on the active button. This class will have to be
+ * added and removed from buttons as the active button status is changed.
+ */
+const ACTIVE_CLASS = "active-button";
+
+/**
  * Number of rows that the table in the student dashboard will display.
  * This value trumps all other display amount constraints.
  */
@@ -23,16 +35,11 @@ let pageStart = 0;
 let responseLength = -1;
 
 /**
- * Default active button ID. The first page should always be used as the default active
- * page whenever the button legend changes state.
- */
-const defaultActiveButton = "legend-button-1";
-/**
  * ID of the current active page button. This needs to be separate so that its state can be
  * stored and used later. Previously a prevent_initial_call value was used to prevent unintended
  * behavior but this caused more problems.
  */
-let activeButtonID = defaultActiveButton;
+let activeButtonID = ACTIVE_BUTTON;
 
 /**
  * Sleep for a specified duration of time
@@ -148,7 +155,6 @@ function validateSession() {
  * @param {number} user_id - user's id number
  */
 function storeSessionLogin(user_id) {
-    // console.log("USER ID: " + user_id);
     sessionStorage.setItem('user_id', user_id);
 }
 
@@ -171,20 +177,15 @@ function loadTables() {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-            // console.log(ajax.responseText);
 
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
-                // If no exams exist display empty table
-                const empty = document.getElementById("table-empty-records");
-                const table = document.getElementById("table");
-
-                empty.classList.remove("disabled");
-                table.classList.add("disabled");
+                // Reset table state to default empty state
+                responseLength = 0;
+                resetTableState();
             }
             else {
                 // Display results
-                console.log("Response Text: [" + ajax.responseText + "]");
                 const response = JSON.parse(ajax.responseText);
                 createTables(getSearchRows(response), pageStart);
 
@@ -192,8 +193,6 @@ function loadTables() {
                 setActiveButton(activeButtonID);
             }
         }
-        else
-            return;
     }
 
     // Send request
@@ -206,7 +205,7 @@ function loadTables() {
  * Clear the student exams table
  */
 function clearTables() {
-    const table = document.getElementById('table');
+    const table = document.getElementById("table");
     table.innerHTML = '';
 }
 
@@ -226,24 +225,31 @@ function createTables(response) {
     if (pageLength == -1) 
         pageLength = response.length;
 
+    // Calculate pageEnd from pageStart
     let pageEnd = Number(pageStart) + Number(pageLength);
 
-    // Fix display if pageLength is not a factor response.length
+    // Fix pageEnd if pageLength is not a factor of response.length
     if (pageEnd > response.length)
         pageEnd = response.length;
 
-    // Create the page legend text 
+    // Calculate start from pageStart 
     let start = pageStart + 1;
+    
+    // Fix pageStart if pageLength is not a factor of response.length
+    if (start > pageEnd)
+        pageStart = pageEnd - pageLength;
 
-    if (start > pageEnd) {
-        start = 1;
-        pageStart = 1;
-    }
-    if (response.length == 0) {
-        start = 0;
+    // If no response then reset pageStart to 0
+    if (response.length == 0)
         pageStart = 0;
-    }
-        
+
+    // Set start to proper starting display value
+    start = pageStart + 1;
+
+    // Fix start if size is 0
+    start = pageEnd == 0 ? 0 : start;
+
+    // Set legend text
     legend.innerText = `Showing ${start} to ${pageEnd} of ${response.length} entries`;
 
     // Update the number of page buttons on screen
@@ -274,11 +280,8 @@ function createTables(response) {
     const maxDisplay = pageLength > response.length ? response.length : pageLength;
     let displayAmount = 0;
 
-    // Filter results with search text input
-    const results = getSearchRows(response);
-
     // Display row results 
-    for (let i = pageStart; i < results.length; i++) {
+    for (let i = pageStart; i < response.length; i++) {
         if (displayAmount == maxDisplay)
             break;
 
@@ -312,29 +315,49 @@ function createTables(response) {
             row.cells[j].innerHTML = examElements[j];
         
         // Create review and delete buttons
-        createActionButtons(exam, exam.exam_id);
+        createActionButtons(exam.exam_id);
     }
 }
 
-function createActionButtons(exam, index) {
+/**
+ * Create the action buttons take and review (if applicable) for each
+ * exam within the students exam table. This will allow the students to take
+ * the exam from their professor or review an already graded exam if it is ready.
+ * @param {number} examID The id for the current exam
+ */
+function createActionButtons(examID) {
+    /**
+     * TODO: This code needs to be changed later so that only a single button will be created at a time,
+     * either take or review. These buttons need to be created based on whether the user has already taken
+     * an exam and if the exam has been graded yet. The review button should be red if the exam is not ready
+     * to be reviewed yet or green if the exam has been auto graded. 
+     * 
+     * The action bar should aways have two buttons. One button will always be the delete button, users will be
+     * able to delete exams from the table if they want. The other button will either be the take exam or reivew exam button.
+     */
     // Create two buttons, rewview and delete
-    const buttons = [document.createElement("button"), document.createElement("button")];
-    const purpose = ["take", "review"];
+    const purpose = ["take", "review", "delete"];
+    let buttons = [];
+    for (let i = 0; i < purpose.length; i++)
+        buttons.push(document.createElement("button")); 
 
-    console.log("Index: " + index);
-    const action = document.getElementById(`action-${index}`);
+    // Get current action element
+    const action = document.getElementById(`action-${examID}`);
 
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].id = `${purpose[i]}-${exam.exam_id}`;
+    // Create custom class and id list and add to table
+    for (let i = 0; i < purpose.length; i++) {
+        buttons[i].id = `${purpose[i]}-${examID}`;
         buttons[i].classList.add("button");
         buttons[i].classList.add("action-button");
         buttons[i].classList.add(`button-${purpose[i]}`);
 
         buttons[i].innerText = purpose[i];
 
-        buttons[i].onclick = function() {
-            deleteExam(exam.exam_id);
-        };
+        if (purpose[i] == "delete") {
+            buttons[i].onclick = function() {
+                deleteExam(examID);
+            };
+        }
         action.appendChild(buttons[i]);
     }
 }
@@ -348,12 +371,13 @@ function createActionButtons(exam, index) {
  */
 function getSearchRows(response) {
     // Get search bar input text
-    const searchInput = document.getElementById('dash-search-input');
+    const searchInput = document.getElementById("dash-search-input");
     const searchText = searchInput.value.toLowerCase();
 
     // If no text is being searched, quit.
     if (searchText == "") {
         responseLength = response.length;
+        resetTableState();
         return response;
     }
     
@@ -377,6 +401,7 @@ function getSearchRows(response) {
 
     // Update responseLength with new filtered length
     responseLength = filteredResponse.length;
+    resetTableState();
     return filteredResponse;
 }
 
@@ -394,9 +419,6 @@ function updateDisplayAmount() {
     // Reload table and page buttons
     loadTables();
     createPageButtons(pageLength, responseLength);
-
-    // Set the active button to the first available button
-    resetPageButtons();
 }
 
 /**
@@ -407,6 +429,9 @@ function updateDisplayAmount() {
 function createPageButtons(pageLength, responseLength) {
     // Clear buttons container
     const buttonLegend = document.getElementById("legend-buttons-container");
+
+    // Previous number of page buttons displayed on screen
+    const previous = buttonLegend.childElementCount;
 
     // Reset buttons conatiner
     buttonLegend.innerHTML = '';
@@ -451,29 +476,52 @@ function createPageButtons(pageLength, responseLength) {
         };
         buttonLegend.appendChild(button);
     }
+
+    // Current number of page buttons displayed on screen
+    const current = buttonLegend.childElementCount;
+
+    // If page count is shorter than what it was previously
+    if (current < previous) {
+        // Check which button is active
+        let active = getActiveID();
+
+        // If active button isn't lost with lost page don't update
+        if (active <= displayAmount - 2)
+            return;
+
+        // Update current page
+        let newID = active - 1;
+
+        // Calculate new active button id
+        newID = newID > 0 ? newID : 1;
+
+        // Calculate new pageStart and pageEnd variables
+        pageStart = pageLength * (newID - 1);
+        pageEnd = responseLength - pageStart;
+
+        // Update active button
+        setActiveButton(`legend-button-${newID}`);
+    }
 }
 
 /**
  * Update the current active button
  */
-function setActiveButton() {
+function setActiveButton(id) {
+    // Update global activeButtonID
+    activeButtonID = id;
+
+    // Remove current active button's active status
+    const currentActiveButton = document.getElementsByClassName(ACTIVE_CLASS);
+    if (currentActiveButton.length > 0)
+        currentActiveButton[0].classList.remove(ACTIVE_CLASS)
+
+    // Get new active button
     let button = document.getElementById(activeButtonID);
 
     // Only update button if it exists
     if (button != null)
-        document.getElementById(activeButtonID).classList.add('active-button');
-}
-
-/**
- * When the user starts a search the page buttons and the tables need to be updated.
- * This function will reset the page button variables to its default state to prevent
- * the active-button id from being set to a button that may not have been created in
- * the new state. Then load the proper tables at the new page start.
- */
-function resetPageButtons() {
-    activeButtonID = defaultActiveButton;
-    pageStart = 0;
-    loadTables();
+        document.getElementById(activeButtonID).classList.add(ACTIVE_CLASS);
 }
 
 /**
@@ -485,11 +533,11 @@ function updatePage(id) {
     // Set the new button to the active id
     updateActiveButton(id);
 
-    // Use the new active button for calculations
-    let active = document.getElementsByClassName('active-button')[0];
+    // Use the new active button for calculationsf
+    let active = document.getElementsByClassName(ACTIVE_CLASS)[0];
     let activeID = active.id;
 
-    // Preform logic to determine what the first row index should be
+    // Calculate where the table should begin display results
     if (activeID == "legend-button-previous")
         pageStart = 0;
     else if (activeID == "legend-button-next") {
@@ -501,7 +549,7 @@ function updatePage(id) {
         pageStart = pageLength * (Number(active.innerText) - 1);
 
     // Load the tables
-    loadTables(pageStart);
+    loadTables();
 }
 
 /**
@@ -509,10 +557,8 @@ function updatePage(id) {
  * @param {string} id button id
  */
 function updateActiveButton(id) {
-    const activeClass = 'active-button';
-
     // ID of currently active button
-    const activeButton = document.getElementsByClassName(activeClass)[0];
+    const activeButton = document.getElementsByClassName(ACTIVE_CLASS)[0];
 
     // ID of new active button
     let newButton = document.getElementById(id);
@@ -522,13 +568,12 @@ function updateActiveButton(id) {
     // This will move the active status to the next available button instead
     // of marking next or previous as active.
     if (newID.includes("previous") || newID.includes("next")) {
-        const activeID = activeButton.id;
-
         // Calcualte max buttons to show
         const numPages = Math.ceil(responseLength / pageLength) + 2;
         const displayAmount = -2 + (numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages);
 
-        let currentPage = Number(activeID.substring(activeID.lastIndexOf("-") + 1));
+        // Move page depending on if previous or next was pressed
+        let currentPage = getActiveID();
         currentPage += newID.includes("previous") ? -1 : 1;
 
         // Bound active status to all buttons excluding previous and next
@@ -541,13 +586,17 @@ function updateActiveButton(id) {
         newButton = document.getElementById(`legend-button-${currentPage}`);
     }
     // Swap active status with current active button and new active button
-    activeButton.classList.remove(activeClass);
-    newButton.classList.add(activeClass);
+    activeButton.classList.remove(ACTIVE_CLASS);
+    newButton.classList.add(ACTIVE_CLASS);
 
     // Update global activeButtonID 
     activeButtonID = newButton.id;
 }
 
+/**
+ * Delete the current exam. This only deletes the exam on the student side.
+ * @param {number} examID id of exam to be deleted
+ */
 function deleteExam(examID) {
     const userid = sessionStorage.getItem("user_id");
     const requestCode = 2;
@@ -559,22 +608,77 @@ function deleteExam(examID) {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-            // console.log(ajax.responseText);
-
             // If exams exist print table dynamically
-            if (ajax.responseText == "true") {
-                // clearTables();
-                // loadTables();
-            }
+            if (ajax.responseText == "true") 
+                loadTables();
         }
-        else
-            return;
     }
 
     // Send request
-    // ajax.open("POST", "/post", true);
-    // ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    // ajax.send(credentials);
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
+}
+
+/**
+ * Reset and load the table state depnding on length of the query resonse
+ */
+function resetTableState() {
+    // Get all elements that need visibility changed
+    const empty = document.getElementById("table-empty-records");
+    const table = document.getElementById("table");
+    const legend = document.getElementById("table-display-legend");
+
+    resetActiveButton();
+
+    // If no response found disable these elements
+    if (responseLength == 0) {
+        empty.classList.remove("disabled");
+        table.classList.add("disabled");
+        legend.classList.add("disabled");
+    }
+    // else enable these
+    else {
+        empty.classList.add("disabled");
+        table.classList.remove("disabled");
+        legend.classList.remove("disabled");
+    }
+}
+
+/**
+ * Check if the activeButton is null. If it is null, replace it with a new activeButton
+ */
+function resetActiveButton() {
+    // Get active button
+    let activeButton = document.getElementById(activeButtonID);
+
+    // Check active button for null
+    if (activeButton == null) {
+        let index = getActiveID();
+        let updated = false;
+        
+        // Set active button to the latest page available
+        for (let i = index - 1; i > 0; i--) {
+            let newID = `legend-button-${i}`;
+            if (document.getElementById(newID) != null) {
+                activeButtonID = newID;
+                update = true;
+                break;
+            }
+        }
+
+        // If a page can't get set, reset activeButton to default
+        if (!updated)
+            activeButton = ACTIVE_BUTTON;
+    }
+}
+
+/**
+ * Get the active id index number
+ * @returns active id index number
+ */
+function getActiveID() {
+    return Number(activeButtonID.substring(activeButtonID.lastIndexOf("-") + 1));
 }
 
 /**
