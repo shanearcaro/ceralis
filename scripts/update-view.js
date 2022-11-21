@@ -232,6 +232,7 @@ function createTables(response) {
     // Create the page legend text 
     let start = pageStart + 1;
 
+    
     // Fix default values
     if (start > pageEnd) {
         start = 1;
@@ -243,7 +244,7 @@ function createTables(response) {
         start = 0;
         pageStart = 0;
     }
-        
+    console.log("Page Start: " + pageStart + " Start: " + start + " Page End: " + pageEnd);
     legend.innerText = `Showing ${start} to ${pageEnd} of ${response.length} entries`;
 
     // Update the number of page buttons on screen
@@ -394,6 +395,12 @@ function getSearchRows(response) {
 
     // Update responseLength with new filtered length
     responseLength = filteredResponse.length;
+
+    const legend = document.getElementById("table-display-legend");
+    // if (responseLength > 0)
+    //     legend.classList.remove("disabled");
+    // else
+    //     legend.classList.add("disabled");
     return filteredResponse;
 }
 
@@ -410,7 +417,7 @@ function updateDisplayAmount() {
 
     // Reload table and page buttons
     loadTables();
-    createPageButtons(responseLength, pageLength);
+    createPageButtons(pageLength, responseLength);
 
     // Set the active button to the first available button
     resetPageButtons();
@@ -418,10 +425,10 @@ function updateDisplayAmount() {
 
 /**
  * Generates the pages buttons at the bottom right of the table.
- * @param {number} responseLength Number of elements available to be displayed
  * @param {number} pageLength Number of elements to be displayed on a single page
+ * @param {number} responseLength Number of elements available to be displayed
  */
-function createPageButtons(responseLength, pageLength) {
+function createPageButtons(pageLength, responseLength) {
     // Clear buttons container
     const buttonLegend = document.getElementById("legend-buttons-container");
 
@@ -436,10 +443,11 @@ function createPageButtons(responseLength, pageLength) {
     if (pageLength == -1)
         return;
 
-    // Number of pages needed
-    const displayAmount = calculateDisplayAmount(responseLength, pageLength);
+    // Calcualte max buttons to show
+    const numPages = responseLength / pageLength + 2;
+    const displayAmount = numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages;
 
-    // If the results can be displayed in a single page ( + next and previous buttons) don't show any buttons
+    // If the results can be displayed in a single page don't show any buttons
     if (displayAmount <= 3)
         return;
 
@@ -478,6 +486,14 @@ function createPageButtons(responseLength, pageLength) {
     if (current < previous) {
         // Check which button is active
         let active = getActiveID();
+
+        // Update current page
+        let newID = active - 1;
+        newID = newID > 0 ? newID : 1;
+        activeButtonID = `legend-button-${newID}`;
+        console.log("Page Length: " + pageLength + " New ID: " + newID);
+        pageStart = pageLength * (newID - 2) + 1;
+        pageEnd = responseLength - pageStart;
     }
 }
 
@@ -521,8 +537,8 @@ function updatePage(id) {
     if (activeID == "legend-button-previous")
         pageStart = 0;
     else if (activeID == "legend-button-next") {
-        // Number of pages needed
-        const displayAmount = calculateDisplayAmount(responseLength, pageLength);
+        const numPages = Math.ceil(responseLength / pageLength) + 2;
+        const displayAmount = -2 + (numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages);
         pageStart = pageLength * (displayAmount - 1);
     }
     else
@@ -550,8 +566,9 @@ function updateActiveButton(id) {
     // This will move the active status to the next available button instead
     // of marking next or previous as active.
     if (newID.includes("previous") || newID.includes("next")) {
-        // Number of pages needed
-        const displayAmount = calculateDisplayAmount(responseLength, pageLength);
+        // Calcualte max buttons to show
+        const numPages = Math.ceil(responseLength / pageLength) + 2;
+        const displayAmount = -2 + (numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages);
 
         // Move page depending on if previous or next was pressed
         let currentPage = getActiveID();
@@ -624,15 +641,14 @@ function resetTableState() {
         table.classList.remove("disabled");
         legend.classList.remove("disabled");
     }
-    loadTables();
     resetActiveButton();
+    loadTables();
 }
 
 function resetActiveButton() {
     console.log(activeButtonID);
     let activeButton = document.getElementById(activeButtonID);
     console.log(document.getElementById(activeButtonID) == null ? "NULL" : "FOUND");
-
 
     if (activeButton == null) {
         let index = getActiveID();
@@ -658,19 +674,6 @@ function resetActiveButton() {
  */
 function getActiveID() {
     return Number(activeButtonID.substring(activeButtonID.lastIndexOf("-") + 1));
-}
-
-/**
- * Calculate the total number of pages needed to display the entire response
- * within PAGE_LIMIT.
- * @param {number} responseLength total length of response
- * @param {number} pageLength number of response elements displayed per page
- * @returns number of pages needed to display entire response
- */
-function calculateDisplayAmount(responseLength, pageLength) {
-    // Calcualte max buttons to show
-    const numPages = responseLength / pageLength + 2;
-    return numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages;
 }
 
 /**

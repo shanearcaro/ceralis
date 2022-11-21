@@ -49,7 +49,7 @@
                     <table id='table'><script> loadTables(); </script></table>
                     <div class="table-legend">
                         <div class="legend-text">
-                            <p class="disabled" id='table-display-legend'></p>
+                            <p id='table-display-legend'></p>
                         </div>
                         <div class="legend-buttons" id='legend-buttons-container'></div>
                     </div>
