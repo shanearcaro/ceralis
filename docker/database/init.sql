@@ -56,7 +56,6 @@ INSERT INTO Users(name, username, password, position) VALUES('Shane','teachersha
 INSERT INTO Users(name, username, password, position) VALUES('Malcolm','studentmalcolm', 'studentpassword', 'student');
 INSERT INTO Users(name, username, password, position) VALUES('Malcolm','teachermalcolm', 'teacherpassword', 'teacher');
 
-
 INSERT INTO `Exams` (`exam_id`, `user_id`, `title`, `points`, `date`) VALUES (NULL, '2', 'Statements', '100', '2022-11-16 22:48:36.000000');
 INSERT INTO `Exams` (`exam_id`, `user_id`, `title`, `points`, `date`) VALUES (NULL, '2', 'Expressions', '100', '2022-11-16 22:48:36.000000');
 INSERT INTO `Exams` (`exam_id`, `user_id`, `title`, `points`, `date`) VALUES (NULL, '2', 'Objects', '100', '2022-11-16 22:48:36.000000');
