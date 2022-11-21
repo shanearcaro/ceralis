@@ -106,7 +106,7 @@ $request_code = $data->{'request'};
  * 
  * 18 - Select test cases
  *      question_id
- *      (case_input, case_answer)[]
+ *      (testcase_id, case_input, case_answer)[]
  * 
  * 19 - Select exam result testcases
  *      studentexam_id, question_id
@@ -265,7 +265,7 @@ switch($request_code) {
     
     
     case 18:
-        $query = $pdo->prepare("SELECT case_input, case_answer FROM TestCases WHERE question_id = ? ");
+        $query = $pdo->prepare("SELECT testcase_id, case_input, case_answer FROM TestCases WHERE question_id = ? ");
         $query->execute([$data->{'question_id'}]);
         break;
 
