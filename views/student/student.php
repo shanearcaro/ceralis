@@ -41,7 +41,7 @@
                     </div>
                     <div class="searchbar-search searchbar-element">
                         <p id='search-text'>Search: </p>
-                        <input type="text" id='dash-search-input' onkeyup='resetPageButtons()'>
+                        <input type="text" id='dash-search-input' onkeyup='loadTables()'>
                     </div>
                 </div>
                 <div class="dash-table-div">
