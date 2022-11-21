@@ -40,7 +40,11 @@ $request_code = $data->{'request'};
  *     []
  *     [exam_id, user_id, title, points, e.date, score, se.date]
  * 
- * 2 - Delete Exam
+ * 2 - Select teacher exams
+ *     [userid]
+ *     [examid, userid, title, points, score, name, ]
+ * 
+ * 3 - Delete Exam
  *     [userid, examid]
  *     []
  */
@@ -55,7 +59,6 @@ switch($request_code) {
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
     case 1:
-        // echo "User ID: " . $data->{'userid'};
         $query = $pdo->prepare(
             "SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
             FROM Exams AS e 
@@ -65,12 +68,21 @@ switch($request_code) {
             ORDER BY e.exam_id ASC");
         $query->execute([$data->{'userid'}]);
         break;
+    case 2:
+        $query = $pdo->prepare(
+            "SELECT e.exam_id, se.user_id, e.title, e.points, e.date, u.name, se.score
+            FROM Exams as e
+            INNER JOIN StudentExams AS se on e.exam_id = se.exam_id
+            INNER JOIN Users AS u ON se.user_id = u.user_id
+            WHERE e.user_id = ?
+            ORDER BY e.exam_id ASC");
+            $query->execute([$data->{'userid'}]);
+        break;
     case 3:
         $query = $pdo->prepare(
             "DELETE FROM StudentExams 
             WHERE user_id = ? AND exam_id= ?");
         $query->execute([$data->{'userid'}, $data->{'examid'}]);
-        echo json_encode(true);
         exit();
 }
 

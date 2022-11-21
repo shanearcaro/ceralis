@@ -187,6 +187,7 @@ function loadTables() {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
+            console.log(ajax.responseText);
 
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
@@ -615,7 +616,7 @@ function deleteExam(examID) {
     const requestCode = 3;
 
     // Begin AJAX call
-    const credentials = `userid=${userid}&examid=${examID}&request=${requestCode}`;
+    const credentials = `userid=${userid}&examid=${examid}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
@@ -695,7 +696,7 @@ function getHeader() {
         case 1:
             return ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
         case 2:
-            return ['TEMP', 'TEMP', 'TEMP', 'TEMP', 'TEMP', "TEMP"];
+            return ['ID', 'Student', 'Title', 'Score', 'Date', "Action"];
     }
 }
 
@@ -722,7 +723,7 @@ function getElement(element) {
         case 1:
             return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
         case 2:
-            return [element.name, element.name, element.name, formatScore(element.score, element.points), formatDate(element.date)];
+            return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
     }
 }
 
@@ -735,7 +736,7 @@ function getPurpose() {
         case 1:
             return ["take", "review", "delete"];
         case 2:
-            return ["TEMP", "TEMP", "TEMP"];
+            return ["grade", "review", "delete"];
     }
 }
 
