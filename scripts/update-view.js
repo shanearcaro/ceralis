@@ -4,6 +4,18 @@
 const PAGE_LIMIT = 15;
 
 /**
+ * Default active button ID. The first page should always be used as the default active
+ * page whenever the button legend changes state.
+ */
+const ACTIVE_BUTTON = "legend-button-1";
+
+/**
+ * Default active button class that is always on the active button. This class will have to be
+ * added and removed from buttons as the active button status is changed.
+ */
+const ACTIVE_CLASS = "active-button";
+
+/**
  * Number of rows that the table in the student dashboard will display.
  * This value trumps all other display amount constraints.
  */
@@ -23,16 +35,11 @@ let pageStart = 0;
 let responseLength = -1;
 
 /**
- * Default active button ID. The first page should always be used as the default active
- * page whenever the button legend changes state.
- */
-const defaultActiveButton = "legend-button-1";
-/**
  * ID of the current active page button. This needs to be separate so that its state can be
  * stored and used later. Previously a prevent_initial_call value was used to prevent unintended
  * behavior but this caused more problems.
  */
-let activeButtonID = defaultActiveButton;
+let activeButtonID = ACTIVE_BUTTON;
 
 /**
  * Sleep for a specified duration of time
@@ -173,12 +180,9 @@ function loadTables() {
 
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
-                // If no exams exist display empty table
-                const empty = document.getElementById("table-empty-records");
-                const table = document.getElementById("table");
-
-                empty.classList.remove("disabled");
-                table.classList.add("disabled");
+                // Reset table state to default empty state
+                responseLength = 0;
+                resetTableState();
             }
             else {
                 // Display results
@@ -189,8 +193,6 @@ function loadTables() {
                 setActiveButton(activeButtonID);
             }
         }
-        else
-            return;
     }
 
     // Send request
@@ -203,7 +205,7 @@ function loadTables() {
  * Clear the student exams table
  */
 function clearTables() {
-    const table = document.getElementById('table');
+    const table = document.getElementById("table");
     table.innerHTML = '';
 }
 
@@ -243,6 +245,9 @@ function createTables(response) {
 
     // Set start to proper starting display value
     start = pageStart + 1;
+
+    // Fix start if size is 0
+    start = pageEnd == 0 ? 0 : start;
 
     // Set legend text
     legend.innerText = `Showing ${start} to ${pageEnd} of ${response.length} entries`;
@@ -366,12 +371,13 @@ function createActionButtons(examID) {
  */
 function getSearchRows(response) {
     // Get search bar input text
-    const searchInput = document.getElementById('dash-search-input');
+    const searchInput = document.getElementById("dash-search-input");
     const searchText = searchInput.value.toLowerCase();
 
     // If no text is being searched, quit.
     if (searchText == "") {
         responseLength = response.length;
+        resetTableState();
         return response;
     }
     
@@ -395,6 +401,7 @@ function getSearchRows(response) {
 
     // Update responseLength with new filtered length
     responseLength = filteredResponse.length;
+    resetTableState();
     return filteredResponse;
 }
 
@@ -477,19 +484,21 @@ function createPageButtons(pageLength, responseLength) {
     const current = buttonLegend.childElementCount;
 
     // If page count is shorter than what it was previously
-    console.log("Current: " + current + " Previous: " + previous);
     if (current < previous) {
-        console.log("HELLO?????");
         // Check which button is active
         let active = getActiveID();
 
         // Update current page
         let newID = active - 1;
+
+        // Calculate new active button id
         newID = newID > 0 ? newID : 1;
-        console.log("Page Length: " + pageLength + " New ID: " + newID);
+
+        // Calculate new pageStart and pageEnd variables
         pageStart = pageLength * (newID - 1);
-        console.log("What is pageStart here? : " + pageStart);
         pageEnd = responseLength - pageStart;
+
+        // Update active button
         setActiveButton(`legend-button-${newID}`);
     }
 }
@@ -502,16 +511,16 @@ function setActiveButton(id) {
     activeButtonID = id;
 
     // Remove current active button's active status
-    const currentActiveButton = document.getElementsByClassName('active-button');
+    const currentActiveButton = document.getElementsByClassName(ACTIVE_CLASS);
     if (currentActiveButton.length > 0)
-        currentActiveButton[0].classList.remove('active-button')
+        currentActiveButton[0].classList.remove(ACTIVE_CLASS)
 
     // Get new active button
     let button = document.getElementById(activeButtonID);
 
     // Only update button if it exists
     if (button != null)
-        document.getElementById(activeButtonID).classList.add('active-button');
+        document.getElementById(activeButtonID).classList.add(ACTIVE_CLASS);
 }
 
 /**
@@ -521,7 +530,7 @@ function setActiveButton(id) {
  * the new state. Then load the proper tables at the new page start.
  */
 function resetPageButtons() {
-    activeButtonID = defaultActiveButton;
+    activeButtonID = ACTIVE_BUTTON;
     pageStart = 0;
     loadTables();
 }
@@ -536,7 +545,7 @@ function updatePage(id) {
     updateActiveButton(id);
 
     // Use the new active button for calculations
-    let active = document.getElementsByClassName('active-button')[0];
+    let active = document.getElementsByClassName(ACTIVE_CLASS)[0];
     let activeID = active.id;
 
     // Calculate where the table should begin display results
@@ -551,7 +560,7 @@ function updatePage(id) {
         pageStart = pageLength * (Number(active.innerText) - 1);
 
     // Load the tables
-    loadTables(pageStart);
+    loadTables();
 }
 
 /**
@@ -559,10 +568,8 @@ function updatePage(id) {
  * @param {string} id button id
  */
 function updateActiveButton(id) {
-    const activeClass = 'active-button';
-
     // ID of currently active button
-    const activeButton = document.getElementsByClassName(activeClass)[0];
+    const activeButton = document.getElementsByClassName(ACTIVE_CLASS)[0];
 
     // ID of new active button
     let newButton = document.getElementById(id);
@@ -590,8 +597,8 @@ function updateActiveButton(id) {
         newButton = document.getElementById(`legend-button-${currentPage}`);
     }
     // Swap active status with current active button and new active button
-    activeButton.classList.remove(activeClass);
-    newButton.classList.add(activeClass);
+    activeButton.classList.remove(ACTIVE_CLASS);
+    newButton.classList.add(ACTIVE_CLASS);
 
     // Update global activeButtonID 
     activeButtonID = newButton.id;
@@ -613,13 +620,9 @@ function deleteExam(examID) {
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
             // If exams exist print table dynamically
-            if (ajax.responseText == "true") {
-                responseLength--;
-                resetTableState();
-            }
+            if (ajax.responseText == "true") 
+                resetPageButtons();
         }
-        else
-            return;
     }
 
     // Send request
@@ -632,45 +635,52 @@ function deleteExam(examID) {
  * Reset and load the table state depnding on length of the query resonse
  */
 function resetTableState() {
+    // Get all elements that need visibility changed
     const empty = document.getElementById("table-empty-records");
     const table = document.getElementById("table");
     const legend = document.getElementById("table-display-legend");
 
+    resetActiveButton();
+
+    // If no response found disable these elements
     if (responseLength == 0) {
         empty.classList.remove("disabled");
         table.classList.add("disabled");
         legend.classList.add("disabled");
-        return;
     }
+    // else enable these
     else {
         empty.classList.add("disabled");
         table.classList.remove("disabled");
         legend.classList.remove("disabled");
     }
-    resetActiveButton();
-    loadTables();
 }
 
+/**
+ * Check if the activeButton is null. If it is null, replace it with a new activeButton
+ */
 function resetActiveButton() {
-    console.log(activeButtonID);
+    // Get active button
     let activeButton = document.getElementById(activeButtonID);
-    console.log(document.getElementById(activeButtonID) == null ? "NULL" : "FOUND");
 
+    // Check active button for null
     if (activeButton == null) {
         let index = getActiveID();
         let updated = false;
         
+        // Set active button to the latest page available
         for (let i = index - 1; i > 0; i--) {
             let newID = `legend-button-${i}`;
             if (document.getElementById(newID) != null) {
-                console.log("Is this working?DDD");
                 activeButtonID = newID;
                 update = true;
                 break;
             }
         }
+
+        // If a page can't get set, reset activeButton to default
         if (!updated)
-            activeButton = defaultActiveButton;
+            activeButton = ACTIVE_BUTTON;
     }
 }
 
