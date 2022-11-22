@@ -16,6 +16,12 @@ const ACTIVE_BUTTON = "legend-button-1";
 const ACTIVE_CLASS = "active-button";
 
 /**
+ * AJAX timeout to reload the table. The user and teachers can both communicate with the database
+ * by deleting or inserting. This ensures that the information on all clients are updated.
+ */
+const TABLE_LOAD_OFFSET = 1000;
+
+/**
  * Number of rows that the table in the student dashboard will display.
  * This value trumps all other display amount constraints.
  */
@@ -164,6 +170,14 @@ function storeSessionLogin(user_id) {
 }
 
 /**
+ * Disable back and reload tables for every dashboard page
+ */
+function onLoad() {
+    disableBack();
+    setInterval(loadTables, TABLE_LOAD_OFFSET);
+}
+
+/**
  * Disable the back button
  */
 function disableBack() {
@@ -174,6 +188,7 @@ function disableBack() {
  * Load the tables based on a request
  */
 function loadTables() { 
+    console.log("Loading tables");
     // Load table based on request code so it can be used for teacher table as well
     requestCode = Number(document.getElementById("table-rc").innerText);
 

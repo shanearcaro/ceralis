@@ -13,7 +13,7 @@
     <script type="text/javascript" src="scripts/update-view.js??<?php echo time();?>"></script>
     <title>Student Portal</title>
 </head>
-<body onload="disableBack()">
+<body onload="onLoad()">
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
     <div class="content-area">
         <p class="disabled" id="table-rc">1</p>
