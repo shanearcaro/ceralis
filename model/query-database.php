@@ -72,7 +72,7 @@ $request_code = $data->{'request'};
  *      user_id
  *      name
  * 
- * 10 - Select teachers exam (given user id teachers, sent user id and name is students)
+ * 10 - Select teachers exam (ungraded) (given user id teachers, sent user id and name is students)
  *      user_id
  *      studentexam_id, user_id, exam_id, score, name
  * 
@@ -131,7 +131,7 @@ switch($request_code) {
 
 
     case 1:
-        $query = $pdo->prepare("INSERT INTO Questions (user_id, question_type, difficulty, constraint, question_text) 
+        $query = $pdo->prepare("INSERT INTO Questions (user_id, question_type, difficulty, `constraint`, question_text) 
             VALUES (?, ?, ?, ?, ?)");
         $query->execute([$data->{'user_id'}, $data->{'questiontype'}, $data->{'difficulty'}, 
             $data->{'constraint'}, $data->{'question_text'}]);
@@ -179,7 +179,7 @@ switch($request_code) {
 
 
     case 8:
-        $query = $pdo->prepare("SELECT ce.studentexam_id, ce.question_id, ce.answer, eq.questionPoints, q.question_text, 
+        $query = $pdo->prepare("SELECT ce.studentexam_id, ce.question_id, ce.answer, eq.questionPoints, q.question_text
             FROM CompletedExam AS ce 
             INNER JOIN StudentExams AS se ON ce.studentexam_id=se.studentexam_id 
             INNER JOIN ExamQuestions AS eq ON se.exam_id=eq.exam_id AND ce.question_id=eq.question_id 
@@ -196,11 +196,11 @@ switch($request_code) {
 
 
     case 10:
-        $query = $pdo->prepare("SELECT se.studentexam_id, se.user_id, se.exam_id, e.score, u.name FROM StudentExams AS se 
+        $query = $pdo->prepare("SELECT se.studentexam_id, se.user_id, se.exam_id, se.score, u.name FROM StudentExams AS se 
             INNER JOIN Exams AS e on se.exam_id=e.exam_id 
             INNER JOIN Users AS u on se.user_id=u.user_id 
             WHERE se.score=-1 AND e.user_id = ? 
-            ORDER BY se.examID ASC");
+            ORDER BY se.exam_id ASC");
         $query->execute([$data->{'user_id'}]);
         break;
 
@@ -211,7 +211,7 @@ switch($request_code) {
             WHERE exam_id NOT IN (
                 SELECT sei.exam_id FROM Exams AS ei JOIN StudentExams AS sei ON ei.exam_id=sei.exam_id 
                 WHERE sei.user_id = ? )
-            ORDER BY e.exam_id ASC;");
+            ORDER BY e.exam_id ASC");
         $query->execute([$data->{'user_id'}]);
         break;
     
@@ -240,7 +240,7 @@ switch($request_code) {
 
     case 15: 
         $query = $pdo->prepare("INSERT INTO CompletedExam (studentexam_id, question_id, answer, score, comment) 
-            VALUES (?, ?, ?, ?, ?");
+            VALUES (?, ?, ?, ?, ?)");
         $query->execute([$data->{'studentexam_id'}, $data->{'question_id'}, $data->{'answer'}, $data->{'score'}, $data->{'comment'}]);
         break;
     

@@ -150,4 +150,10 @@ INSERT INTO TestCases(question_id, case_input, case_answer) VALUES
 (4, '[1,2,3,7,5,1]', '7'),
 (4, '[1,300,2,9,8,1]', '300'),
 (4, '[1,800,300,9,8,1]', '800');
+
+INSERT INTO ExamQuestions(exam_id, question_id, questionPoints) VALUES
+(1, 1, 30),
+(1, 2, 50),
+(2, 3, 20),
+(2, 4, 40);
 */
