@@ -173,7 +173,7 @@ function disableBack() {
 /**
  * Load the tables based on a request
  */
-function loadTables() {
+function loadTables() { 
     // Load table based on request code so it can be used for teacher table as well
     requestCode = Number(document.getElementById("table-rc").innerText);
 
@@ -609,9 +609,9 @@ function updateActiveButton(id) {
 
 /**
  * Delete the current exam. This only deletes the exam on the student side.
- * @param {number} examID id of exam to be deleted
+ * @param {number} examid id of exam to be deleted
  */
-function deleteExam(examID) {
+function deleteExam(examid) {
     const userid = sessionStorage.getItem("user_id");
     const requestCode = 3;
 
