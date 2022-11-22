@@ -710,7 +710,6 @@ function getHeader() {
 function getTag() {
     switch (requestCode) {
         case 1:
-            return ["index", "name", "title", "points", "date", "action"];
         case 2:
             return ["index", "name", "title", "points", "date", "action"];
     }
