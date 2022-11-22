@@ -478,7 +478,7 @@ function updateDisplayAmount() {
         setActiveButton(ACTIVE_BUTTON);
 
     // Reload table and page buttons
-    loadTables();
+    loadTables(true);
     createPageButtons(pageLength, responseLength);
 }
 
