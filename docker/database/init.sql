@@ -1,7 +1,7 @@
-CREATE DATABASE IF NOT EXISTS sma237;
+CREATE DATABASE sma237;
 USE sma237;
 
-CREATE TABLE IF NOT EXISTS Users (
+CREATE TABLE Users (
     user_id int AUTO_INCREMENT NOT NULL,
     username varchar(50) NOT NULL,
     name varchar(50) NOT NULL,
@@ -148,3 +148,6 @@ INSERT INTO `StudentExams` (`user_id`, `exam_id`, `score`, `date`) VALUES ('3', 
 INSERT INTO `StudentExams` (`user_id`, `exam_id`, `score`, `date`) VALUES ('3', '28', '24', '2022-12-2 22:49:13.000000');
 INSERT INTO `StudentExams` (`user_id`, `exam_id`, `score`, `date`) VALUES ('3', '29', '68', '2022-12-24 22:49:13.000000');
 INSERT INTO `StudentExams` (`user_id`, `exam_id`, `score`, `date`) VALUES ('3', '30', '64', '2022-12-25 22:49:13.000000');
+
+-- DROP FROM Exams;
+-- DROP FROM StudentExams;
