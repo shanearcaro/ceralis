@@ -358,6 +358,10 @@ function createActionButtons(examID) {
     // Get current action element
     const action = document.getElementById(`action-${examID}`);
 
+    // Request 3 is a student delete request
+    // Request 4 is a teacher delete request
+    const deleteRequest = requestCode == 1 ? 3 : 4;
+
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
         buttons[i].id = `${purpose[i]}-${examID}`;
@@ -369,7 +373,7 @@ function createActionButtons(examID) {
 
         if (purpose[i] == "delete") {
             buttons[i].onclick = function() {
-                deleteExam(examID);
+                deleteExam(examID, deleteRequest);
             };
         }
         action.appendChild(buttons[i]);
@@ -611,12 +615,11 @@ function updateActiveButton(id) {
  * Delete the current exam. This only deletes the exam on the student side.
  * @param {number} examid id of exam to be deleted
  */
-function deleteExam(examid) {
+function deleteExam(examid, code) {
     const userid = sessionStorage.getItem("user_id");
-    const requestCode = 3;
 
     // Begin AJAX call
-    const credentials = `userid=${userid}&examid=${examid}&request=${requestCode}`;
+    const credentials = `userid=${userid}&examid=${examid}&request=${code}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX

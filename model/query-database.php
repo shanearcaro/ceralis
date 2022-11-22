@@ -83,6 +83,25 @@ switch($request_code) {
             "DELETE FROM StudentExams 
             WHERE user_id = ? AND exam_id= ?");
         $query->execute([$data->{'userid'}, $data->{'examid'}]);
+
+        // Return true
+        echo json_encode(true);
+        exit();
+    case 4:
+        // Delete all student exams taken from the examid
+        $query = $pdo->prepare(
+            "DELETE FROM StudentExams 
+            WHERE exam_id= ?");
+        $query->execute([$data->{'examid'}]);
+
+        // Delete the exam itself
+        $query = $pdo->prepare(
+            "DELETE FROM Exams 
+            WHERE user_id = ? AND exam_id= ?");
+        $query->execute([$data->{'userid'}, $data->{'examid'}]);
+
+        // Return true
+        echo json_encode(true);
         exit();
 }
 
