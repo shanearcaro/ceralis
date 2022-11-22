@@ -4,10 +4,15 @@
 const PAGE_LIMIT = 15;
 
 /**
+ * Legend button prefix text
+ */
+const LEGEND_PREFIX = "legend-button";
+
+/**
  * Default active button ID. The first page should always be used as the default active
  * page whenever the button legend changes state.
  */
-const ACTIVE_BUTTON = "legend-button-1";
+const ACTIVE_BUTTON = `${LEGEND_PREFIX}-1`;
 
 /**
  * Default active button class that is always on the active button. This class will have to be
@@ -192,7 +197,7 @@ function disableBack() {
 /**
  * Load the tables based on a request
  */
-function loadTables() { 
+function loadTables(forceReload = false) { 
     // Load table based on request code so it can be used for teacher table as well
     requestCode = Number(document.getElementById("table-rc").innerText);
 
@@ -220,13 +225,13 @@ function loadTables() {
                 const filteredResponse = getSearchRows(response);
                 
                 // Only update if the previous response is different than the current response
-                if (!isSame(filteredResponse, previousResponse)) {
-                    console.log("Loading table");
+                if (forceReload || !isSame(filteredResponse, previousResponse)) {
                     createTables(filteredResponse, pageStart);
 
                     // Update active button
                     setActiveButton(activeButtonID);
                 }
+                // Update previous response
                 previousResponse = filteredResponse;
             }
         }
@@ -450,6 +455,17 @@ function getSearchRows(response) {
 }
 
 /**
+ * The table page should be set to the default page on every search to avoid the active button
+ * being set to a button that would no longer exist after a filtered search. Tables should be
+ * reloaded after the active button is reset.
+ */
+function onSearch() {
+    pageStart = 0;
+    setActiveButton(ACTIVE_BUTTON);
+    loadTables();
+}
+
+/**
  * Update the amount of rows that can be displayed in the student dashboard exams table
  */
 function updateDisplayAmount() {
@@ -460,7 +476,6 @@ function updateDisplayAmount() {
     pageStart = 0;
     pageLength = displayAmount;
 
-    // Reset the active button to the first page
     if (activeButtonID != ACTIVE_BUTTON)
         setActiveButton(ACTIVE_BUTTON);
 
@@ -476,7 +491,7 @@ function updateDisplayAmount() {
  */
 function createPageButtons(pageLength, responseLength) {
     // Clear buttons container
-    const buttonLegend = document.getElementById("legend-buttons-container");
+    const buttonLegend = document.getElementById(`${LEGEND_PREFIX}s-container`);
 
     // Previous number of page buttons displayed on screen
     const previous = buttonLegend.childElementCount;
@@ -509,14 +524,14 @@ function createPageButtons(pageLength, responseLength) {
     for (let i = 0; i < buttonText.length; i++) {
         const button = document.createElement('button');
         button.innerText = buttonText[i];
-        button.classList.add('legend-button');
+        button.classList.add(LEGEND_PREFIX);
 
         if (i == 0)
-            button.id = 'legend-button-previous';
+            button.id = `${LEGEND_PREFIX}-previous`;
         else if (i == buttonText.length - 1)
-            button.id = 'legend-button-next';
+            button.id = `${LEGEND_PREFIX}-next`;
         else 
-            button.id = `legend-button-${i}`;
+            button.id = `${LEGEND_PREFIX}-${i}`;
 
         // Add onclick to all buttons
         button.onclick = function() {
@@ -548,7 +563,7 @@ function createPageButtons(pageLength, responseLength) {
         pageEnd = responseLength - pageStart;
 
         // Update active button
-        const newButtonID = `legend-button-${newID}`;
+        const newButtonID = `${LEGEND_PREFIX}-${newID}`;
 
         // Only update active button if needed
         if (activeButtonID != newButtonID)
@@ -560,7 +575,6 @@ function createPageButtons(pageLength, responseLength) {
  * Update the current active button
  */
 function setActiveButton(id) {
-    console.log("Updating active button");
     // Update global activeButtonID
     activeButtonID = id;
 
@@ -591,9 +605,9 @@ function updatePage(id) {
     let activeID = active.id;
 
     // Calculate where the table should begin display results
-    if (activeID == "legend-button-previous")
+    if (activeID == `${LEGEND_PREFIX}-previous`)
         pageStart = 0;
-    else if (activeID == "legend-button-next") {
+    else if (activeID == `${LEGEND_PREFIX}-next`) {
         const numPages = Math.ceil(responseLength / pageLength) + 2;
         const displayAmount = -2 + (numPages > PAGE_LIMIT ? PAGE_LIMIT : numPages);
         pageStart = pageLength * (displayAmount - 1);
@@ -601,8 +615,8 @@ function updatePage(id) {
     else
         pageStart = pageLength * (Number(active.innerText) - 1);
 
-    // Load the tables
-    loadTables();
+    // Reload the tables forcefully
+    loadTables(true);
 }
 
 /**
@@ -636,7 +650,7 @@ function updateActiveButton(id) {
             currentPage = displayAmount;
 
         // Update newButton to its proper button
-        newButton = document.getElementById(`legend-button-${currentPage}`);
+        newButton = document.getElementById(`${LEGEND_PREFIX}-${currentPage}`);
     }
     // Swap active status with current active button and new active button
     activeButton.classList.remove(ACTIVE_CLASS);
@@ -711,7 +725,7 @@ function resetActiveButton() {
         
         // Set active button to the latest page available
         for (let i = index - 1; i > 0; i--) {
-            let newID = `legend-button-${i}`;
+            let newID = `${LEGEND_PREFIX}-${i}`;
             if (document.getElementById(newID) != null) {
                 activeButtonID = newID;
                 update = true;
@@ -746,7 +760,6 @@ function isSame(currentResponse, previousResponse) {
 
         // Loop through every attribute of every index of the response and compare
         for (let j = 0; j < currentA.length; j++) {
-            // console.log(`${currentA[j]} = ${previousA[j]}: ${currentA[j] != previousA[j]}`);
             if (currentA[j] != previousA[j])
                 return false;
         }
@@ -787,7 +800,6 @@ function getTag() {
 function getElement(element) {
     switch (requestCode) {
         case 1:
-            return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
         case 2:
             return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
     }
