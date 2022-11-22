@@ -320,7 +320,7 @@ function createTables(response) {
             cell.classList.add('row-cell');
 
             if (j == data.length - 1)
-                cell.id = `${data[j]}-${exam.exam_id}`
+                cell.id = `${data[j]}-${exam.exam_id}-${exam.user_id}`
         }
         
         // Display row information
@@ -328,7 +328,7 @@ function createTables(response) {
             row.cells[j].innerHTML = elements[j];
         
         // Create review and delete buttons
-        createActionButtons(exam.exam_id);
+        createActionButtons(exam.exam_id, exam.user_id);
     }
 }
 
@@ -338,7 +338,7 @@ function createTables(response) {
  * the exam from their professor or review an already graded exam if it is ready.
  * @param {number} examID The id for the current exam
  */
-function createActionButtons(examID) {
+function createActionButtons(examID, userID) {
     /**
      * TODO: This code needs to be changed later so that only a single button will be created at a time,
      * either take or review. These buttons need to be created based on whether the user has already taken
@@ -356,7 +356,7 @@ function createActionButtons(examID) {
         buttons.push(document.createElement("button")); 
 
     // Get current action element
-    const action = document.getElementById(`action-${examID}`);
+    const action = document.getElementById(`action-${examID}-${userID}`);
 
     // Request 3 is a student delete request
     // Request 4 is a teacher delete request
@@ -364,7 +364,7 @@ function createActionButtons(examID) {
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
-        buttons[i].id = `${purpose[i]}-${examID}`;
+        buttons[i].id = `${purpose[i]}-${examID}-${userID}`;
         buttons[i].classList.add("button");
         buttons[i].classList.add("action-button");
         buttons[i].classList.add(`button-${purpose[i]}`);
