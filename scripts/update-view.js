@@ -449,6 +449,9 @@ function updateDisplayAmount() {
     pageStart = 0;
     pageLength = displayAmount;
 
+    // Reset the active button to the first page
+    setActiveButton(`legend-button-${1}`);
+
     // Reload table and page buttons
     loadTables();
     createPageButtons(pageLength, responseLength);
