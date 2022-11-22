@@ -24,7 +24,7 @@ const ACTIVE_CLASS = "active-button";
  * AJAX timeout to reload the table. The user and teachers can both communicate with the database
  * by deleting or inserting. This ensures that the information on all clients are updated.
  */
-const TABLE_LOAD_OFFSET = 1000;
+const TABLE_LOAD_OFFSET = 250;
 
 /**
  * Number of rows that the table in the student dashboard will display.
@@ -369,7 +369,7 @@ function createTables(response) {
  * the exam from their professor or review an already graded exam if it is ready.
  * @param {number} examID The id for the current exam
  */
-function createActionButtons(examID, userID) {
+function createActionButtons(examID, studentID) {
     /**
      * TODO: This code needs to be changed later so that only a single button will be created at a time,
      * either take or review. These buttons need to be created based on whether the user has already taken
@@ -387,15 +387,13 @@ function createActionButtons(examID, userID) {
         buttons.push(document.createElement("button")); 
 
     // Get current action element
-    const action = document.getElementById(`action-${examID}-${userID}`);
+    const action = document.getElementById(`action-${examID}-${studentID}`);
 
-    // Request 3 is a student delete request
-    // Request 4 is a teacher delete request
-    const deleteRequest = requestCode == 1 ? 3 : 4;
+    const deleteRequest = 3
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
-        buttons[i].id = `${purpose[i]}-${examID}-${userID}`;
+        buttons[i].id = `${purpose[i]}-${examID}-${studentID}`;
         buttons[i].classList.add("button");
         buttons[i].classList.add("action-button");
         buttons[i].classList.add(`button-${purpose[i]}`);
@@ -404,7 +402,7 @@ function createActionButtons(examID, userID) {
 
         if (purpose[i] == "delete") {
             buttons[i].onclick = function() {
-                deleteExam(examID, deleteRequest);
+                deleteExam(examID, studentID, deleteRequest);
             };
         }
         action.appendChild(buttons[i]);
@@ -664,11 +662,9 @@ function updateActiveButton(id) {
  * Delete the current exam. This only deletes the exam on the student side.
  * @param {number} examid id of exam to be deleted
  */
-function deleteExam(examid, code) {
-    const userid = sessionStorage.getItem("user_id");
-
+function deleteExam(examid, studentid, code) {
     // Begin AJAX call
-    const credentials = `userid=${userid}&examid=${examid}&request=${code}`;
+    const credentials = `examid=${examid}&studentid=${studentid}&request=${code}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
@@ -812,7 +808,7 @@ function getElement(element) {
 function getPurpose() {
     switch (requestCode) {
         case 1:
-            return ["take", "review", "delete"];
+            return ["take", "review"];
         case 2:
             return ["grade", "review", "delete"];
     }
