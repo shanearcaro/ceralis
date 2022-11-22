@@ -217,16 +217,17 @@ function loadTables() {
             else {
                 // Display results
                 const response = JSON.parse(ajax.responseText);
+                const filteredResponse = getSearchRows(response);
                 
                 // Only update if the previous response is different than the current response
-                if (compare(response, previousResponse)) {
+                if (!isSame(filteredResponse, previousResponse)) {
                     console.log("Loading table");
-                    createTables(getSearchRows(response), pageStart);
+                    createTables(filteredResponse, pageStart);
 
                     // Update active button
                     setActiveButton(activeButtonID);
                 }
-                previousResponse = response;
+                previousResponse = filteredResponse;
             }
         }
     }
@@ -559,6 +560,7 @@ function createPageButtons(pageLength, responseLength) {
  * Update the current active button
  */
 function setActiveButton(id) {
+    console.log("Updating active button");
     // Update global activeButtonID
     activeButtonID = id;
 
@@ -732,7 +734,7 @@ function resetActiveButton() {
  * @param {array} previousResponse the current response array
  * @returns true if the same, false otherwise
  */
-function compare(currentResponse, previousResponse) {
+function isSame(currentResponse, previousResponse) {
     // Check to see if the length is the same before checking every object
     if (currentResponse.length != previousResponse.length)
         return false;
@@ -744,6 +746,7 @@ function compare(currentResponse, previousResponse) {
 
         // Loop through every attribute of every index of the response and compare
         for (let j = 0; j < currentA.length; j++) {
+            // console.log(`${currentA[j]} = ${previousA[j]}: ${currentA[j] != previousA[j]}`);
             if (currentA[j] != previousA[j])
                 return false;
         }
