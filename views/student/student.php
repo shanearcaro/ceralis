@@ -42,7 +42,7 @@
                     </div>
                     <div class="searchbar-search searchbar-element">
                         <p id='search-text'>Search: </p>
-                        <input type="text" id='dash-search-input' onkeyup='loadTables()'>
+                        <input type="text" id='dash-search-input' onkeyup='updateDisplayAmount()'>
                     </div>
                 </div>
                 <div class="dash-table-div">

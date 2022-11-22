@@ -53,6 +53,11 @@ let activeButtonID = ACTIVE_BUTTON;
 let requestCode = -1;
 
 /**
+ * Previous response. This will be used to determine whether the page needs to be reloaded or not.
+ */
+let previousResponse = "";
+
+/**
  * Sleep for a specified duration of time
  * @param {int} time - the number of milliseconds to sleep
  * @returns promise
@@ -188,7 +193,6 @@ function disableBack() {
  * Load the tables based on a request
  */
 function loadTables() { 
-    console.log("Loading tables");
     // Load table based on request code so it can be used for teacher table as well
     requestCode = Number(document.getElementById("table-rc").innerText);
 
@@ -202,21 +206,27 @@ function loadTables() {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-            console.log(ajax.responseText);
 
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
                 // Reset table state to default empty state
                 responseLength = 0;
                 resetTableState();
+                previousResponse = "";
             }
             else {
                 // Display results
                 const response = JSON.parse(ajax.responseText);
-                createTables(getSearchRows(response), pageStart);
+                
+                // Only update if the previous response is different than the current response
+                if (compare(response, previousResponse)) {
+                    console.log("Loading table");
+                    createTables(getSearchRows(response), pageStart);
 
-                // Update active button
-                setActiveButton(activeButtonID);
+                    // Update active button
+                    setActiveButton(activeButtonID);
+                }
+                previousResponse = response;
             }
         }
     }
@@ -450,7 +460,8 @@ function updateDisplayAmount() {
     pageLength = displayAmount;
 
     // Reset the active button to the first page
-    setActiveButton(`legend-button-${1}`);
+    if (activeButtonID != ACTIVE_BUTTON)
+        setActiveButton(ACTIVE_BUTTON);
 
     // Reload table and page buttons
     loadTables();
@@ -536,7 +547,11 @@ function createPageButtons(pageLength, responseLength) {
         pageEnd = responseLength - pageStart;
 
         // Update active button
-        setActiveButton(`legend-button-${newID}`);
+        const newButtonID = `legend-button-${newID}`;
+
+        // Only update active button if needed
+        if (activeButtonID != newButtonID)
+            setActiveButton(newButtonID);
     }
 }
 
@@ -706,6 +721,34 @@ function resetActiveButton() {
         if (!updated)
             activeButton = ACTIVE_BUTTON;
     }
+}
+
+/**
+ * Compare all the objects in the previous and current response arrays to determine
+ * if the responses are the same. If the responses are not the same the updated response 
+ * should be displayed on the screen. If the responses are the same it doesn't make sense
+ * to update the entire table and page buttons.
+ * @param {array} currentResponse the previous response array
+ * @param {array} previousResponse the current response array
+ * @returns true if the same, false otherwise
+ */
+function compare(currentResponse, previousResponse) {
+    // Check to see if the length is the same before checking every object
+    if (currentResponse.length != previousResponse.length)
+        return false;
+
+    // Loop through every index of the response
+    for (let i = 0; i < currentResponse.length; i++) {
+        const currentA = Object.values(currentResponse[i]);
+        const previousA = Object.values(previousResponse[i]);
+
+        // Loop through every attribute of every index of the response and compare
+        for (let j = 0; j < currentA.length; j++) {
+            if (currentA[j] != previousA[j])
+                return false;
+        }
+    }
+    return true;
 }
 
 /**
