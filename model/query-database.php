@@ -44,11 +44,8 @@ $request_code = $data->{'request'};
  *     [userid]
  *     [examid, userid, title, points, score, name, ]
  * 
- * 3 - Student Delete Exam
- *     [userid, examid]
- *     []
- * 4 - Teacher Delete Exam
- *     [userid, examid]
+ * 3 - Delete Exam
+ *     [userid, examid, studentid]
  *     []
  */
 

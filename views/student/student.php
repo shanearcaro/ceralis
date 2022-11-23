@@ -11,6 +11,7 @@
     <link rel="Stylesheet" href="style/student/student.css?<?php echo time();?>">
     <?php include(dirname(__FILE__, 3) . "/style/includes/stylesheets.php");?>
     <script type="text/javascript" src="scripts/update-view.js??<?php echo time();?>"></script>
+    <script type="text/javascript" src="scripts/authenticate-user.js??<?php echo time();?>"></script>
     <title>Student Portal</title>
 </head>
 <body onload="onLoad()">
