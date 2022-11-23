@@ -1,3 +1,6 @@
+@import url("/style/includes/logout-button.css");
+@import url("/style/includes/table.css");
+
 /* Reset values to 0 */
 * { 
     margin: 0px; 
@@ -7,17 +10,108 @@
 }
 
 body {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    min-width: max-content;
+    min-height: max-content;
 }
 
+/* ========== ENTIRE PAGE EXCLUDING HEADER ========== */
 .content-area {
     position: absolute;
     width: inherit;
     height: 90%;
     bottom: 0;
 
+    min-height: max-content;
+}
+
+/* ========== START OF DASHBOARD PANEL ========== */
+.content-panel {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 5rem;
+    
+    min-width: max-content;
+    min-height: 10%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    padding-right: 2rem;
+    background-color: var(--content-bg);
+}
+
+.panel-list-area {
+    height: 100%;
+    min-height: 100%;
+    min-width: max-content;
+
+    display: flex;
+    margin-right: 12.5vw;
+}
+
+.panel-list {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    list-style: none;
+
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.panel-hover {
+    height: 100%;
+}
+
+.panel-div {
+    width: 33%;
+    min-width: max-content;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    text-align: center;
 }
+
+.panel-hover:hover {
+    background-color: var(--panel-hover);
+}
+
+.panel-element {
+    min-width: max-content;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    height: 25%;
+}
+
+.panel-element:hover {
+    color: red;
+    cursor: pointer;
+}
+/* ========== END OF DASHBOARD PANEL ========== */
+
+/* ========== CONTENT TABLE AREA ========== */
+.content-dash {
+    position: relative;
+    margin: auto;
+    bottom: 0;
+    
+    width: 60%;
+    height: max-content;
+    min-height: max-content;
+    margin-top: 5rem;
+    margin-bottom: 10rem;
+
+}
+

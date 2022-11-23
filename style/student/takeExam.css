@@ -1,0 +1,26 @@
+@import url("/style/includes/logout-button.css");
+
+/* Reset values to 0 */
+* { 
+    margin: 0px; 
+    padding: 0px;
+    letter-spacing: -0.05em;
+    font-family: 'Lato', sans-serif; 
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    min-width: max-content;
+    min-height: max-content;
+}
+
+/* ========== ENTIRE PAGE EXCLUDING HEADER ========== */
+.content-area {
+    position: absolute;
+    width: inherit;
+    height: 90%;
+    bottom: 0;
+
+    min-height: max-content;
+}
