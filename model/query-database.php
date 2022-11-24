@@ -47,6 +47,9 @@ $request_code = $data->{'request'};
  * 3 - Delete Exam
  *     [userid, examid, studentid]
  *     []
+ * 4 - Get exam questions
+ *     [examid]
+ *     [examid, questionid, points, answer, comment]
  */
 
 //  Execute queries based on request 
@@ -76,7 +79,7 @@ switch($request_code) {
             INNER JOIN Users AS u ON se.user_id = u.user_id
             WHERE e.user_id = ?
             ORDER BY e.exam_id ASC");
-            $query->execute([$data->{'userid'}]);
+        $query->execute([$data->{'userid'}]);
         break;
     case 3:
         $query = $pdo->prepare(
@@ -84,10 +87,21 @@ switch($request_code) {
             WHERE user_id = ? AND exam_id= ?");
         $query->execute([$data->{'studentid'}, $data->{'examid'}]);
 
-        // Return true
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
         echo json_encode(true);
         exit();
-}
+    case 4:
+        $query = $pdo->prepare(
+            "SELECT eq.exam_id, eq.question_id, eq.points, eq.answer, eq.comment
+            FROM ExamQuestions as eq
+            WHERE eq.exam_id = ?
+            ORDER BY e.question_id");
+        $query->execute([$data->{'examid'}]);
+        break;
+}       
 
 // Fetch data and return
 $response = $query->fetchAll();
