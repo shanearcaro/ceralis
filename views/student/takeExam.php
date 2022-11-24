@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"> 
-    <link rel="Stylesheet" href="style/student/student.css?<?php echo time();?>">
+    <link rel="Stylesheet" href="style/student/takeExam.css?<?php echo time();?>">
     <?php include(dirname(__FILE__, 3) . "/style/includes/stylesheets.php");?>
     <title>Student Portal</title>
 </head>
@@ -16,7 +16,21 @@
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
     <div class="content-area">
         <p class="disabled" id="table-rc">1</p>
-        <div class="content-dash">
+        <div class="area-column" id="left-column"></div>
+        <div class="area-column" id="middle-column">
+            <div class="middle-content">
+                <div class="question-header">
+                    <div class="question-container">
+                        <h1 id="question-number">Question 1</h1>
+                    </div>
+                    <div class="question-container">
+                        <h1 id="question-points">15 pts</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="area-column" id="right-column">
+
         </div>
     </div>
 </body>

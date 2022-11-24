@@ -1,0 +1,17 @@
+/* DEFINE COLORS */
+:root {
+    
+    --panel-hover:  rgb(220, 220, 220);     /* Banner element highlight */
+    --content-bg:   rgb(247, 247, 247);     /* Main content background  */
+    --dash-bg:      rgb(246, 246, 246);     /* Table title background   */
+    --dash-ol:      rgb(200, 200, 200);     /* Table title outline      */
+    --page-ol:      rgb(160, 160, 160);     /* Page buttons outline     */
+    --cell-light:   rgb(255, 255, 255);     /* Cell row light           */
+    --cell-dark:    rgb(245, 245, 245);     /* Cell row dark            */
+    --cell-hover:   rgb(246, 234, 166);     /* Cell row hover           */
+    --active-btn:   rgb(79, 161, 236);      /* Active button highlight  */
+    --active-btn-h: rgb(91, 143, 185);      /* Active button highlight  */
+    --active-hover: rgb(190, 190, 190);     /* Active button hover bg   */
+    --take-color:   rgb(72, 147, 218);      /* Action button take bg    */
+    --review-color: rgb(218, 83, 72);       /* Action button review bg  */
+}
