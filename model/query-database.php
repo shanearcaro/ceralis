@@ -98,7 +98,7 @@ switch($request_code) {
             "SELECT eq.exam_id, eq.question_id, eq.points, eq.answer, eq.comment
             FROM ExamQuestions as eq
             WHERE eq.exam_id = ?
-            ORDER BY e.question_id");
+            ORDER BY eq.question_id");
         $query->execute([$data->{'examid'}]);
         break;
 }       

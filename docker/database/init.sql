@@ -149,5 +149,4 @@ INSERT INTO `StudentExams` (`user_id`, `exam_id`, `score`, `date`) VALUES ('3', 
 INSERT INTO `StudentExams` (`user_id`, `exam_id`, `score`, `date`) VALUES ('3', '29', '68', '2022-12-24 22:49:13.000000');
 INSERT INTO `StudentExams` (`user_id`, `exam_id`, `score`, `date`) VALUES ('3', '30', '64', '2022-12-25 22:49:13.000000');
 
--- DELETE FROM Exams;
--- DELETE FROM StudentExams;
+INSERT INTO `ExamQuestions` (`exam_id`, `question_id`, )

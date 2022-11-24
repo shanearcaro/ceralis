@@ -10,9 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"> 
     <link rel="Stylesheet" href="style/student/takeExam.css?<?php echo time();?>">
     <?php include(dirname(__FILE__, 3) . "/style/includes/stylesheets.php");?>
-    <title>Student Portal</title>
+    <script type="text/javascript" src="scripts/render-examquestion.js??<?php echo time();?>"></script>
+    <title id="page-title">Student Portal</title>
 </head>
-<body onload="">
+<body onload="onLoad()">
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
     <div class="content-area">
         <p class="disabled" id="table-rc">1</p>
@@ -21,10 +22,10 @@
             <div class="middle-content">
                 <div class="question-header">
                     <div class="question-container">
-                        <h1 id="question-number">Question 1</h1>
+                        <h1 id="question-number"></h1>
                     </div>
                     <div class="question-container">
-                        <h1 id="question-points">15 pts</h1>
+                        <h1 id="question-points"></h1>
                     </div>
                 </div>
             </div>
