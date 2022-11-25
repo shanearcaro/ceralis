@@ -18,6 +18,7 @@ let questionIndex = 0;
  * which buttons should be displayed to the user during the exam.
  */
 let questionsAmount;
+
 /**
  * Questions only need to be loaded a single time because the questions will never change
  * during the exam. This means that the questions can be cached after the initial load.
@@ -133,10 +134,15 @@ function resizeTextarea() {
  * otherwise display previous and submit buttons.
  */
 function displayNavButtons() {
+    // Buttons are always dynamic so use a list to display them
     let buttons = [];
 
+    // If the current question is not the first one
     if (questionIndex != 0) {
+        // Create the previous button
         const previous = createNavButton("previous");
+
+        // Add on click to button
         previous.onclick = function() {
             saveStudentAnswer();
             questionIndex--;
@@ -144,17 +150,25 @@ function displayNavButtons() {
         }
         buttons.push(previous);
     }
+
     // If the student is on the last question in the exam
     if (questionIndex == questionsAmount - 1) {
+        // Create the submit button
         const submit = createNavButton("submit");
+
+        // Add on click to button
         submit.onclick = function() {
             saveStudentAnswer();
             displayQuestion();
         }
         buttons.push(submit);
     }
+    // If the student is not on the last question in the exam
     else {
+        // Create the next button
         const next = createNavButton("next");
+
+        // Add on click to button
         next.onclick = function() {
             saveStudentAnswer();
             questionIndex++;
@@ -163,12 +177,20 @@ function displayNavButtons() {
         buttons.push(next);
     }
 
+    // Get the buttons container and reset the HTML
     const container = document.getElementById("buttons-container");
     container.innerHTML = "";
-    for (let i = 0; i < buttons.length; i++) {
-        container.appendChild(buttons[i]);
-    }
 
+    // Add all created buttons to the container
+    for (let i = 0; i < buttons.length; i++)
+        container.appendChild(buttons[i]);
+
+    /**
+     * If only one button is being created then add the shift right class to it.
+     * The buttons container uses space-between to position the buttons but this
+     * breaks if only one button exists. shift-right ensures that the buttons are
+     * always aligned no matter the amount created.
+     */
     if (buttons.length == 1)
         container.classList.add("shift-right");
     else
