@@ -177,7 +177,7 @@ function createTables(response) {
 
     // Horizontal header infromation
     const headers = getHeader();
-    const data = getTag();
+    const data = ["index", "name", "title", "points", "date", "action"];
 
     // Create cell class descriptors
     const prefix = "cell";
@@ -205,7 +205,7 @@ function createTables(response) {
 
         // Current exam
         const exam = response[i];
-        const elements = getElement(exam);
+        const elements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
         
         // Counter for how many rows are being displayed
         displayAmount++;
@@ -665,31 +665,6 @@ function getHeader() {
             return ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
         case 2:
             return ['ID', 'Student', 'Title', 'Score', 'Date', "Action"];
-    }
-}
-
-/**
- * Get all tag information for a specific request type.
- * @returns tag information array
- */
-function getTag() {
-    switch (requestCode) {
-        case 1:
-        case 2:
-            return ["index", "name", "title", "points", "date", "action"];
-    }
-}
-
-/**
- * Given an object get all element information for a specific request type.
- * @param {object} element object to get attributes from
- * @returns element information array
- */
-function getElement(element) {
-    switch (requestCode) {
-        case 1:
-        case 2:
-            return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
     }
 }
 
