@@ -157,7 +157,7 @@ function displayNavButtons() {
         const submit = createNavButton("submit");
 
         // Add on click to button if all questions are answered
-        if (studentAnswers.length == questionsAmount) {
+        if (Object.keys(studentAnswers).length == questionsAmount) {
             submit.onclick = function() {
                 saveStudentAnswer();
                 displayQuestion();
