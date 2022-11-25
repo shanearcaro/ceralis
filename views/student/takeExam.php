@@ -28,6 +28,15 @@
                         <h1 id="question-points"></h1>
                     </div>
                 </div>
+                <div class="question-text-container">
+                    <textarea name="text" id="question-text" cols="30" readonly></textarea>
+                </div>
+                <div class="question-answer">
+
+                </div>
+                <div class="question-buttons">
+
+                </div>
             </div>
         </div>
         <div class="area-column" id="right-column">
