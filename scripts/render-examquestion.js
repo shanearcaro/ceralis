@@ -25,6 +25,13 @@ let questionsAmount;
 let questionsCache;
 
 /**
+ * List of the student's answer to each question. This has to be recorded at the the time
+ * that any question nav button gets pressed because the chained function calls will create
+ * a new textarea.
+ */
+let studentAnswers = [];
+
+/**
  * Set the page up with its default values
  */
 function onLoad() {
@@ -131,6 +138,7 @@ function displayNavButtons() {
     if (questionIndex != 0) {
         const previous = createNavButton("previous");
         previous.onclick = function() {
+            saveStudentAnswer();
             questionIndex--;
             displayQuestion();
         }
@@ -140,13 +148,15 @@ function displayNavButtons() {
     if (questionIndex == questionsAmount - 1) {
         const submit = createNavButton("submit");
         submit.onclick = function() {
-            console.log("SUBMITTING");
+            saveStudentAnswer();
+            displayQuestion();
         }
         buttons.push(submit);
     }
     else {
         const next = createNavButton("next");
         next.onclick = function() {
+            saveStudentAnswer();
             questionIndex++;
             displayQuestion();
         }
@@ -205,6 +215,9 @@ function createAnswerTextarea(offset) {
     answerArea.id = "student-answer";
     answerArea.style.height = availableSpace + "px";
 
+    // Max length of the varchar in the sql database
+    answerArea.maxLength = 2000;
+
     // Used to allow the textarea to use tabs
     answerArea.onkeydown = function(event) {
         textAreaPress(event);
@@ -213,8 +226,14 @@ function createAnswerTextarea(offset) {
     // Get parent element for the textarea
     const parent = document.getElementsByClassName("question-answer")[0];
 
-     // Clear the parents previous HTML and append the newly created textarea as the only child
+    // Clear parent previous HTML to avoid multiple created textareas
     parent.innerHTML = "";
+
+    // If the current question has already been answered set the text to that answer
+    if (studentAnswers.length > questionIndex)
+        answerArea.innerText = studentAnswers[questionIndex];
+
+    // Add textarea to parent
     parent.appendChild(answerArea);
 }
 
@@ -228,4 +247,21 @@ function textAreaPress(event) {
         event.preventDefault();
         textarea.setRangeText("\t", textarea.selectionStart, textarea.selectionStart, 'end');
     }
+}
+
+/**
+ * Save the student's answer to the current question.
+ */
+function saveStudentAnswer() {
+    // Get the value of the current answer
+    const value = document.getElementById("student-answer").value;
+
+    /**
+     * Don't record non-answered questions. Althought it doesn't actually matter
+     * since the textarea would be set to a blank string, if the value is added
+     * to the studentAnswers list it breaks the text loading logic at the bottom
+     * of the createTextare function. 
+     */
+    if (value != "")
+        studentAnswers[questionIndex] = value;
 }
