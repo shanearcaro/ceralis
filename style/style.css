@@ -118,6 +118,7 @@ body {
     margin-left: 1vw;
     margin-bottom: 1vh;
     margin-top: 1.5vh;
+    display:inline-block;
 }
 
 .form-required {
@@ -137,6 +138,7 @@ body {
 #form-button {
     margin-top: 3vh;
     margin-left: 1vw;
+    margin-bottom: 3vh;
     width: 20%;
     height: 1.5rem;
     border: 1px solid rgb(143, 143, 157);

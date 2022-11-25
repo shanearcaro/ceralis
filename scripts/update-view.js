@@ -697,6 +697,8 @@ function getHeader() {
             return ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
         case 2:
             return ['ID', 'Student', 'Title', 'Score', 'Date', "Action"];
+        case 4:
+            return ['ID', 'Type', 'Difficulty', 'Case 1', 'Case 2', "Action"];
     }
 }
 
@@ -709,6 +711,8 @@ function getTag() {
         case 1:
             return ["index", "name", "title", "points", "date", "action"];
         case 2:
+            return ["index", "name", "title", "points", "date", "action"];
+        case 4:
             return ["index", "name", "title", "points", "date", "action"];
     }
 }
@@ -724,6 +728,8 @@ function getElement(element) {
             return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
         case 2:
             return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
+        case 4:
+            return [element.question_id, element.type, element.difficulty, element.case1, element.case2];
     }
 }
 
@@ -737,6 +743,8 @@ function getPurpose() {
             return ["take", "review", "delete"];
         case 2:
             return ["grade", "review", "delete"];
+        case 4:
+            return ["delete"];
     }
 }
 
@@ -768,6 +776,136 @@ function formatDate(datetime) {
  */
 function formatScore(score, points) {
     return String(score / points * 100) + "%";
+}
+
+//Add up to 5 test cases to the file
+function extraTestCase() {
+    const prefix = "testCase";
+    var numOfCases;
+
+    //Check if there are 5 test cases and if there are, return
+    for(let i=3; i<=5; i++){
+        if(document.getElementById(prefix + i + "Label") == null){
+            numOfCases = i;
+            break;
+        }
+        else
+            numOfCases = i;
+        if(numOfCases == 5)
+            return;
+    }
+    
+    // Create elements for test case label and input fields and add attributes
+    const labelName = prefix + numOfCases + "Label";
+    const inputName = prefix + numOfCases + "Input";
+    const testCaseSolutionLabel = prefix + numOfCases + "SolutionLabel";
+    const testCaseSolutionInput = prefix + numOfCases + "Solution";
+    const breakId1 = "break1" + numOfCases;
+    const breakId2 = "break2" + numOfCases;
+    const breakId3 = "break3" + numOfCases;
+    const breakId4 = "break4" + numOfCases;
+
+    const testCaseLabel = document.createElement("label");
+    const testCaseInput = document.createElement("input");
+    const solutionLabel = document.createElement("label");
+    const solutionInput = document.createElement("input");
+    const lineBreak1 = document.createElement("br");
+    const lineBreak2 = document.createElement("br");
+    const lineBreak3 = document.createElement("br");
+    const lineBreak4 = document.createElement("br");
+
+    //Set attributes for test case label
+    testCaseLabel.setAttribute("for", inputName);
+    testCaseLabel.setAttribute("id", labelName);
+    testCaseLabel.setAttribute("class", "form-label");
+    testCaseLabel.innerHTML = "Test Case " + numOfCases;
+
+    //Set attributes for test case input box
+    testCaseInput.setAttribute("name", inputName);
+    testCaseInput.setAttribute("type", "text");
+    testCaseInput.setAttribute("id", inputName);
+    testCaseInput.setAttribute("class", "form-input");
+
+    //Set attributes for solution label
+    solutionLabel.setAttribute("for", testCaseSolutionInput);
+    solutionLabel.setAttribute("id", testCaseSolutionLabel);
+    solutionLabel.setAttribute("class", "form-label");
+    solutionLabel.innerHTML = "Test Case " + numOfCases + " Expected Solution";
+
+    //Set attributes for solution input
+    solutionInput.setAttribute("name", testCaseSolutionInput);
+    solutionInput.setAttribute("type", "text");
+    solutionInput.setAttribute("id", testCaseSolutionInput);
+    solutionInput.setAttribute("class", "form-input");
+
+    //Sets ids for all of the line breaks
+    lineBreak1.setAttribute("id", breakId1);
+    lineBreak2.setAttribute("id", breakId2);
+    lineBreak3.setAttribute("id", breakId3);
+    lineBreak4.setAttribute("id", breakId4);
+
+    numOfCases = numOfCases - 1;
+    const getAddButtonId = document.getElementById("testCaseButton");
+    const getRemoveId = document.getElementById("removeTestCaseButton");
+
+    getAddButtonId.insertAdjacentElement('beforebegin', testCaseLabel);
+    getAddButtonId.insertAdjacentElement('beforebegin', lineBreak1);
+    getAddButtonId.insertAdjacentElement('beforebegin', testCaseInput);
+    getAddButtonId.insertAdjacentElement('beforebegin', lineBreak2);
+
+    getRemoveId.insertAdjacentElement('beforebegin', solutionLabel);
+    getRemoveId.insertAdjacentElement('beforebegin', lineBreak3);
+    getRemoveId.insertAdjacentElement('beforebegin', solutionInput);
+    getRemoveId.insertAdjacentElement('beforebegin', lineBreak4);
+
+
+}
+
+//Remove test cases 3 to 5
+function removeTestCase() {
+    const prefix = "testCase";
+    var numOfCases;
+
+    //Check if there are  only 2 test cases and if there are, return
+    for(let i=5; i>=2; i--){
+        if(document.getElementById(prefix + i + "Label") == null)
+            continue;
+        else{
+            numOfCases = i;
+            break;
+        }
+    }
+
+    if(numOfCases == 2)
+        return;
+    
+    const labelName = prefix + numOfCases + "Label";
+    const inputName = prefix + numOfCases + "Input";
+    const testCaseSolutionLabel = prefix + numOfCases + "SolutionLabel";
+    const testCaseSolutionInput = prefix + numOfCases + "Solution";
+
+    const breakId1 = "break1" + numOfCases;
+    const breakId2 = "break2" + numOfCases;
+    const breakId3 = "break3" + numOfCases;
+    const breakId4 = "break4" + numOfCases;
+
+    const getTestCaseLabel = document.getElementById(labelName);
+    const getTestCaseInput = document.getElementById(inputName);
+    const getSolutionLabel = document.getElementById(testCaseSolutionLabel);
+    const getSolutionInput = document.getElementById(testCaseSolutionInput);
+    const getBreakId1 = document.getElementById(breakId1);
+    const getBreakId2 = document.getElementById(breakId2);
+    const getBreakId3 = document.getElementById(breakId3);
+    const getBreakId4 = document.getElementById(breakId4);
+
+    getTestCaseLabel.parentNode.removeChild(getTestCaseLabel);
+    getTestCaseInput.parentNode.removeChild(getTestCaseInput);
+    getSolutionLabel.parentNode.removeChild(getSolutionLabel);
+    getSolutionInput.parentNode.removeChild(getSolutionInput);
+    getBreakId1.parentNode.removeChild(getBreakId1);
+    getBreakId2.parentNode.removeChild(getBreakId2);
+    getBreakId3.parentNode.removeChild(getBreakId3);
+    getBreakId4.parentNode.removeChild(getBreakId4);
 }
 
 // Validate session on every focus of each page

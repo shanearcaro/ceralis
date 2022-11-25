@@ -18,7 +18,7 @@ get('/student',                 '/views/student/student.php');
 
 // Teacher routes
 get('/teacher',                 '/views/teacher/teacher.php');
-
+get('/questions',               '/views/teacher/createQuestions.php');
 // Teacher requests
 // TODO
 
