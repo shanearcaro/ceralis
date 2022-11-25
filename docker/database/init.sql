@@ -23,7 +23,7 @@ CREATE TABLE Exams (
 
 CREATE TABLE Questions (
     question_id INT AUTO_INCREMENT NOT NULL,
-    text VARCHAR(300) NOT NULL,
+    text VARCHAR(500) NOT NULL,
     difficulty ENUM ('Easy', 'Medium', 'Hard') NOT NULL,
     `constraint` ENUM ('For', 'While', 'Recursion'),
     PRIMARY KEY(question_id)
