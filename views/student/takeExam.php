@@ -19,7 +19,7 @@
         <p class="disabled" id="table-rc">1</p>
         <div class="area-column" id="left-column"></div>
         <div class="area-column" id="middle-column">
-            <div class="middle-content">
+            <div class="middle-content" id="middle-question-container">
                 <div class="question-header">
                     <div class="question-container">
                         <h1 id="question-number"></h1>

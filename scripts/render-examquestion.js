@@ -93,9 +93,6 @@ function loadQuestions() {
     ajax.send(credentials);
 }
 
-function createTextArea() {
-}
-
 function displayQuestion() {
     // Set question attributes to those gathered from the query request
     document.getElementById("question-number").innerText = "Question " + (questionIndex + 1);
@@ -105,6 +102,7 @@ function displayQuestion() {
     // Resize text area after setting the text
     resizeTextarea();
     displayNavButtons();
+    createAnswerTextarea(50);
 }
 
 /**
@@ -120,7 +118,7 @@ function resizeTextarea() {
     // Height needs to be set to 0 or it defaults to the previous scrollHeight
     // and adds the new height to the old height for some unknown reason.
     ta.style.height = "0px";
-    ta.style.height = ta.scrollHeight + 'px';
+    ta.style.height = ta.scrollHeight + "px";
 }
 
 /**
@@ -160,6 +158,11 @@ function displayNavButtons() {
     for (let i = 0; i < buttons.length; i++) {
         container.appendChild(buttons[i]);
     }
+
+    if (buttons.length == 1)
+        container.classList.add("shift-right");
+    else
+        container.classList.remove("shift-right");
 }
 
 /**
@@ -178,4 +181,51 @@ function createNavButton(text) {
     button.classList.add(buttonClass);
     
     return button;
+}
+
+/**
+ * Create a text area for the student to type their respose to the question. The textarea
+ * height needs to be dynamic because the question height is also dynamic.
+ * @param {number} offset the pixel offset that should be applied to the answer height
+ */
+function createAnswerTextarea(offset) {
+    // Get the total height of the quesiton div
+    const totalHeight = document.getElementById("middle-question-container").offsetHeight;
+
+    // Get the height of all children within the parent div
+    const headerHeight = document.getElementsByClassName("question-header")[0].offsetHeight;
+    const questionHeight = document.getElementById("question-text").offsetHeight;
+    const buttonsHeight = document.getElementsByClassName("question-buttons")[0].offsetHeight;
+
+    // Calculate the remaining available space - offset
+    const availableSpace = totalHeight - (headerHeight + questionHeight + buttonsHeight) - offset;
+
+    // Create the text area based off the previous height
+    const answerArea = document.createElement("textarea");
+    answerArea.id = "student-answer";
+    answerArea.style.height = availableSpace + "px";
+
+    // Used to allow the textarea to use tabs
+    answerArea.onkeydown = function(event) {
+        textAreaPress(event);
+    };
+
+    // Get parent element for the textarea
+    const parent = document.getElementsByClassName("question-answer")[0];
+
+     // Clear the parents previous HTML and append the newly created textarea as the only child
+    parent.innerHTML = "";
+    parent.appendChild(answerArea);
+}
+
+/**
+ * Allow the textarea to use the tab key
+ * @param {key press event} event 
+ */
+function textAreaPress(event) {
+    const textarea = document.getElementById("student-answer");
+    if (event.key == "Tab") {
+        event.preventDefault();
+        textarea.setRangeText("\t", textarea.selectionStart, textarea.selectionStart, 'end');
+    }
 }

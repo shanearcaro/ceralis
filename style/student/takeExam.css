@@ -113,7 +113,79 @@ body {
     padding-right: 1vw;
 }
 
-#right-column {
+.question-answer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#student-answer {
+    width: 85%;
+    padding: 0.5vh 0.5vw;
+
+    resize: none;
+    border: 1px solid var(--dash-ol);
+    /* border: none; */
+
+    margin-top: 1.5vh;
+    margin-bottom: 1.5vh;
+}
+
+#student-answer:focus {
+    outline: none;
+}
+
+.question-buttons {
+    width: 100%;
+    height: 5%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.buttons-container {
+    width: 40%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.shift-right {
+    justify-content: flex-end;
+    padding-right: 1.9vw;
+}
+
+.nav-button {
+    width: 30%;
+    height: 100%;
+
+    text-transform: capitalize;
+
+    border: none;
+    border-radius: 3px;
+
+    font-weight: 700;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.button-previous {
+    background-color: var(--take-color);
+}
+
+.button-next, .button-submit {
+ background-color: var(--review-color);
+}
+
+.right-column {
    width: 34%;
    /* background-color: red; */
 }
