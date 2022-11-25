@@ -38,6 +38,8 @@ CREATE TABLE Testcases (
     PRIMARY KEY (testcase_id)
 );
 
+-- Score should probably default as null but previous logic works
+-- when -1 is used as the default value. Might change in later version
 CREATE TABLE StudentExams (
     user_id INT NOT NULL,
     exam_id INT NOT NULL,
