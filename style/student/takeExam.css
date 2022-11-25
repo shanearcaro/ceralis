@@ -189,6 +189,10 @@ textarea {
     align-items: center;
 }
 
+.nav-button:not(.disabled-submit):hover {
+    cursor: pointer;
+}
+
 .button-previous {
     background-color: var(--take-color);
 }
@@ -204,4 +208,8 @@ textarea {
 
 .disabled {
     display: none;
+}
+
+.disabled-submit {
+    background-color: var(--dash-ol);
 }

@@ -26,11 +26,11 @@ let questionsAmount;
 let questionsCache;
 
 /**
- * List of the student's answer to each question. This has to be recorded at the the time
+ * Dict of the student's answer to each question. This has to be recorded at the the time
  * that any question nav button gets pressed because the chained function calls will create
  * a new textarea.
  */
-let studentAnswers = [];
+let studentAnswers = {};
 
 /**
  * Set the page up with its default values
@@ -156,10 +156,15 @@ function displayNavButtons() {
         // Create the submit button
         const submit = createNavButton("submit");
 
-        // Add on click to button
-        submit.onclick = function() {
-            saveStudentAnswer();
-            displayQuestion();
+        // Add on click to button if all questions are answered
+        if (studentAnswers.length == questionsAmount) {
+            submit.onclick = function() {
+                saveStudentAnswer();
+                displayQuestion();
+            }
+        }
+        else {
+            submit.classList.add("disabled-submit");
         }
         buttons.push(submit);
     }
@@ -252,7 +257,7 @@ function createAnswerTextarea(offset) {
     parent.innerHTML = "";
 
     // If the current question has already been answered set the text to that answer
-    if (studentAnswers.length > questionIndex)
+    if (studentAnswers[questionIndex] !== undefined)
         answerArea.innerText = studentAnswers[questionIndex];
 
     // Add textarea to parent
@@ -281,7 +286,7 @@ function saveStudentAnswer() {
     /**
      * Don't record non-answered questions. Althought it doesn't actually matter
      * since the textarea would be set to a blank string, if the value is added
-     * to the studentAnswers list it breaks the text loading logic at the bottom
+     * to the studentAnswers dict it breaks the text loading logic at the bottom
      * of the createTextare function. 
      */
     if (value != "")
