@@ -93,6 +93,9 @@ function loadQuestions() {
     ajax.send(credentials);
 }
 
+function createTextArea() {
+}
+
 function displayQuestion() {
     // Set question attributes to those gathered from the query request
     document.getElementById("question-number").innerText = "Question " + (questionIndex + 1);
@@ -101,6 +104,7 @@ function displayQuestion() {
 
     // Resize text area after setting the text
     resizeTextarea();
+    displayNavButtons();
 }
 
 /**
@@ -112,5 +116,66 @@ function displayQuestion() {
  */
 function resizeTextarea() {
     const ta = document.getElementById("question-text");
+
+    // Height needs to be set to 0 or it defaults to the previous scrollHeight
+    // and adds the new height to the old height for some unknown reason.
+    ta.style.height = "0px";
     ta.style.height = ta.scrollHeight + 'px';
+}
+
+/**
+ * If the student is not on the last question in the exam display previous and next buttons
+ * otherwise display previous and submit buttons.
+ */
+function displayNavButtons() {
+    let buttons = [];
+
+    if (questionIndex != 0) {
+        const previous = createNavButton("previous");
+        previous.onclick = function() {
+            questionIndex--;
+            displayQuestion();
+        }
+        buttons.push(previous);
+    }
+    // If the student is on the last question in the exam
+    if (questionIndex == questionsAmount - 1) {
+        const submit = createNavButton("submit");
+        submit.onclick = function() {
+            console.log("SUBMITTING");
+        }
+        buttons.push(submit);
+    }
+    else {
+        const next = createNavButton("next");
+        next.onclick = function() {
+            questionIndex++;
+            displayQuestion();
+        }
+        buttons.push(next);
+    }
+
+    const container = document.getElementById("buttons-container");
+    container.innerHTML = "";
+    for (let i = 0; i < buttons.length; i++) {
+        container.appendChild(buttons[i]);
+    }
+}
+
+/**
+ * Create a nav button with an initial text
+ * @param {string} text name of the button
+ * @returns created nav button 
+ */
+function createNavButton(text) {
+    const button = document.createElement("button");
+    const buttonClass = "button-" + text;
+    text = text.charAt(0).toUpperCase() + text.substring(1);
+
+    button.innerText = text;
+    button.classList.add("button");
+    button.classList.add("nav-button");
+    button.classList.add(buttonClass);
+    
+    return button;
 }

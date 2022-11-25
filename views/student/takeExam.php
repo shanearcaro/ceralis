@@ -35,7 +35,9 @@
 
                 </div>
                 <div class="question-buttons">
-
+                    <div class="buttons-container" id="buttons-container">
+                        
+                    </div>
                 </div>
             </div>
         </div>
