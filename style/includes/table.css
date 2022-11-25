@@ -210,7 +210,6 @@
 }
 
 .action-button {
-    width: 25%;
     height: 50%;
 
     text-transform: capitalize;
@@ -232,12 +231,20 @@
     cursor: pointer;
 }
 
+.button-take, .button-review {
+    width: 40%;
+}
+
 .button-take {
     background-color: var(--take-color);
 }
 
-.button-review {
-    background-color: var(--review-color);
+.button-grade, .button-delete {
+    width: 40%;
+}
+
+.button-grade {
+    background-color: var(--take-color);
 }
 
 .disabled {

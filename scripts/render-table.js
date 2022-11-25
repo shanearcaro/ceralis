@@ -86,7 +86,6 @@ function loadTables(forceReload = false) {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
                 // Reset table state to default empty state
@@ -230,11 +229,14 @@ function createTables(response) {
         }
         
         // Display row information
-        for (let j = 0; j < elements.length; j++)
-            row.cells[j].innerHTML = elements[j];
-        
+        for (let j = 0; j < elements.length; j++) {
+            row.cells[j].innerText = elements[j];
+        }
+
+        console.log();
+
         // Create review and delete buttons
-        createActionButtons(exam.exam_id, exam.user_id);
+        createActionButtons(exam.exam_id, exam.user_id, !(formatScore(exam.score, exam.points) == "None"));
     }
 }
 
@@ -244,7 +246,7 @@ function createTables(response) {
  * the exam from their professor or review an already graded exam if it is ready.
  * @param {number} examID The id for the current exam
  */
-function createActionButtons(examID, studentID) {
+function createActionButtons(examID, studentID, isTaken) {
     /**
      * TODO: This code needs to be changed later so that only a single button will be created at a time,
      * either take or review. These buttons need to be created based on whether the user has already taken
@@ -255,7 +257,8 @@ function createActionButtons(examID, studentID) {
      * able to delete exams from the table if they want. The other button will either be the take exam or reivew exam button.
      */
     // Create two buttons, rewview and delete
-    const purpose = getPurpose();
+    const purpose = getPurpose(isTaken);
+    console.log("Exam ID: " + examID + " - " + isTaken);
     
     let buttons = [];
     for (let i = 0; i < purpose.length; i++)
@@ -694,12 +697,12 @@ function getElement(element) {
  * Get all purpose information for a specific request type
  * @returns purpose information array
  */
-function getPurpose() {
+function getPurpose(isTaken) {
     switch (requestCode) {
         case 1:
-            return ["take", "review"];
+            return isTaken ? ["review"] : ['take'];
         case 2:
-            return ["grade", "review", "delete"];
+            return isTaken ? ["review", "delete"] : ["grade", "delete"];
     }
 }
 
@@ -730,7 +733,9 @@ function formatDate(datetime) {
  * @returns test score in percentage format
  */
 function formatScore(score, points) {
-    return String(score / points * 100) + "%";
+    if (score == -1)
+        return "None";
+    return String(parseInt(score / points * 100)) + "%";
 }
 
 /**
