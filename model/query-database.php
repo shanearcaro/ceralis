@@ -95,8 +95,9 @@ switch($request_code) {
         exit();
     case 4:
         $query = $pdo->prepare(
-            "SELECT eq.exam_id, eq.question_id, eq.points, eq.answer, eq.comment
+            "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
             FROM ExamQuestions as eq
+            INNER JOIN Questions AS q on eq.question_id = q.question_id
             WHERE eq.exam_id = ?
             ORDER BY eq.question_id");
         $query->execute([$data->{'examid'}]);

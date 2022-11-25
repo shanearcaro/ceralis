@@ -9,10 +9,28 @@ let examid;
 let studentid;
 
 /**
+ * The index of which question is currently being loadeded within the question cache
+ */
+let questionIndex = 0;
+
+/**
+ * The total number of questions retrieved from the exam. This is used to determine
+ * which buttons should be displayed to the user during the exam.
+ */
+let questionsAmount;
+
+/**
  * Questions only need to be loaded a single time because the questions will never change
  * during the exam. This means that the questions can be cached after the initial load.
  */
 let questionsCache;
+
+/**
+ * Dict of the student's answer to each question. This has to be recorded at the the time
+ * that any question nav button gets pressed because the chained function calls will create
+ * a new textarea.
+ */
+let studentAnswers = {};
 
 /**
  * Set the page up with its default values
@@ -47,7 +65,7 @@ function setTitle(title) {
  */
 function loadQuestions() {
     // Get questions request code
-    const requestCode = 4
+    const requestCode = 4;
 
     // Format request
     const credentials = `examid=${examid}&request=${requestCode}`;
@@ -60,11 +78,19 @@ function loadQuestions() {
             console.log(ajax.responseText);
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
-
+                /**
+                 * This should never happen as questions can only be requested once a valid exam
+                 * is picked and a valid exam consists of at least a single question.
+                 * If somehow it does happen redirect to error page
+                 */
+                window.location.href = "/404";
             }
             else {
                 // Display results
-                const response = JSON.parse(ajax.responseText);
+                questionsCache = JSON.parse(ajax.responseText);
+                questionsAmount = questionsCache.length;
+                console.log(questionsAmount);
+                displayQuestion();
             }
         }
     }
@@ -73,4 +99,196 @@ function loadQuestions() {
     ajax.open("POST", "/post", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
+}
+
+function displayQuestion() {
+    // Set question attributes to those gathered from the query request
+    document.getElementById("question-number").innerText = "Question " + (questionIndex + 1);
+    document.getElementById("question-points").innerText = questionsCache[questionIndex].points + " pts";
+    document.getElementById("question-text").innerText = questionsCache[questionIndex].text;
+
+    // Resize text area after setting the text
+    resizeTextarea();
+    displayNavButtons();
+    createAnswerTextarea(50);
+}
+
+/**
+ * The textarea within the questions container should be the size of the question text that is being displayed.
+ * This cannot be reliable done using HTML because textarea relies on both the rows and col attributes which are
+ * static. To fix this the height of the textarea is set to the height of the scroll amount. The scroll amount is
+ * the total height needed to display the text.
+ * px is added to the end of the statement so the expression is valid HTML syntax
+ */
+function resizeTextarea() {
+    const ta = document.getElementById("question-text");
+
+    // Height needs to be set to 0 or it defaults to the previous scrollHeight
+    // and adds the new height to the old height for some unknown reason.
+    ta.style.height = "0px";
+    ta.style.height = ta.scrollHeight + "px";
+}
+
+/**
+ * If the student is not on the last question in the exam display previous and next buttons
+ * otherwise display previous and submit buttons.
+ */
+function displayNavButtons() {
+    // Buttons are always dynamic so use a list to display them
+    let buttons = [];
+
+    // If the current question is not the first one
+    if (questionIndex != 0) {
+        // Create the previous button
+        const previous = createNavButton("previous");
+
+        // Add on click to button
+        previous.onclick = function() {
+            saveStudentAnswer();
+            questionIndex--;
+            displayQuestion();
+        }
+        buttons.push(previous);
+    }
+
+    // If the student is on the last question in the exam
+    if (questionIndex == questionsAmount - 1) {
+        // Create the submit button
+        const submit = createNavButton("submit");
+
+        // Add on click to button if all questions are answered
+        if (Object.keys(studentAnswers).length == questionsAmount) {
+            submit.onclick = function() {
+                saveStudentAnswer();
+                displayQuestion();
+            }
+        }
+        else {
+            submit.classList.add("disabled-submit");
+        }
+        buttons.push(submit);
+    }
+    // If the student is not on the last question in the exam
+    else {
+        // Create the next button
+        const next = createNavButton("next");
+
+        // Add on click to button
+        next.onclick = function() {
+            saveStudentAnswer();
+            questionIndex++;
+            displayQuestion();
+        }
+        buttons.push(next);
+    }
+
+    // Get the buttons container and reset the HTML
+    const container = document.getElementById("buttons-container");
+    container.innerHTML = "";
+
+    // Add all created buttons to the container
+    for (let i = 0; i < buttons.length; i++)
+        container.appendChild(buttons[i]);
+
+    /**
+     * If only one button is being created then add the shift right class to it.
+     * The buttons container uses space-between to position the buttons but this
+     * breaks if only one button exists. shift-right ensures that the buttons are
+     * always aligned no matter the amount created.
+     */
+    if (buttons.length == 1)
+        container.classList.add("shift-right");
+    else
+        container.classList.remove("shift-right");
+}
+
+/**
+ * Create a nav button with an initial text
+ * @param {string} text name of the button
+ * @returns created nav button 
+ */
+function createNavButton(text) {
+    const button = document.createElement("button");
+    const buttonClass = "button-" + text;
+    text = text.charAt(0).toUpperCase() + text.substring(1);
+
+    button.innerText = text;
+    button.classList.add("button");
+    button.classList.add("nav-button");
+    button.classList.add(buttonClass);
+    
+    return button;
+}
+
+/**
+ * Create a text area for the student to type their respose to the question. The textarea
+ * height needs to be dynamic because the question height is also dynamic.
+ * @param {number} offset the pixel offset that should be applied to the answer height
+ */
+function createAnswerTextarea(offset) {
+    // Get the total height of the quesiton div
+    const totalHeight = document.getElementById("middle-question-container").offsetHeight;
+
+    // Get the height of all children within the parent div
+    const headerHeight = document.getElementsByClassName("question-header")[0].offsetHeight;
+    const questionHeight = document.getElementById("question-text").offsetHeight;
+    const buttonsHeight = document.getElementsByClassName("question-buttons")[0].offsetHeight;
+
+    // Calculate the remaining available space - offset
+    const availableSpace = totalHeight - (headerHeight + questionHeight + buttonsHeight) - offset;
+
+    // Create the text area based off the previous height
+    const answerArea = document.createElement("textarea");
+    answerArea.id = "student-answer";
+    answerArea.style.height = availableSpace + "px";
+
+    // Max length of the varchar in the sql database
+    answerArea.maxLength = 2000;
+
+    // Used to allow the textarea to use tabs
+    answerArea.onkeydown = function(event) {
+        textAreaPress(event);
+    };
+
+    // Get parent element for the textarea
+    const parent = document.getElementsByClassName("question-answer")[0];
+
+    // Clear parent previous HTML to avoid multiple created textareas
+    parent.innerHTML = "";
+
+    // If the current question has already been answered set the text to that answer
+    if (studentAnswers[questionIndex] !== undefined)
+        answerArea.innerText = studentAnswers[questionIndex];
+
+    // Add textarea to parent
+    parent.appendChild(answerArea);
+}
+
+/**
+ * Allow the textarea to use the tab key
+ * @param {key press event} event 
+ */
+function textAreaPress(event) {
+    const textarea = document.getElementById("student-answer");
+    if (event.key == "Tab") {
+        event.preventDefault();
+        textarea.setRangeText("\t", textarea.selectionStart, textarea.selectionStart, 'end');
+    }
+}
+
+/**
+ * Save the student's answer to the current question.
+ */
+function saveStudentAnswer() {
+    // Get the value of the current answer
+    const value = document.getElementById("student-answer").value;
+
+    /**
+     * Don't record non-answered questions. Althought it doesn't actually matter
+     * since the textarea would be set to a blank string, if the value is added
+     * to the studentAnswers dict it breaks the text loading logic at the bottom
+     * of the createTextare function. 
+     */
+    if (value != "")
+        studentAnswers[questionIndex] = value;
 }

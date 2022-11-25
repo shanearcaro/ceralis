@@ -19,13 +19,24 @@
         <p class="disabled" id="table-rc">1</p>
         <div class="area-column" id="left-column"></div>
         <div class="area-column" id="middle-column">
-            <div class="middle-content">
+            <div class="middle-content" id="middle-question-container">
                 <div class="question-header">
                     <div class="question-container">
                         <h1 id="question-number"></h1>
                     </div>
                     <div class="question-container">
                         <h1 id="question-points"></h1>
+                    </div>
+                </div>
+                <div class="question-text-container">
+                    <textarea name="text" id="question-text" cols="30" readonly></textarea>
+                </div>
+                <div class="question-answer">
+
+                </div>
+                <div class="question-buttons">
+                    <div class="buttons-container" id="buttons-container">
+                        
                     </div>
                 </div>
             </div>
