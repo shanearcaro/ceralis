@@ -25,4 +25,14 @@ if(!isset($_SESSION['user_id'])) {
     if (isset($response->{'user_id'}))
         $_SESSION['user_id'] = $response->{'user_id'};
 } 
-echo $result;
+
+/**
+ * Request code 7 is an autograde request. The query will be handled normally
+ * but before the information is returned to the user the autograder must be run.
+ */
+if ($post_data['request'] == 7) {
+    
+}
+else {
+    echo $result;
+}

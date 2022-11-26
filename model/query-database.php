@@ -70,6 +70,7 @@ switch($request_code) {
             WHERE username = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
+
     case 1:
         $query = $pdo->prepare(
             "SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
@@ -80,6 +81,7 @@ switch($request_code) {
             ORDER BY e.exam_id ASC");
         $query->execute([$data->{'userid'}]);
         break;
+
     case 2:
         $query = $pdo->prepare(
             "SELECT e.exam_id, se.user_id, e.title, e.points, e.date, u.name, se.score
@@ -90,6 +92,7 @@ switch($request_code) {
             ORDER BY e.exam_id ASC");
         $query->execute([$data->{'userid'}]);
         break;
+
     case 3:
         $query = $pdo->prepare(
             "DELETE FROM StudentExams 
@@ -102,6 +105,7 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
+
     case 4:
         $query = $pdo->prepare(
             "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
@@ -111,6 +115,7 @@ switch($request_code) {
             ORDER BY eq.question_id");
         $query->execute([$data->{'examid'}]);
         break;
+
     case 5:
         $query = $pdo->prepare(
             "UPDATE ExamQuestions
@@ -124,8 +129,8 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
+
     case 6:
-        print_r($data);
         $query = $pdo->prepare(
             "UPDATE StudentExams
             SET score = ?
@@ -138,6 +143,9 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
+        
+    case 7:
+        
 }       
 
 // Fetch data and return
