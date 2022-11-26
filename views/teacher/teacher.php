@@ -1,6 +1,3 @@
-<!-- Validate user authentication -->
-<?php require_once("controller/authenticate-login.php"); ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,13 +9,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"> 
     <link rel="Stylesheet" href="style/teacher/teacher.css?<?php echo time();?>">
-    <script type="text/javascript" src="scripts/update-view.js??<?php echo time();?>"></script>
+    <?php include(dirname(__FILE__, 3) . "/style/includes/stylesheets.php");?>
+    <script type="text/javascript" src="scripts/render-table.js??<?php echo time();?>"></script>
+    <script type="text/javascript" src="scripts/authenticate-user.js??<?php echo time();?>"></script>
     <title>Teacher Portal</title>
 </head>
-<body onload="disableBack()">
+<body onload="onLoad()">
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
     <div class="content-area">
-        <h1>Teacher Login</h1>
+        <p class="disabled" id="table-rc">2</p>
+        <div class="content-panel">
+            <div class="panel-list-area">
+                <ul class="panel-list">
+                    <div class="panel-div panel-hover"><li class="panel-element" id='panel-dashboard'>DASHBOARD</li></div>
+                    <div class="panel-div panel-hover"><li class="panel-element" id='panel-exam'>TAKE EXAM</li></div>
+                    <div class="panel-div"><button class="panel-element button" id='logout-button' onclick="logout()">LOG OUT</button></div>
+                </ul>
+            </div>
+        </div>
+        <div class="content-dash">
+            <?php include(dirname(__FILE__, 3) . "/views/includes/table.php");?>
+        </div>
     </div>
 </body>
 </html>

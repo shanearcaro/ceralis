@@ -1,8 +1,5 @@
-#logout-button {
-    padding-left: 1vw;
-    padding-right: 1vw;
-    padding-top: 0.5vh;
-    padding-bottom: 0.5vh;
+.button {
+    width: 100%;
 
     border: none;
     border-radius: 3px;
@@ -10,8 +7,14 @@
 
     font-weight: 700;
     color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
 }
 
-#logout-button:hover {
+.button:hover {
     cursor: pointer;
 }

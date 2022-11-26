@@ -8,11 +8,11 @@ get('/',                        'views/index.php');
 get('/login',                   'views/index.php');
 
 // Login requests
-post('/login/request',          'controller/request-model.php');
 post('/login/query',            'model/query-database.php');
 
 // Student routes
 get('/student',                 '/views/student/student.php');
+get('/exam',                    '/views/student/takeExam.php');
 
 // Student requests
 // TODO
@@ -22,6 +22,9 @@ get('/teacher',                 '/views/teacher/teacher.php');
 
 // Teacher requests
 // TODO
+
+// POST
+post('/post',                   'controller/request-model.php');
 
 // Unknown request or page
 any('/404',                     'views/404.php');

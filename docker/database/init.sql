@@ -1,55 +1,67 @@
-CREATE DATABASE IF NOT EXISTS sma237;
+CREATE DATABASE sma237;
 USE sma237;
 
-CREATE TABLE IF NOT EXISTS Users (
-    user_id int AUTO_INCREMENT NOT NULL,
-    name varchar(50) NOT NULL,
-    password varchar(50) NOT NULL,
-    position varchar(50) NOT NULL,
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    position VARCHAR(50) NOT NULL,
     PRIMARY KEY(user_id),
-    UNIQUE(name)
+    UNIQUE(username)
 );
 
 CREATE TABLE Exams (
-    exam_id int AUTO_INCREMENT NOT NULL,
-    user_id int NOT NULL,
-    title varchar(50) NOT NULL,
-    points int NOT NULL,
-    date datetime NOT NULL,
+    exam_id INT AUTO_INCREMENT NOT NULL,
+    user_id INT NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    points INT NOT NULL,
+    date DATETIME NOT NULL,
     PRIMARY KEY(exam_id),
     FOREIGN KEY(user_id) REFERENCES Users(user_id)
 );
 
 CREATE TABLE Questions (
-    question_id int AUTO_INCREMENT NOT NULL,
-    type varchar(50) NOT NULL,
-    difficulty varchar(50) NOT NULL,
-    case1 varchar(50) NOT NULL,
-    case2 varchar(50) NOT NULL,
+    question_id INT AUTO_INCREMENT NOT NULL,
+    text VARCHAR(500) NOT NULL,
+    difficulty ENUM ('Easy', 'Medium', 'Hard') NOT NULL,
+    `constraint` ENUM ('For', 'While', 'Recursion'),
     PRIMARY KEY(question_id)
 );
 
+CREATE TABLE Testcases (
+    testcase_id INT AUTO_INCREMENT NOT NULL,
+    question_id INT NOT NULL,
+    `case` VARCHAR(100) NOT NULL,
+    answer VARCHAR(100) NOT NULL,
+    FOREIGN KEY(question_id) REFERENCES Questions(question_id),
+    PRIMARY KEY (testcase_id)
+);
+
+-- Score should probably default as null but previous logic works
+-- when -1 is used as the default value. Might change in later version
 CREATE TABLE StudentExams (
-    user_id int NOT NULL,
-    exam_id int NOT NULL,
-    score int NOT NULL,
+    user_id INT NOT NULL,
+    exam_id INT NOT NULL,
+    score INT NOT NULL DEFAULT -1,
+    date datetime NOT NULL,
     FOREIGN KEY(user_id) REFERENCES Users(user_id),
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
     PRIMARY KEY(user_id, exam_id)
 );
 
 CREATE TABLE ExamQuestions (
-    exam_id int NOT NULL,
-    question_id int NOT NULL,
-    points int NOT NULL,
-    answer varchar(2000),
-    comment varchar(500),
+    exam_id INT NOT NULL,
+    question_id INT NOT NULL,
+    points INT NOT NULL,
+    answer VARCHAR(2000),
+    comment VARCHAR(500),
     FOREIGN KEY(exam_id) REFERENCES Exams(exam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
     PRIMARY KEY(exam_id, question_id)
 );
 
-INSERT INTO Users(name, password, position) VALUES('studentshane', 'studentpassword', 'student');
-INSERT INTO Users(name, password, position) VALUES('teachershane', 'teacherpassword', 'teacher');
-INSERT INTO Users(name, password, position) VALUES('studentmalcolm', 'studentpassword', 'student');
-INSERT INTO Users(name, password, position) VALUES('teachermalcolm', 'teacherpassword', 'teacher');
+INSERT INTO Users(name, username, password, position) VALUES ('Shane','studentshane', 'studentpassword', 'student');
+INSERT INTO Users(name, username, password, position) VALUES ('Shane','teachershane', 'teacherpassword', 'teacher');
+INSERT INTO Users(name, username, password, position) VALUES ('Malcolm','studentmalcolm', 'studentpassword', 'student');
+INSERT INTO Users(name, username, password, position) VALUES ('Malcolm','teachermalcolm', 'teacherpassword', 'teacher');

@@ -29,21 +29,117 @@ $request_code = $data->{'request'};
  *  Code directory
  * ================
  * Request Number - Description
- *      Recieving variables
- *      Returning variables
+ *     [Recieving variables]
+ *     [Returning variables]
  * 
- * 0 - Login request
- *      username, password
- *      user_id, position
+ * 0 - Authenticate login
+ *     [username, password]
+ *     [user_id, position]
+ * 
+ * 1 - Select student tables
+ *     []
+ *     [exam_id, user_id, title, points, e.date, score, se.date]
+ * 
+ * 2 - Select teacher exams
+ *     [userid]
+ *     [examid, userid, title, points, score, name, ]
+ * 
+ * 3 - Delete Exam
+ *     [userid, examid, studentid]
+ *     []
+ * 
+ * 4 - Get exam questions
+ *     [examid]
+ *     [examid, questionid, points, text, difficulty]
+ * 
+ * 5 - Update exam questions with answer
+ *     [examid, questionid answer]
+ *     []
+ * 
+  * 6 - Update student exam score
+ *     [userid, examid, score]
+ *     []
  */
 
+//  Execute queries based on request 
 switch($request_code) {
     case 0:
-        $query = $pdo->prepare("SELECT user_id, position FROM Users WHERE name = ? AND password= ?");
+        $query = $pdo->prepare(
+            "SELECT user_id, position 
+            FROM Users 
+            WHERE username = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
+    case 1:
+        $query = $pdo->prepare(
+            "SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
+            FROM Exams AS e 
+            INNER JOIN StudentExams AS se ON e.exam_id = se.exam_id 
+            INNER JOIN Users AS u ON e.user_id = u.user_id
+            WHERE se.user_id = ?
+            ORDER BY e.exam_id ASC");
+        $query->execute([$data->{'userid'}]);
+        break;
+    case 2:
+        $query = $pdo->prepare(
+            "SELECT e.exam_id, se.user_id, e.title, e.points, e.date, u.name, se.score
+            FROM Exams as e
+            INNER JOIN StudentExams AS se on e.exam_id = se.exam_id
+            INNER JOIN Users AS u ON se.user_id = u.user_id
+            WHERE e.user_id = ?
+            ORDER BY e.exam_id ASC");
+        $query->execute([$data->{'userid'}]);
+        break;
+    case 3:
+        $query = $pdo->prepare(
+            "DELETE FROM StudentExams 
+            WHERE user_id = ? AND exam_id= ?");
+        $query->execute([$data->{'studentid'}, $data->{'examid'}]);
 
-}
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
+        echo json_encode(true);
+        exit();
+    case 4:
+        $query = $pdo->prepare(
+            "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
+            FROM ExamQuestions as eq
+            INNER JOIN Questions AS q on eq.question_id = q.question_id
+            WHERE eq.exam_id = ?
+            ORDER BY eq.question_id");
+        $query->execute([$data->{'examid'}]);
+        break;
+    case 5:
+        $query = $pdo->prepare(
+            "UPDATE ExamQuestions
+            SET answer = ?
+            WHERE exam_id = ? AND question_id = ?");
+        $query->execute([$data->{'answer'}, $data->{'examid'}, $data->{'questionid'}]);
 
-$response = $query->fetch();
-echo json_encode($response);
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
+        echo json_encode(true);
+        exit();
+    case 6:
+        print_r($data);
+        $query = $pdo->prepare(
+            "UPDATE StudentExams
+            SET score = ?
+            WHERE user_id = ? AND exam_id = ?");
+        $query->execute([$data->{'score'}, $data->{'studentid'}, $data->{'examid'}]);
+
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
+        echo json_encode(true);
+        exit();
+}       
+
+// Fetch data and return
+$response = $query->fetchAll();
+echo json_encode($query->rowCount() == 0 ? false : $response);
