@@ -243,8 +243,10 @@ function createTables(response) {
  * exam within the students exam table. This will allow the students to take
  * the exam from their professor or review an already graded exam if it is ready.
  * @param {number} examID The id for the current exam
+ * @param {number} viewID The id of the person in the table which can be either a student or a teacher
+ * @param {boolean} isTaken Whether the corresponding exam is taken or not
  */
-function createActionButtons(examID, teacherID, isTaken) {
+function createActionButtons(examID, viewID, isTaken) {
     // Create two buttons, rewview and delete
     const purpose = getPurpose(isTaken);
     
@@ -254,7 +256,7 @@ function createActionButtons(examID, teacherID, isTaken) {
         buttons.push(document.createElement("button")); 
 
     // Get current action element
-    const action = document.getElementById(`action-${examID}-${teacherID}`);
+    const action = document.getElementById(`action-${examID}-${viewID}`);
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
@@ -262,7 +264,7 @@ function createActionButtons(examID, teacherID, isTaken) {
         const p = purpose[i];
 
         // Set id of button
-        buttons[i].id = `${p}-${examID}-${teacherID}`;
+        buttons[i].id = `${p}-${examID}-${viewID}`;
 
         // Set classes of button
         buttons[i].classList.add("button");
@@ -274,7 +276,7 @@ function createActionButtons(examID, teacherID, isTaken) {
 
         // If the current element is the review button
         if (p == "review") {
-            const studentGrade = document.getElementById(`points-${examID}-${teacherID}`);
+            const studentGrade = document.getElementById(`points-${examID}-${viewID}`);
 
             // If the exam is ungraded don't add an action listen and add a class to change the color
             if (studentGrade.innerText == "Ungraded" || studentGrade.innerText == "None") {
@@ -287,9 +289,9 @@ function createActionButtons(examID, teacherID, isTaken) {
         // Add onclick events to all action buttons
         buttons[i].onclick = function() {
             if (p == "delete")
-                updateRequest(examID, teacherID, 3);
+                updateRequest(examID, viewID, 3);
             else if (p == "take") {
-                storeSessionExam(examID, teacherID);
+                storeSessionExam(examID, viewID);
                 window.location.href = "/exam";
             }
             else if (p == "review") {
@@ -299,7 +301,7 @@ function createActionButtons(examID, teacherID, isTaken) {
                  */
             }
             else if (p == "grade") {
-
+                autogradeRequest(examID, viewID);
             }
         };
         action.appendChild(buttons[i]);
@@ -581,6 +583,27 @@ function updateRequest(examid, studentid, code) {
             // If exams exist print table dynamically
             if (ajax.responseText == "true") 
                 loadTables();
+        }
+    }
+
+    // Send request
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
+}
+
+function autogradeRequest(examid, studentid) {
+    // Autograde request code
+    const reuqestCode = 7;
+
+    // Begin AJAX call
+    const credentials = `examid=${examid}&studentid=${studentid}&request=${requestCode}`;
+    const ajax = new XMLHttpRequest();
+
+    // Check AJAX
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            console.log(ajax.responseText);
         }
     }
 

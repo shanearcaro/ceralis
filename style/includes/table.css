@@ -65,6 +65,10 @@
     padding-left: 0.25rem;
 }
 
+#dash-search-input:focus {
+    outline: none;
+}
+
 #results-amount {
     height: 20px;
 
