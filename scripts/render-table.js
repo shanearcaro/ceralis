@@ -232,9 +232,10 @@ function createTables(response) {
 
         // Create review and delete buttons
         const studentScore = formatScore(exam.score, exam.points);
+        const isTaken = studentScore == "None" ? -1 : studentScore == "Ungraded" ? 0 : 1;
 
         // Deterimne which buttons should be shown on the screen
-        createActionButtons(exam.exam_id, exam.user_id, studentScore == "None");
+        createActionButtons(exam.exam_id, exam.user_id, isTaken);
     }
 }
 
@@ -275,11 +276,11 @@ function createActionButtons(examID, viewID, isTaken) {
         buttons[i].innerText = p;
 
         // If the current element is the review button
-        if (p == "review") {
+        if (p == "review" || p == "grade") {
             const studentGrade = document.getElementById(`points-${examID}-${viewID}`);
 
             // If the exam is ungraded don't add an action listen and add a class to change the color
-            if (studentGrade.innerText == "Ungraded" || studentGrade.innerText == "None") {
+            if (studentGrade.innerText == "None") {
                 buttons[i].classList.add("ungraded-exam");
                 action.appendChild(buttons[i]);
                 continue;
@@ -714,9 +715,9 @@ function getHeader() {
 function getPurpose(isTaken) {
     switch (requestCode) {
         case 1:
-            return !isTaken ? ["review"] : ['take'];
+            return isTaken != -1 ? ["review"] : ['take'];
         case 2:
-            return isTaken ? ["review", "delete"] : ["grade", "delete"];
+            return isTaken == 1 ? ["review", "delete"] : ["grade", "delete"];
     }
 }
 
