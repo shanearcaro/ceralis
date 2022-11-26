@@ -99,9 +99,14 @@ switch($request_code) {
 
     case 3:
         $query = $pdo->prepare(
+            "DELETE FROM ExamQuestions
+            WHERE studentexam_id = ?");
+        $query->execute([$data->{'studentexamid'}]);
+
+        $query = $pdo->prepare(
             "DELETE FROM StudentExams 
-            WHERE user_id = ? AND exam_id= ?");
-        $query->execute([$data->{'studentid'}, $data->{'examid'}]);
+            WHERE studentexam_id = ?");
+        $query->execute([$data->{'studentexamid'}]);
 
         /**
          * Return true here and exit, don't want to use the default

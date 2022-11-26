@@ -569,18 +569,19 @@ function updateActiveButton(id) {
 
 /**
  * Delete the current exam. This only deletes the exam on the student side.
- * @param {number} examid id of exam to be deleted
+ * @param {number} studentExamID id of exam to be deleted
  * @param {number} studenid id of student to delete exam from
  * @param {number} code request type
  */
-function updateRequest(examid, studentid, code) {
+function updateRequest(studentExamID, studentid, code) {
     // Begin AJAX call
-    const credentials = `examid=${examid}&studentid=${studentid}&request=${code}`;
+    const credentials = `studentexamid=${studentExamID}&studentid=${studentid}&request=${code}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
+            console.log(ajax.responseText);
             // If exams exist print table dynamically
             if (ajax.responseText == "true") 
                 loadTables();
