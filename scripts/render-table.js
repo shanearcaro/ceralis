@@ -63,135 +63,10 @@ let requestCode = -1;
 let previousResponse = "";
 
 /**
- * Sleep for a specified duration of time
- * @param {int} time - the number of milliseconds to sleep
- * @returns promise
- */
-function sleep (time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-/**
- * Send a login request using the username and password provided by the user.
- * If authenticated, send the user to their respective dashboard: student, teacher.
- * If not authenticated, display error warning to user and allow them to retry.
- */
-function login() {
-    // Get credentials from login form
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    
-    // Acquire error handling elements
-    const error = document.getElementById("response-handler");
-    const authentication = document.getElementById("error-authentication");
-
-    // Apply shake effect
-    const text = document.getElementById("error-authentication");
-    text.classList.remove("apply-shake");
-
-    // Retrieve request code from document
-    const requestCode = document.getElementById("form-request").value;
-
-    // Begin AJAX call
-    const credentials = `username=${username}&password=${password}&request=${requestCode}`;
-    const ajax = new XMLHttpRequest();
-
-    // Check AJAX
-    ajax.onreadystatechange = function() {
-        // If information is available and okay
-        if (ajax.readyState == 4 && ajax.status == 200) {
-            // Don't shake first time
-            if (!error.classList.contains("disabled"))
-                text.classList.add("apply-shake");
-            
-            // Clear previous effects
-            error.classList.remove("disabled");
-            error.classList.add("apply-fade");
-
-            // If user fails to authenticate
-            if (ajax.responseText == "false") {
-                error.classList.add("form-login-invalid");
-                authentication.classList.remove("disabled");
-            }
-            // Else user authenticates
-            else {
-                // Decode json response
-                const allResponses = JSON.parse(ajax.responseText);
-                const response = allResponses[0];
-                const properAuth = document.getElementById("proper-authentication");
-
-                // Change from error to accept message
-                error.classList.remove("form-login-invalid");
-                error.classList.add("form-login-valid");
-
-                properAuth.classList.remove("disabled");
-                authentication.classList.add("disabled");
-
-                properAuth.classList.add("apply-color");
-
-                // Store for checking later
-                storeSessionLogin(response.user_id);
-
-                // Sleep to allow shake effect to animate
-                sleep(1250).then(() => {
-                    // Redirect based on position
-                    if (response.position == "student") window.location.href = "/student";
-                    if (response.position == "teacher") window.location.href = "/teacher";
-                });
-            }
-        }
-        // If information is not ready
-        else
-            return;
-    }
-
-    // Send request
-    ajax.open("POST", "/post", true);
-    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    ajax.send(credentials);
-}
-
-/**
- * Log user out of their account and clear session data.
- * The user is brought to the login screen and will be unable to use the back button to relog in
- */
-function logout() {
-    sessionStorage.removeItem("user_id");
-    window.location.href="/";
-}
-
-/**
- * Validate that a user has proper session data
- * If a user does not have a valid session id log them out
- */
-function validateSession() {
-    // Run for every page except login
-    if (!document.getElementById("index-login-title") && !sessionStorage.getItem("user_id")) {
-        logout();
-    }
-}
-
-/**
- * Store a user's id into session
- * @param {number} user_id - user's id number
- */
-function storeSessionLogin(user_id) {
-    sessionStorage.setItem('user_id', user_id);
-}
-
-/**
  * Disable back and reload tables for every dashboard page
  */
 function onLoad() {
-    disableBack();
     setInterval(loadTables, TABLE_LOAD_OFFSET);
-}
-
-/**
- * Disable the back button
- */
-function disableBack() {
-    window.history.forward();
 }
 
 /**
@@ -211,7 +86,6 @@ function loadTables(forceReload = false) {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
                 // Reset table state to default empty state
@@ -303,7 +177,7 @@ function createTables(response) {
 
     // Horizontal header infromation
     const headers = getHeader();
-    const data = getTag();
+    const data = ["index", "name", "title", "points", "date", "action"];
 
     // Create cell class descriptors
     const prefix = "cell";
@@ -331,7 +205,7 @@ function createTables(response) {
 
         // Current exam
         const exam = response[i];
-        const elements = getElement(exam);
+        const elements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
         
         // Counter for how many rows are being displayed
         displayAmount++;
@@ -355,11 +229,12 @@ function createTables(response) {
         }
         
         // Display row information
-        for (let j = 0; j < elements.length; j++)
-            row.cells[j].innerHTML = elements[j];
-        
+        for (let j = 0; j < elements.length; j++) {
+            row.cells[j].innerText = elements[j];
+        }
+
         // Create review and delete buttons
-        createActionButtons(exam.exam_id, exam.user_id);
+        createActionButtons(exam.exam_id, exam.user_id, !(formatScore(exam.score, exam.points) == "None"));
     }
 }
 
@@ -369,44 +244,48 @@ function createTables(response) {
  * the exam from their professor or review an already graded exam if it is ready.
  * @param {number} examID The id for the current exam
  */
-function createActionButtons(examID, studentID) {
-    /**
-     * TODO: This code needs to be changed later so that only a single button will be created at a time,
-     * either take or review. These buttons need to be created based on whether the user has already taken
-     * an exam and if the exam has been graded yet. The review button should be red if the exam is not ready
-     * to be reviewed yet or green if the exam has been auto graded. 
-     * 
-     * The action bar should aways have two buttons. One button will always be the delete button, users will be
-     * able to delete exams from the table if they want. The other button will either be the take exam or reivew exam button.
-     */
+function createActionButtons(examID, teacherID, isTaken) {
     // Create two buttons, rewview and delete
-    const purpose = getPurpose();
+    const purpose = getPurpose(isTaken);
     
+    // List of buttons to add to the screen
     let buttons = [];
     for (let i = 0; i < purpose.length; i++)
         buttons.push(document.createElement("button")); 
 
     // Get current action element
-    const action = document.getElementById(`action-${examID}-${studentID}`);
-
-    const deleteRequest = 3
+    const action = document.getElementById(`action-${examID}-${teacherID}`);
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
-        buttons[i].id = `${purpose[i]}-${examID}-${studentID}`;
+        buttons[i].id = `${purpose[i]}-${examID}-${teacherID}`;
         buttons[i].classList.add("button");
         buttons[i].classList.add("action-button");
         buttons[i].classList.add(`button-${purpose[i]}`);
 
         buttons[i].innerText = purpose[i];
 
-        if (purpose[i] == "delete") {
-            buttons[i].onclick = function() {
-                deleteExam(examID, studentID, deleteRequest);
-            };
-        }
+        buttons[i].onclick = function() {
+            let p = purpose[i];
+
+            if (p == "delete")
+                updateRequest(examID, teacherID, 3);
+            else if (p == "take") {
+                storeSessionExam(examID, teacherID);
+                window.location.href = "/exam";
+            }
+        };
         action.appendChild(buttons[i]);
     }
+}
+
+/**
+ * Store a exam's id into session
+ * @param {number} exam_id - exam's id number
+ */
+ function storeSessionExam(exam_id, student_id) {
+    const identifier = `${exam_id}-${student_id}`;
+    sessionStorage.setItem('exam_request', identifier);
 }
 
 /**
@@ -661,8 +540,10 @@ function updateActiveButton(id) {
 /**
  * Delete the current exam. This only deletes the exam on the student side.
  * @param {number} examid id of exam to be deleted
+ * @param {number} studenid id of student to delete exam from
+ * @param {number} code request type
  */
-function deleteExam(examid, studentid, code) {
+function updateRequest(examid, studentid, code) {
     // Begin AJAX call
     const credentials = `examid=${examid}&studentid=${studentid}&request=${code}`;
     const ajax = new XMLHttpRequest();
@@ -777,40 +658,15 @@ function getHeader() {
 }
 
 /**
- * Get all tag information for a specific request type.
- * @returns tag information array
- */
-function getTag() {
-    switch (requestCode) {
-        case 1:
-        case 2:
-            return ["index", "name", "title", "points", "date", "action"];
-    }
-}
-
-/**
- * Given an object get all element information for a specific request type.
- * @param {object} element object to get attributes from
- * @returns element information array
- */
-function getElement(element) {
-    switch (requestCode) {
-        case 1:
-        case 2:
-            return [element.exam_id, element.name, element.title, formatScore(element.score, element.points), formatDate(element.date)];
-    }
-}
-
-/**
  * Get all purpose information for a specific request type
  * @returns purpose information array
  */
-function getPurpose() {
+function getPurpose(isTaken) {
     switch (requestCode) {
         case 1:
-            return ["take", "review"];
+            return isTaken ? ["review"] : ['take'];
         case 2:
-            return ["grade", "review", "delete"];
+            return isTaken ? ["review", "delete"] : ["grade", "delete"];
     }
 }
 
@@ -841,8 +697,14 @@ function formatDate(datetime) {
  * @returns test score in percentage format
  */
 function formatScore(score, points) {
-    return String(score / points * 100) + "%";
+    if (score == -1)
+        return "None";
+    return String(parseInt(score / points * 100)) + "%";
 }
 
-// Validate session on every focus of each page
-document.addEventListener("focus", validateSession);
+/**
+ * Disable the back button
+ */
+ function disableBack() {
+    window.history.forward();
+}

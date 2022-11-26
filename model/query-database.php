@@ -44,11 +44,20 @@ $request_code = $data->{'request'};
  *     [userid]
  *     [examid, userid, title, points, score, name, ]
  * 
- * 3 - Student Delete Exam
- *     [userid, examid]
+ * 3 - Delete Exam
+ *     [userid, examid, studentid]
  *     []
- * 4 - Teacher Delete Exam
- *     [userid, examid]
+ * 
+ * 4 - Get exam questions
+ *     [examid]
+ *     [examid, questionid, points, text, difficulty]
+ * 
+ * 5 - Update exam questions with answer
+ *     [examid, questionid answer]
+ *     []
+ * 
+  * 6 - Update student exam score
+ *     [userid, examid, score]
  *     []
  */
 
@@ -79,7 +88,7 @@ switch($request_code) {
             INNER JOIN Users AS u ON se.user_id = u.user_id
             WHERE e.user_id = ?
             ORDER BY e.exam_id ASC");
-            $query->execute([$data->{'userid'}]);
+        $query->execute([$data->{'userid'}]);
         break;
     case 3:
         $query = $pdo->prepare(
@@ -87,10 +96,49 @@ switch($request_code) {
             WHERE user_id = ? AND exam_id= ?");
         $query->execute([$data->{'studentid'}, $data->{'examid'}]);
 
-        // Return true
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
         echo json_encode(true);
         exit();
-}
+    case 4:
+        $query = $pdo->prepare(
+            "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
+            FROM ExamQuestions as eq
+            INNER JOIN Questions AS q on eq.question_id = q.question_id
+            WHERE eq.exam_id = ?
+            ORDER BY eq.question_id");
+        $query->execute([$data->{'examid'}]);
+        break;
+    case 5:
+        $query = $pdo->prepare(
+            "UPDATE ExamQuestions
+            SET answer = ?
+            WHERE exam_id = ? AND question_id = ?");
+        $query->execute([$data->{'answer'}, $data->{'examid'}, $data->{'questionid'}]);
+
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
+        echo json_encode(true);
+        exit();
+    case 6:
+        print_r($data);
+        $query = $pdo->prepare(
+            "UPDATE StudentExams
+            SET score = ?
+            WHERE user_id = ? AND exam_id = ?");
+        $query->execute([$data->{'score'}, $data->{'studentid'}, $data->{'examid'}]);
+
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
+        echo json_encode(true);
+        exit();
+}       
 
 // Fetch data and return
 $response = $query->fetchAll();
