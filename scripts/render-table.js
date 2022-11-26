@@ -223,7 +223,7 @@ function createTables(response) {
             cell.classList.add(prefix + delim + data[j]);
             cell.classList.add(prefix);
             cell.classList.add('row-cell');
-            cell.id = `${data[j]}-${exam.exam_id}-${exam.user_id}`;
+            cell.id = `${data[j]}-${exam.studentexam_id}-${exam.user_id}`;
         }
         
         // Display row information
@@ -232,9 +232,10 @@ function createTables(response) {
 
         // Create review and delete buttons
         const studentScore = formatScore(exam.score, exam.points);
+        const isTaken = studentScore == "None" ? -1 : studentScore == "Ungraded" ? 0 : 1;
 
         // Deterimne which buttons should be shown on the screen
-        createActionButtons(exam.exam_id, exam.user_id, studentScore == "None");
+        createActionButtons(exam.studentexam_id, exam.user_id, isTaken);
     }
 }
 
@@ -242,11 +243,11 @@ function createTables(response) {
  * Create the action buttons take and review (if applicable) for each
  * exam within the students exam table. This will allow the students to take
  * the exam from their professor or review an already graded exam if it is ready.
- * @param {number} examID The id for the current exam
+ * @param {number} studentExamID The id for the current exam
  * @param {number} viewID The id of the person in the table which can be either a student or a teacher
  * @param {boolean} isTaken Whether the corresponding exam is taken or not
  */
-function createActionButtons(examID, viewID, isTaken) {
+function createActionButtons(studentExamID, viewID, isTaken) {
     // Create two buttons, rewview and delete
     const purpose = getPurpose(isTaken);
     
@@ -256,7 +257,7 @@ function createActionButtons(examID, viewID, isTaken) {
         buttons.push(document.createElement("button")); 
 
     // Get current action element
-    const action = document.getElementById(`action-${examID}-${viewID}`);
+    const action = document.getElementById(`action-${studentExamID}-${viewID}`);
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
@@ -264,7 +265,7 @@ function createActionButtons(examID, viewID, isTaken) {
         const p = purpose[i];
 
         // Set id of button
-        buttons[i].id = `${p}-${examID}-${viewID}`;
+        buttons[i].id = `${p}-${studentExamID}-${viewID}`;
 
         // Set classes of button
         buttons[i].classList.add("button");
@@ -275,11 +276,11 @@ function createActionButtons(examID, viewID, isTaken) {
         buttons[i].innerText = p;
 
         // If the current element is the review button
-        if (p == "review") {
-            const studentGrade = document.getElementById(`points-${examID}-${viewID}`);
+        if (p == "review" || p == "grade") {
+            const studentGrade = document.getElementById(`points-${studentExamID}-${viewID}`);
 
             // If the exam is ungraded don't add an action listen and add a class to change the color
-            if (studentGrade.innerText == "Ungraded" || studentGrade.innerText == "None") {
+            if (studentGrade.innerText == "None") {
                 buttons[i].classList.add("ungraded-exam");
                 action.appendChild(buttons[i]);
                 continue;
@@ -289,9 +290,9 @@ function createActionButtons(examID, viewID, isTaken) {
         // Add onclick events to all action buttons
         buttons[i].onclick = function() {
             if (p == "delete")
-                updateRequest(examID, viewID, 3);
+                updateRequest(studentExamID, viewID, 3);
             else if (p == "take") {
-                storeSessionExam(examID, viewID);
+                storeSessionExam(studentExamID, viewID);
                 window.location.href = "/exam";
             }
             else if (p == "review") {
@@ -301,7 +302,7 @@ function createActionButtons(examID, viewID, isTaken) {
                  */
             }
             else if (p == "grade") {
-                autogradeRequest(examID, viewID);
+                autogradeRequest(studentExamID, viewID);
             }
         };
         action.appendChild(buttons[i]);
@@ -714,9 +715,9 @@ function getHeader() {
 function getPurpose(isTaken) {
     switch (requestCode) {
         case 1:
-            return !isTaken ? ["review"] : ['take'];
+            return isTaken != -1 ? ["review"] : ['take'];
         case 2:
-            return isTaken ? ["review", "delete"] : ["grade", "delete"];
+            return isTaken == 1 ? ["review", "delete"] : ["grade", "delete"];
     }
 }
 
