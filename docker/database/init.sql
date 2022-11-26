@@ -41,24 +41,25 @@ CREATE TABLE Testcases (
 -- Score should probably default as null but previous logic works
 -- when -1 is used as the default value. Might change in later version
 CREATE TABLE StudentExams (
+    studentexam_id INT AUTO_INCREMENT NOT NULL,
     user_id INT NOT NULL,
     exam_id INT NOT NULL,
     score INT NOT NULL DEFAULT -1,
     date datetime NOT NULL,
     FOREIGN KEY(user_id) REFERENCES Users(user_id),
     FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
-    PRIMARY KEY(user_id, exam_id)
+    PRIMARY KEY(studentexam_id)
 );
 
 CREATE TABLE ExamQuestions (
-    exam_id INT NOT NULL,
+    studentexam_id INT,
     question_id INT NOT NULL,
     points INT NOT NULL,
     answer VARCHAR(2000),
     comment VARCHAR(500),
-    FOREIGN KEY(exam_id) REFERENCES Exams(exam_id),
+    FOREIGN KEY(studentexam_id) REFERENCES StudentExams(studentexam_id),
     FOREIGN KEY (question_id) REFERENCES Questions(question_id),
-    PRIMARY KEY(exam_id, question_id)
+    PRIMARY KEY(studentexam_id, question_id)
 );
 
 INSERT INTO Users(name, username, password, position) VALUES ('Shane','studentshane', 'studentpassword', 'student');

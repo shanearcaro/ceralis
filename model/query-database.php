@@ -56,9 +56,13 @@ $request_code = $data->{'request'};
  *     [examid, questionid answer]
  *     []
  * 
-  * 6 - Update student exam score
+ * 6 - Update student exam score
  *     [userid, examid, score]
  *     []
+ * 
+ * 7 - Get all student exam questions, testcases, and student answers.
+ *     [examid, studentid]
+ *     [] 
  */
 
 //  Execute queries based on request 
@@ -108,19 +112,29 @@ switch($request_code) {
 
     case 4:
         $query = $pdo->prepare(
-            "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
-            FROM ExamQuestions as eq
-            INNER JOIN Questions AS q on eq.question_id = q.question_id
-            WHERE eq.exam_id = ?
+            "SELECT e.exam_id, eq.question_id, eq.points, q.text, q.difficulty
+            FROM Exams AS e
+            INNER JOIN StudentExams AS se ON e.exam_id = se.exam_id
+            INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
+            INNER JOIN Questions AS q ON eq.question_id = q.question_id
+            WHERE e.exam_id = ?
             ORDER BY eq.question_id");
+        // $query = $pdo->prepare(
+        //     "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
+        //     FROM ExamQuestions AS eq
+        //     INNER JOIN Exams AS e on eq.
+        //     INNER JOIN Questions AS q on eq.question_id = q.question_id
+        //     WHERE eq.exam_id = ?
+        //     ORDER BY eq.question_id");
         $query->execute([$data->{'examid'}]);
         break;
 
     case 5:
         $query = $pdo->prepare(
-            "UPDATE ExamQuestions
-            SET answer = ?
-            WHERE exam_id = ? AND question_id = ?");
+            "UPDATE ExamQuestions AS eq
+            INNER JOIN StudentExams AS se ON eq.studentexam_id = se.studentexam_id
+            SET eq.answer = ?
+            WHERE se.exam_id = ? AND eq.question_id = ?");
         $query->execute([$data->{'answer'}, $data->{'examid'}, $data->{'questionid'}]);
 
         /**
@@ -143,9 +157,11 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
-        
-    case 7:
-        
+
+    // case 7:
+    //     $query = $pdo->prepare(
+    //         "SELECT FROM Exams 
+    //     ");
 }       
 
 // Fetch data and return
