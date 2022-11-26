@@ -15,8 +15,7 @@ After all of this is done the project should run with `docker-compose up --build
 To log in to the website hosted on the apache container use `localhost:8000`.
 To log in to the phpmyadmin environment use `localhost:8080`.
 
-Logging in to the database itself will show binary data that really serves no purpose, but if you'd like to see that you can log in using `localhost:9906`
-</p>
+Logging in to the database itself will show binary data that really serves no purpose, but if you'd like to see that you can log in using `localhost:9906`</p>
 
 <h4 align="center">User Accounts</h4>
 <p align="center">
@@ -24,9 +23,11 @@ There are four user accounts than can be used to log into the system, two teache
 
 | User ID | Username | Password |
 | ------- | -------- | -------- |
-|    0    | student  | student  |
-|    1    | malcolm  | student  |
-|    2    | teacher  | teacher  |
-|    3    | student  | teacher  |
+|    0    | studentshane  | studentpassword  |
+|    1    | teachershane  | teacherpassword  |
+|    2    | studentmalcolm  | teacherpassword  |
+|    3    | teachermalcolm  | teacherpassword  |
+
+As of now there is no way to create users or put students into classes. These features may be added in the future to create a full system. It is also important to note that as of now there is no password hashing in place. The database uses PDO to execute queries so SQL injections should be impossible but all passwords are currently being stored in plain text. As there is no way to create user accounts dynamically right now without having control of the database the passwords will not be hashed. If dynamic user creation and class creations are added then password hashing will also be added.
 
 </p>
