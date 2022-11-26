@@ -27,7 +27,7 @@ let questionsCache;
 
 /**
  * Dict of the student's answer to each question. This has to be recorded at the the time
- * that any question nav button gets pressed because the chained function calls will create
+ * that any question action button gets pressed because the chained function calls will create
  * a new textarea.
  */
 let studentAnswers = {};
@@ -90,7 +90,7 @@ function loadQuestions() {
                 questionsCache = JSON.parse(ajax.responseText);
                 questionsAmount = questionsCache.length;
                 console.log(questionsAmount);
-                displayQuestion();
+                updateDisplay();
             }
         }
     }
@@ -101,7 +101,7 @@ function loadQuestions() {
     ajax.send(credentials);
 }
 
-function displayQuestion() {
+function updateDisplay() {
     // Set question attributes to those gathered from the query request
     document.getElementById("question-number").innerText = "Question " + (questionIndex + 1);
     document.getElementById("question-points").innerText = questionsCache[questionIndex].points + " pts";
@@ -109,8 +109,9 @@ function displayQuestion() {
 
     // Resize text area after setting the text
     resizeTextarea();
-    displayNavButtons();
+    displayActionButtons();
     createAnswerTextarea(50);
+    createNavBar();
 }
 
 /**
@@ -133,20 +134,20 @@ function resizeTextarea() {
  * If the student is not on the last question in the exam display previous and next buttons
  * otherwise display previous and submit buttons.
  */
-function displayNavButtons() {
+function displayActionButtons() {
     // Buttons are always dynamic so use a list to display them
     let buttons = [];
 
     // If the current question is not the first one
     if (questionIndex != 0) {
         // Create the previous button
-        const previous = createNavButton("previous");
+        const previous = createActionButton("previous");
 
         // Add on click to button
         previous.onclick = function() {
             saveStudentAnswer();
             questionIndex--;
-            displayQuestion();
+            updateDisplay();
         }
         buttons.push(previous);
     }
@@ -154,13 +155,13 @@ function displayNavButtons() {
     // If the student is on the last question in the exam
     if (questionIndex == questionsAmount - 1) {
         // Create the submit button
-        const submit = createNavButton("submit");
+        const submit = createActionButton("submit");
 
         // Add on click to button if all questions are answered
         if (Object.keys(studentAnswers).length == questionsAmount) {
             submit.onclick = function() {
                 saveStudentAnswer();
-                displayQuestion();
+                updateDisplay();
             }
         }
         else {
@@ -171,13 +172,13 @@ function displayNavButtons() {
     // If the student is not on the last question in the exam
     else {
         // Create the next button
-        const next = createNavButton("next");
+        const next = createActionButton("next");
 
         // Add on click to button
         next.onclick = function() {
             saveStudentAnswer();
             questionIndex++;
-            displayQuestion();
+            updateDisplay();
         }
         buttons.push(next);
     }
@@ -203,18 +204,18 @@ function displayNavButtons() {
 }
 
 /**
- * Create a nav button with an initial text
+ * Create a action button with an initial text
  * @param {string} text name of the button
- * @returns created nav button 
+ * @returns created action button 
  */
-function createNavButton(text) {
+function createActionButton(text) {
     const button = document.createElement("button");
     const buttonClass = "button-" + text;
     text = text.charAt(0).toUpperCase() + text.substring(1);
 
     button.innerText = text;
     button.classList.add("button");
-    button.classList.add("nav-button");
+    button.classList.add("action-button");
     button.classList.add(buttonClass);
     
     return button;
@@ -250,6 +251,10 @@ function createAnswerTextarea(offset) {
         textAreaPress(event);
     };
 
+    answerArea.onkeyup = function() {
+        updateNavbar();
+    }
+
     // Get parent element for the textarea
     const parent = document.getElementsByClassName("question-answer")[0];
 
@@ -277,6 +282,18 @@ function textAreaPress(event) {
 }
 
 /**
+ * Update the navbar and display buttons. This is a separate function to
+ * updateDisplay because this function needs to be called on every key press
+ * when the student is answering a question. updateDisplay performs updates
+ * on the main page that would not need to be updated on every keypress.
+ */
+function updateNavbar() {
+    saveStudentAnswer();
+    createNavBar();
+    displayActionButtons();
+}
+
+/**
  * Save the student's answer to the current question.
  */
 function saveStudentAnswer() {
@@ -291,4 +308,61 @@ function saveStudentAnswer() {
      */
     if (value != "")
         studentAnswers[questionIndex] = value;
+    else {
+        // If the text within an answer is cleared delete the dictionary index
+        if (studentAnswers[questionIndex] !== undefined)
+            delete studentAnswers[questionIndex];
+    }
+}
+
+function createNavElement(index) {
+    // Create a div to hold the question and its icon
+    const questionContainer = document.createElement("div");
+    questionContainer.classList.add("nav-container");
+
+    // Check if the corresponding question was answered
+    const isAnswered = studentAnswers[index] !== undefined;
+    
+    // Create question icon
+    const icon = document.createElement("img");
+
+    // Create question title
+    const question = document.createElement("h3");
+    question.classList.add("nav-text");
+    question.innerText = "Question " + (index + 1);
+
+    // Add navigation to title
+    question.onclick = function() {
+        saveStudentAnswer();
+        questionIndex = index;
+        updateDisplay();
+    }
+    
+    // Create an icon based on if the question was answered or not
+    if (isAnswered) {
+        icon.classList.add("icon-answered");
+        question.classList.add("question-answered");
+        icon.srcset = "../assets/check-mark.png";
+        icon.innerHTML = "Check mark";
+    }
+    else {
+        icon.classList.add("icon-unanswered");
+        question.classList.add("question-unanswered");
+        icon.srcset = "../assets/question-mark.png";
+        icon.innerHTML = "Question Mark";
+    }
+
+    questionContainer.appendChild(icon);
+    questionContainer.appendChild(question);
+
+    return questionContainer;
+}
+
+function createNavBar() {
+    const nav = document.getElementById("nav-table");
+    nav.innerHTML = "";
+
+    for (let i = 0; i < questionsAmount; i++) {
+        nav.appendChild(createNavElement(i));
+    }
 }

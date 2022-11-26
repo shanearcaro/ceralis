@@ -42,7 +42,10 @@
             </div>
         </div>
         <div class="area-column" id="right-column">
-
+            <div class="questions-navbar" id="navbar">
+                <h1 id="nav-display-title">Questions</h1>
+                <div class="nav-table" id="nav-table"></div>
+            </div>
         </div>
     </div>
 </body>
