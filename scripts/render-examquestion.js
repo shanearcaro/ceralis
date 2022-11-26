@@ -75,14 +75,13 @@ function loadQuestions() {
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
             // If exams exist print table dynamically
-            console.log(ajax.responseText);
             if (ajax.responseText == "false") {
                 /**
                  * This should never happen as questions can only be requested once a valid exam
                  * is picked and a valid exam consists of at least a single question.
                  * If somehow it does happen redirect to error page
                  */
-                // window.location.href = "/404";
+                window.location.href = "/404";
             }
             else {
                 // Display results

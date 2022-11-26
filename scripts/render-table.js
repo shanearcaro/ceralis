@@ -581,7 +581,6 @@ function updateRequest(studentExamID, studentid, code) {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-            console.log(ajax.responseText);
             // If exams exist print table dynamically
             if (ajax.responseText == "true") 
                 loadTables();

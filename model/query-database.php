@@ -116,14 +116,7 @@ switch($request_code) {
         exit();
 
     case 4:
-        // $query = $pdo->prepare(
-            // "SELECT se.studentexam_id, se.exam_id, eq.question_id, eq.points
-            // FROM StudentExams AS se
-            // INNER JOIN Exams AS e on se.exam_id = se.exam_id
-            // INNER JOIN ExamQuestions AS eq on se.studentexam_id = eq.studentexam_id
-            // WHERE se.studentexam_id = ?
-            // ");
-            $query = $pdo->prepare(
+        $query = $pdo->prepare(
             "SELECT se.studentexam_id, se.exam_id, eq.question_id, eq.points, q.text, q.difficulty
             FROM StudentExams AS se
             INNER JOIN Exams AS e ON se.exam_id = e.exam_id
@@ -131,27 +124,6 @@ switch($request_code) {
             INNER JOIN Questions AS q on eq.question_id = q.question_id
             WHERE se.studentexam_id = ?
             ORDER BY eq.question_id");
-
-// SELECT se.studentexam_id
-// FROM StudentExams AS se
-// INNER JOIN Exams AS e on se.exam_id = e.exam_id
-// WHERE se.studentexam_id = 11;
-
-        // $query = $pdo->prepare(
-        //     "SELECT se.studentexam_id, e.exam_id, eq.question_id, eq.points, q.text, q.difficulty
-        //     FROM Exams AS e
-        //     INNER JOIN StudentExams AS se ON e.exam_id = se.exam_id
-        //     INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
-        //     INNER JOIN Questions AS q ON eq.question_id = q.question_id
-        //     WHERE se.studentexam_id = ?
-        //     ORDER BY eq.question_id");
-        // $query = $pdo->prepare(
-        //     "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
-        //     FROM ExamQuestions AS eq
-        //     INNER JOIN Exams AS e on eq.
-        //     INNER JOIN Questions AS q on eq.question_id = q.question_id
-        //     WHERE eq.exam_id = ?
-        //     ORDER BY eq.question_id");
         $query->execute([$data->{'studentexamid'}]);
         break;
 
