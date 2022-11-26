@@ -33,10 +33,12 @@ body {
     height: 100%;
 }
 
+/* ========== LEFT COLUMN (EMPTY) ========== */
 #left-column {
     width: 20%;
 }
 
+/* ========== MIDDLE COLUMN ========== */
 #middle-column {
     width: 60%;
     height: 50%;
@@ -54,8 +56,6 @@ body {
     margin-top: 10rem;
 
     border: 1px solid var(--dash-ol);
-
-    /* background-color: blue; */
 }
 
 .question-header {
@@ -202,7 +202,9 @@ textarea {
 .button-next, .button-submit {
  background-color: var(--review-color);
 }
+/* ========== END MIDDLE COLUMN ========== */
 
+/* ========== RIGHT COLUMN ========== */
 #right-column {
    width: 20%;
    height: 100%;
@@ -258,10 +260,11 @@ textarea {
     color: var(--active-btn)
 }
 
-.disabled {
-    display: none;
-}
-
 .disabled-submit {
     background-color: var(--dash-ol);
+}
+/* ========== END RIGHT COLUMN ========== */
+
+.disabled {
+    display: none;
 }
