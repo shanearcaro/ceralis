@@ -417,13 +417,12 @@ function submitExam() {
         ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         ajax.send(credentials);
     }
-    // Update exam score to 0
     updateExamScore();
 }
 
 /**
  * Students are able to take exams if the value of the exam is -1 meaning it hasn't been taken yet.
- * Need to update the score to 0 so that students know it is ungraded, but they won't be able to take
+ * Need to update the score to -2 so that students know it is ungraded, but they won't be able to take
  * again.
  */
 function updateExamScore() {
@@ -431,7 +430,7 @@ function updateExamScore() {
     const requestCode = 6;
 
     // Ungraded score
-    const score = 0;
+    const score = -2;
 
     // Format request
     const credentials = `examid=${examid}&score=${score}&studentid=${studentid}&request=${requestCode}`;
