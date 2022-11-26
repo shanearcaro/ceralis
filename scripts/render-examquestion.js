@@ -1,7 +1,7 @@
 /**
  * The id of the exam that the student requested to take
  */
-let examid;
+let studentExamID;
 
 /**
  * The id of the student that requested to take the exam
@@ -48,7 +48,7 @@ function generateID() {
     const examRequest = sessionStorage.getItem("exam_request");
 
     // Set the ids
-    examid = examRequest.substring(0, examRequest.indexOf("-"));
+    studentExamID = examRequest.substring(0, examRequest.indexOf("-"));
     studentid = sessionStorage.getItem("user_id")
 }
 
@@ -68,20 +68,21 @@ function loadQuestions() {
     const requestCode = 4;
 
     // Format request
-    const credentials = `examid=${examid}&request=${requestCode}`;
+    const credentials = `studentexamid=${studentExamID}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
             // If exams exist print table dynamically
+            console.log(ajax.responseText);
             if (ajax.responseText == "false") {
                 /**
                  * This should never happen as questions can only be requested once a valid exam
                  * is picked and a valid exam consists of at least a single question.
                  * If somehow it does happen redirect to error page
                  */
-                window.location.href = "/404";
+                // window.location.href = "/404";
             }
             else {
                 // Display results
@@ -387,7 +388,7 @@ function submitExam() {
         const current = questionsCache[i];
 
         // Format request
-        const credentials = `examid=${current.exam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
+        const credentials = `studentexamid=${current.studentexam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
         const ajax = new XMLHttpRequest();
 
         // Check AJAX
@@ -426,13 +427,12 @@ function updateExamScore() {
     const score = -2;
 
     // Format request
-    const credentials = `examid=${examid}&score=${score}&studentid=${studentid}&request=${requestCode}`;
+    const credentials = `studentexamid=${studentExamID}&score=${score}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-
             // Should also never fail
             if (ajax.responseText == "false") {
                 window.location.href = "/404";
