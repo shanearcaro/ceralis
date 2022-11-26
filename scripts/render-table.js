@@ -231,7 +231,10 @@ function createTables(response) {
             row.cells[j].innerText = elements[j];
 
         // Create review and delete buttons
-        createActionButtons(exam.exam_id, exam.user_id, !(formatScore(exam.score, exam.points) == "None"));
+        const studentScore = formatScore(exam.score, exam.points);
+
+        // Deterimne which buttons should be shown on the screen
+        createActionButtons(exam.exam_id, exam.user_id, studentScore == "None");
     }
 }
 
@@ -274,7 +277,7 @@ function createActionButtons(examID, teacherID, isTaken) {
             const studentGrade = document.getElementById(`points-${examID}-${teacherID}`);
 
             // If the exam is ungraded don't add an action listen and add a class to change the color
-            if (studentGrade.innerText == "Ungraded") {
+            if (studentGrade.innerText == "Ungraded" || studentGrade.innerText == "None") {
                 buttons[i].classList.add("ungraded-exam");
                 action.appendChild(buttons[i]);
                 continue;
@@ -294,7 +297,6 @@ function createActionButtons(examID, teacherID, isTaken) {
                  * Need to add separate onclick functions for review
                  * depending on if the user is a student or a teacher
                  */
-                console.log("Review the exam");
             }
             else if (p == "grade") {
 
@@ -689,7 +691,7 @@ function getHeader() {
 function getPurpose(isTaken) {
     switch (requestCode) {
         case 1:
-            return isTaken ? ["review"] : ['take'];
+            return !isTaken ? ["review"] : ['take'];
         case 2:
             return isTaken ? ["review", "delete"] : ["grade", "delete"];
     }

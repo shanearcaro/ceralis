@@ -46,7 +46,6 @@ function onLoad() {
 function generateID() {
     // Get the requested infromation
     const examRequest = sessionStorage.getItem("exam_request");
-    console.log(examRequest);
 
     // Set the ids
     examid = examRequest.substring(0, examRequest.indexOf("-"));
@@ -75,8 +74,6 @@ function loadQuestions() {
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-
-            console.log(ajax.responseText);
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
                 /**
@@ -90,7 +87,6 @@ function loadQuestions() {
                 // Display results
                 questionsCache = JSON.parse(ajax.responseText);
                 questionsAmount = questionsCache.length;
-                console.log(questionsAmount);
                 updateDisplay();
             }
         }
@@ -392,14 +388,11 @@ function submitExam() {
 
         // Format request
         const credentials = `examid=${current.exam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
-        console.log(credentials);
         const ajax = new XMLHttpRequest();
 
         // Check AJAX
         ajax.onreadystatechange = function() {
             if (ajax.readyState == 4 && ajax.status == 200) {
-
-                console.log(ajax.responseText);
                 // If exams exist print table dynamically
                 if (ajax.responseText == "false") {
                     /**
@@ -434,7 +427,6 @@ function updateExamScore() {
 
     // Format request
     const credentials = `examid=${examid}&score=${score}&studentid=${studentid}&request=${requestCode}`;
-    console.log(credentials);
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
