@@ -61,8 +61,8 @@ $request_code = $data->{'request'};
  *     []
  * 
  * 7 - Get all student exam questions, testcases, and student answers.
- *     [examid, studentid]
- *     [] 
+ *     [studentexamid]
+ *     [studentexamid, questionid, points, answer, testcaseid, case, answer, case_answer] 
  */
 
 //  Execute queries based on request 
@@ -156,10 +156,16 @@ switch($request_code) {
         echo json_encode(true);
         exit();
 
-    // case 7:
-    //     $query = $pdo->prepare(
-    //         "SELECT FROM Exams 
-    //     ");
+    case 7:
+        $query = $pdo->prepare(
+            "SELECT se.studentexam_id, eq.question_id, eq.points, eq.answer, tc.testcase_id, tc.case, tc.answer AS case_answer
+            FROM StudentExams AS se
+            INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
+            INNER JOIN Questions AS q ON eq.question_id = q.question_id
+            INNER JOIN Testcases AS tc ON q.question_id = tc.question_id
+            WHERE se.studentexam_id = ?
+            ORDER BY eq.question_id");
+        $query->execute([$data->{'studentexamid'}]);
 }       
 
 // Fetch data and return
