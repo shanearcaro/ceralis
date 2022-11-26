@@ -240,6 +240,10 @@
     background-color: var(--take-color);
 }
 
+.ungraded-exam {
+    background-color: var(--page-ol);
+}
+
 .disabled {
     display: none;
 }

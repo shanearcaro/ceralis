@@ -223,15 +223,12 @@ function createTables(response) {
             cell.classList.add(prefix + delim + data[j]);
             cell.classList.add(prefix);
             cell.classList.add('row-cell');
-
-            if (j == data.length - 1)
-                cell.id = `${data[j]}-${exam.exam_id}-${exam.user_id}`
+            cell.id = `${data[j]}-${exam.exam_id}-${exam.user_id}`;
         }
         
         // Display row information
-        for (let j = 0; j < elements.length; j++) {
+        for (let j = 0; j < elements.length; j++)
             row.cells[j].innerText = elements[j];
-        }
 
         // Create review and delete buttons
         createActionButtons(exam.exam_id, exam.user_id, !(formatScore(exam.score, exam.points) == "None"));
@@ -258,21 +255,49 @@ function createActionButtons(examID, teacherID, isTaken) {
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
-        buttons[i].id = `${purpose[i]}-${examID}-${teacherID}`;
+        // Get the current purpose in a smaller variable
+        const p = purpose[i];
+
+        // Set id of button
+        buttons[i].id = `${p}-${examID}-${teacherID}`;
+
+        // Set classes of button
         buttons[i].classList.add("button");
         buttons[i].classList.add("action-button");
-        buttons[i].classList.add(`button-${purpose[i]}`);
+        buttons[i].classList.add(`button-${p}`);
 
-        buttons[i].innerText = purpose[i];
+        // Set inner text of button
+        buttons[i].innerText = p;
 
+        // If the current element is the review button
+        if (p == "review") {
+            const studentGrade = document.getElementById(`points-${examID}-${teacherID}`);
+
+            // If the exam is ungraded don't add an action listen and add a class to change the color
+            if (studentGrade.innerText == "Ungraded") {
+                buttons[i].classList.add("ungraded-exam");
+                action.appendChild(buttons[i]);
+                continue;
+            }
+        }
+
+        // Add onclick events to all action buttons
         buttons[i].onclick = function() {
-            let p = purpose[i];
-
             if (p == "delete")
                 updateRequest(examID, teacherID, 3);
             else if (p == "take") {
                 storeSessionExam(examID, teacherID);
                 window.location.href = "/exam";
+            }
+            else if (p == "review") {
+                /**
+                 * Need to add separate onclick functions for review
+                 * depending on if the user is a student or a teacher
+                 */
+                console.log("Review the exam");
+            }
+            else if (p == "grade") {
+
             }
         };
         action.appendChild(buttons[i]);
@@ -699,6 +724,8 @@ function formatDate(datetime) {
 function formatScore(score, points) {
     if (score == -1)
         return "None";
+    else if (score == -2)
+        return "Ungraded";
     return String(parseInt(score / points * 100)) + "%";
 }
 
