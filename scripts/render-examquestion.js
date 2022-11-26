@@ -46,6 +46,7 @@ function onLoad() {
 function generateID() {
     // Get the requested infromation
     const examRequest = sessionStorage.getItem("exam_request");
+    console.log(examRequest);
 
     // Set the ids
     examid = examRequest.substring(0, examRequest.indexOf("-"));
@@ -161,7 +162,7 @@ function displayActionButtons() {
         if (Object.keys(studentAnswers).length == questionsAmount) {
             submit.onclick = function() {
                 saveStudentAnswer();
-                updateDisplay();
+                submitExam();
             }
         }
         else {
@@ -365,4 +366,79 @@ function createNavBar() {
     for (let i = 0; i < questionsAmount; i++) {
         nav.appendChild(createNavElement(i));
     }
+}
+
+function submitExam() {
+    // Get questions request code
+    const requestCode = 5;
+    for (let i = 0; i < questionsAmount; i++) {
+        // Current question
+        const current = questionsCache[i];
+
+        // Format request
+        const credentials = `examid=${current.exam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
+        console.log(credentials);
+        const ajax = new XMLHttpRequest();
+
+        // Check AJAX
+        ajax.onreadystatechange = function() {
+            if (ajax.readyState == 4 && ajax.status == 200) {
+
+                console.log(ajax.responseText);
+                // If exams exist print table dynamically
+                if (ajax.responseText == "false") {
+                    /**
+                     * This should also never fail. The best way of dealing with this would be to make the
+                     * answers get added to sesssion data and then reload the page and answers on a failure
+                     * and try again. This might get added in a later version if I have time.
+                     */
+                    window.location.href = "/404";
+                }
+            }
+        }
+
+        // Send request
+        ajax.open("POST", "/post", true);
+        ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        ajax.send(credentials);
+    }
+    updateExamScore();
+}
+
+function updateExamScore() {
+    // Get questions request code
+    const requestCode = 6;
+
+    /**
+     * Students are able to take exams if the value of the exam is -1 meaning it hasn't been taken yet.
+     * Need to update the score to 0 so that students know it is ungraded, but they won't be able to take
+     * again.
+     */
+    const score = 0;
+
+    // Format request
+    const credentials = `examid=${examid}&score=${score}&studentid=${studentid}&request=${requestCode}`;
+    console.log(credentials);
+    const ajax = new XMLHttpRequest();
+
+    // Check AJAX
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+
+            console.log(ajax.responseText);
+            // If exams exist print table dynamically
+            // if (ajax.responseText == "false") {
+            //     window.location.href = "/404";
+            // }
+            // else {
+            //     // On success go back to student page
+            //     window.location.href = "/student";
+            // }
+        }
+    }
+
+    // Send request
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
 }

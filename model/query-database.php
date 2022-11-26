@@ -47,9 +47,18 @@ $request_code = $data->{'request'};
  * 3 - Delete Exam
  *     [userid, examid, studentid]
  *     []
+ * 
  * 4 - Get exam questions
  *     [examid]
- *     [examid, questionid, points, answer, comment]
+ *     [examid, questionid, points, text, difficulty]
+ * 
+ * 5 - Update exam questions with answer
+ *     [examid, questionid answer]
+ *     []
+ * 
+  * 6 - Update student exam score
+ *     [userid, examid, score]
+ *     []
  */
 
 //  Execute queries based on request 
@@ -102,6 +111,33 @@ switch($request_code) {
             ORDER BY eq.question_id");
         $query->execute([$data->{'examid'}]);
         break;
+    case 5:
+        $query = $pdo->prepare(
+            "UPDATE ExamQuestions
+            SET answer = ?
+            WHERE exam_id = ? AND question_id = ?");
+        $query->execute([$data->{'answer'}, $data->{'examid'}, $data->{'questionid'}]);
+
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
+        echo json_encode(true);
+        exit();
+    case 6:
+        print_r($data);
+        $query = $pdo->prepare(
+            "UPDATE StudentExams
+            SET score = ?
+            WHERE user_id = ? AND exam_id = ?");
+        $query->execute([$data->{'score'}, $data->{'studentid'}, $data->{'examid'}]);
+
+        /**
+         * Return true here and exit, don't want to use the default
+         * functionality since it will always return false here
+         */
+        echo json_encode(true);
+        exit();
 }       
 
 // Fetch data and return
