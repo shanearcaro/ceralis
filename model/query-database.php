@@ -38,7 +38,7 @@ $request_code = $data->{'request'};
  * 
  * 1 - Select student tables
  *     []
- *     [exam_id, user_id, title, points, e.date, score, se.date]
+ *     [studentexam_id, exam_id, user_id, title, points, e.date, score, se.date]
  * 
  * 2 - Select teacher exams
  *     [userid]
@@ -49,16 +49,20 @@ $request_code = $data->{'request'};
  *     []
  * 
  * 4 - Get exam questions
- *     [examid]
- *     [examid, questionid, points, text, difficulty]
+ *     [studentexam_id]
+ *     [studentexam_id, examid, questionid, points, text, difficulty]
  * 
  * 5 - Update exam questions with answer
- *     [examid, questionid answer]
+ *     [studentexamid, questionid, answer]
  *     []
  * 
-  * 6 - Update student exam score
+ * 6 - Update student exam score
  *     [userid, examid, score]
  *     []
+ * 
+ * 7 - Get all student exam questions, testcases, and student answers.
+ *     [examid, studentid]
+ *     [] 
  */
 
 //  Execute queries based on request 
@@ -70,9 +74,10 @@ switch($request_code) {
             WHERE username = ? AND password= ?");
         $query->execute([$data->{'username'}, $data->{'password'}]);
         break;
+
     case 1:
         $query = $pdo->prepare(
-            "SELECT e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
+            "SELECT se.studentexam_id, e.exam_id, e.user_id, e.title, e.points, e.date, u.name, se.score, se.date 
             FROM Exams AS e 
             INNER JOIN StudentExams AS se ON e.exam_id = se.exam_id 
             INNER JOIN Users AS u ON e.user_id = u.user_id
@@ -80,9 +85,10 @@ switch($request_code) {
             ORDER BY e.exam_id ASC");
         $query->execute([$data->{'userid'}]);
         break;
+
     case 2:
         $query = $pdo->prepare(
-            "SELECT e.exam_id, se.user_id, e.title, e.points, e.date, u.name, se.score
+            "SELECT se.studentexam_id, e.exam_id, se.user_id, e.title, e.points, e.date, u.name, se.score
             FROM Exams as e
             INNER JOIN StudentExams AS se on e.exam_id = se.exam_id
             INNER JOIN Users AS u ON se.user_id = u.user_id
@@ -90,11 +96,17 @@ switch($request_code) {
             ORDER BY e.exam_id ASC");
         $query->execute([$data->{'userid'}]);
         break;
+
     case 3:
         $query = $pdo->prepare(
+            "DELETE FROM ExamQuestions
+            WHERE studentexam_id = ?");
+        $query->execute([$data->{'studentexamid'}]);
+
+        $query = $pdo->prepare(
             "DELETE FROM StudentExams 
-            WHERE user_id = ? AND exam_id= ?");
-        $query->execute([$data->{'studentid'}, $data->{'examid'}]);
+            WHERE studentexam_id = ?");
+        $query->execute([$data->{'studentexamid'}]);
 
         /**
          * Return true here and exit, don't want to use the default
@@ -102,21 +114,26 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
+
     case 4:
         $query = $pdo->prepare(
-            "SELECT eq.exam_id, eq.question_id, eq.points, q.text, q.difficulty
-            FROM ExamQuestions as eq
+            "SELECT se.studentexam_id, se.exam_id, eq.question_id, eq.points, q.text, q.difficulty
+            FROM StudentExams AS se
+            INNER JOIN Exams AS e ON se.exam_id = e.exam_id
+            INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
             INNER JOIN Questions AS q on eq.question_id = q.question_id
-            WHERE eq.exam_id = ?
+            WHERE se.studentexam_id = ?
             ORDER BY eq.question_id");
-        $query->execute([$data->{'examid'}]);
+        $query->execute([$data->{'studentexamid'}]);
         break;
+
     case 5:
         $query = $pdo->prepare(
-            "UPDATE ExamQuestions
-            SET answer = ?
-            WHERE exam_id = ? AND question_id = ?");
-        $query->execute([$data->{'answer'}, $data->{'examid'}, $data->{'questionid'}]);
+            "UPDATE ExamQuestions AS eq
+            INNER JOIN StudentExams AS se ON eq.studentexam_id = se.studentexam_id
+            SET eq.answer = ?
+            WHERE se.studentexam_id = ? AND eq.question_id = ?");
+        $query->execute([$data->{'answer'}, $data->{'studentexamid'}, $data->{'questionid'}]);
 
         /**
          * Return true here and exit, don't want to use the default
@@ -124,13 +141,13 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
+
     case 6:
-        print_r($data);
         $query = $pdo->prepare(
             "UPDATE StudentExams
             SET score = ?
-            WHERE user_id = ? AND exam_id = ?");
-        $query->execute([$data->{'score'}, $data->{'studentid'}, $data->{'examid'}]);
+            WHERE studentexam_id = ?");
+        $query->execute([$data->{'score'}, $data->{'studentexamid'}]);
 
         /**
          * Return true here and exit, don't want to use the default
@@ -138,6 +155,11 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
+
+    // case 7:
+    //     $query = $pdo->prepare(
+    //         "SELECT FROM Exams 
+    //     ");
 }       
 
 // Fetch data and return

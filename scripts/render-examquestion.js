@@ -1,7 +1,7 @@
 /**
  * The id of the exam that the student requested to take
  */
-let examid;
+let studentExamID;
 
 /**
  * The id of the student that requested to take the exam
@@ -46,10 +46,9 @@ function onLoad() {
 function generateID() {
     // Get the requested infromation
     const examRequest = sessionStorage.getItem("exam_request");
-    console.log(examRequest);
 
     // Set the ids
-    examid = examRequest.substring(0, examRequest.indexOf("-"));
+    studentExamID = examRequest.substring(0, examRequest.indexOf("-"));
     studentid = sessionStorage.getItem("user_id")
 }
 
@@ -69,14 +68,12 @@ function loadQuestions() {
     const requestCode = 4;
 
     // Format request
-    const credentials = `examid=${examid}&request=${requestCode}`;
+    const credentials = `studentexamid=${studentExamID}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-
-            console.log(ajax.responseText);
             // If exams exist print table dynamically
             if (ajax.responseText == "false") {
                 /**
@@ -90,7 +87,6 @@ function loadQuestions() {
                 // Display results
                 questionsCache = JSON.parse(ajax.responseText);
                 questionsAmount = questionsCache.length;
-                console.log(questionsAmount);
                 updateDisplay();
             }
         }
@@ -391,15 +387,12 @@ function submitExam() {
         const current = questionsCache[i];
 
         // Format request
-        const credentials = `examid=${current.exam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
-        console.log(credentials);
+        const credentials = `studentexamid=${current.studentexam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
         const ajax = new XMLHttpRequest();
 
         // Check AJAX
         ajax.onreadystatechange = function() {
             if (ajax.readyState == 4 && ajax.status == 200) {
-
-                console.log(ajax.responseText);
                 // If exams exist print table dynamically
                 if (ajax.responseText == "false") {
                     /**
@@ -433,14 +426,12 @@ function updateExamScore() {
     const score = -2;
 
     // Format request
-    const credentials = `examid=${examid}&score=${score}&studentid=${studentid}&request=${requestCode}`;
-    console.log(credentials);
+    const credentials = `studentexamid=${studentExamID}&score=${score}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-
             // Should also never fail
             if (ajax.responseText == "false") {
                 window.location.href = "/404";

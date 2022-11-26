@@ -223,7 +223,7 @@ function createTables(response) {
             cell.classList.add(prefix + delim + data[j]);
             cell.classList.add(prefix);
             cell.classList.add('row-cell');
-            cell.id = `${data[j]}-${exam.exam_id}-${exam.user_id}`;
+            cell.id = `${data[j]}-${exam.studentexam_id}-${exam.user_id}`;
         }
         
         // Display row information
@@ -231,7 +231,11 @@ function createTables(response) {
             row.cells[j].innerText = elements[j];
 
         // Create review and delete buttons
-        createActionButtons(exam.exam_id, exam.user_id, !(formatScore(exam.score, exam.points) == "None"));
+        const studentScore = formatScore(exam.score, exam.points);
+        const isTaken = studentScore == "None" ? -1 : studentScore == "Ungraded" ? 0 : 1;
+
+        // Deterimne which buttons should be shown on the screen
+        createActionButtons(exam.studentexam_id, exam.user_id, isTaken);
     }
 }
 
@@ -239,9 +243,11 @@ function createTables(response) {
  * Create the action buttons take and review (if applicable) for each
  * exam within the students exam table. This will allow the students to take
  * the exam from their professor or review an already graded exam if it is ready.
- * @param {number} examID The id for the current exam
+ * @param {number} studentExamID The id for the current exam
+ * @param {number} viewID The id of the person in the table which can be either a student or a teacher
+ * @param {boolean} isTaken Whether the corresponding exam is taken or not
  */
-function createActionButtons(examID, teacherID, isTaken) {
+function createActionButtons(studentExamID, viewID, isTaken) {
     // Create two buttons, rewview and delete
     const purpose = getPurpose(isTaken);
     
@@ -251,7 +257,7 @@ function createActionButtons(examID, teacherID, isTaken) {
         buttons.push(document.createElement("button")); 
 
     // Get current action element
-    const action = document.getElementById(`action-${examID}-${teacherID}`);
+    const action = document.getElementById(`action-${studentExamID}-${viewID}`);
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
@@ -259,7 +265,7 @@ function createActionButtons(examID, teacherID, isTaken) {
         const p = purpose[i];
 
         // Set id of button
-        buttons[i].id = `${p}-${examID}-${teacherID}`;
+        buttons[i].id = `${p}-${studentExamID}-${viewID}`;
 
         // Set classes of button
         buttons[i].classList.add("button");
@@ -270,11 +276,11 @@ function createActionButtons(examID, teacherID, isTaken) {
         buttons[i].innerText = p;
 
         // If the current element is the review button
-        if (p == "review") {
-            const studentGrade = document.getElementById(`points-${examID}-${teacherID}`);
+        if (p == "review" || p == "grade") {
+            const studentGrade = document.getElementById(`points-${studentExamID}-${viewID}`);
 
             // If the exam is ungraded don't add an action listen and add a class to change the color
-            if (studentGrade.innerText == "Ungraded") {
+            if (studentGrade.innerText == "None") {
                 buttons[i].classList.add("ungraded-exam");
                 action.appendChild(buttons[i]);
                 continue;
@@ -284,9 +290,9 @@ function createActionButtons(examID, teacherID, isTaken) {
         // Add onclick events to all action buttons
         buttons[i].onclick = function() {
             if (p == "delete")
-                updateRequest(examID, teacherID, 3);
+                updateRequest(studentExamID, viewID, 3);
             else if (p == "take") {
-                storeSessionExam(examID, teacherID);
+                storeSessionExam(studentExamID, viewID);
                 window.location.href = "/exam";
             }
             else if (p == "review") {
@@ -294,10 +300,9 @@ function createActionButtons(examID, teacherID, isTaken) {
                  * Need to add separate onclick functions for review
                  * depending on if the user is a student or a teacher
                  */
-                console.log("Review the exam");
             }
             else if (p == "grade") {
-
+                autogradeRequest(studentExamID, viewID);
             }
         };
         action.appendChild(buttons[i]);
@@ -564,13 +569,13 @@ function updateActiveButton(id) {
 
 /**
  * Delete the current exam. This only deletes the exam on the student side.
- * @param {number} examid id of exam to be deleted
+ * @param {number} studentExamID id of exam to be deleted
  * @param {number} studenid id of student to delete exam from
  * @param {number} code request type
  */
-function updateRequest(examid, studentid, code) {
+function updateRequest(studentExamID, studentid, code) {
     // Begin AJAX call
-    const credentials = `examid=${examid}&studentid=${studentid}&request=${code}`;
+    const credentials = `studentexamid=${studentExamID}&studentid=${studentid}&request=${code}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
@@ -579,6 +584,27 @@ function updateRequest(examid, studentid, code) {
             // If exams exist print table dynamically
             if (ajax.responseText == "true") 
                 loadTables();
+        }
+    }
+
+    // Send request
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
+}
+
+function autogradeRequest(examid, studentid) {
+    // Autograde request code
+    const reuqestCode = 7;
+
+    // Begin AJAX call
+    const credentials = `examid=${examid}&studentid=${studentid}&request=${requestCode}`;
+    const ajax = new XMLHttpRequest();
+
+    // Check AJAX
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            console.log(ajax.responseText);
         }
     }
 
@@ -689,9 +715,9 @@ function getHeader() {
 function getPurpose(isTaken) {
     switch (requestCode) {
         case 1:
-            return isTaken ? ["review"] : ['take'];
+            return isTaken != -1 ? ["review"] : ['take'];
         case 2:
-            return isTaken ? ["review", "delete"] : ["grade", "delete"];
+            return isTaken == 1 ? ["review", "delete"] : ["grade", "delete"];
     }
 }
 
