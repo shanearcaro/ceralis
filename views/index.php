@@ -11,9 +11,10 @@
     <link rel="Stylesheet" href="style/style.css?<?php echo time();?>">
     <?php include(dirname(__FILE__, 2) . "/style/includes/stylesheets.php");?>
     <script type="text/javascript" src="scripts/update-view.js??<?php echo time();?>"></script>
+    <script type="text/javascript" src="scripts/authenticate-user.js??<?php echo time();?>"></script>
     <title>Ceralis</title>
 </head>
-<body>
+<body onload="clearSessionLogin()">
     <?php include(dirname(__FILE__, 2) . "/views/includes/header.php");?>
     <div class="content-area">
         <div class="content-header"></div>
