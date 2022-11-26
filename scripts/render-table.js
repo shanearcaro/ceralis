@@ -233,8 +233,6 @@ function createTables(response) {
             row.cells[j].innerText = elements[j];
         }
 
-        console.log();
-
         // Create review and delete buttons
         createActionButtons(exam.exam_id, exam.user_id, !(formatScore(exam.score, exam.points) == "None"));
     }
@@ -246,30 +244,21 @@ function createTables(response) {
  * the exam from their professor or review an already graded exam if it is ready.
  * @param {number} examID The id for the current exam
  */
-function createActionButtons(examID, studentID, isTaken) {
-    /**
-     * TODO: This code needs to be changed later so that only a single button will be created at a time,
-     * either take or review. These buttons need to be created based on whether the user has already taken
-     * an exam and if the exam has been graded yet. The review button should be red if the exam is not ready
-     * to be reviewed yet or green if the exam has been auto graded. 
-     * 
-     * The action bar should aways have two buttons. One button will always be the delete button, users will be
-     * able to delete exams from the table if they want. The other button will either be the take exam or reivew exam button.
-     */
+function createActionButtons(examID, teacherID, isTaken) {
     // Create two buttons, rewview and delete
     const purpose = getPurpose(isTaken);
-    console.log("Exam ID: " + examID + " - " + isTaken);
     
+    // List of buttons to add to the screen
     let buttons = [];
     for (let i = 0; i < purpose.length; i++)
         buttons.push(document.createElement("button")); 
 
     // Get current action element
-    const action = document.getElementById(`action-${examID}-${studentID}`);
+    const action = document.getElementById(`action-${examID}-${teacherID}`);
 
     // Create custom class and id list and add to table
     for (let i = 0; i < purpose.length; i++) {
-        buttons[i].id = `${purpose[i]}-${examID}-${studentID}`;
+        buttons[i].id = `${purpose[i]}-${examID}-${teacherID}`;
         buttons[i].classList.add("button");
         buttons[i].classList.add("action-button");
         buttons[i].classList.add(`button-${purpose[i]}`);
@@ -280,9 +269,9 @@ function createActionButtons(examID, studentID, isTaken) {
             let p = purpose[i];
 
             if (p == "delete")
-                updateRequest(examID, studentID, 3);
+                updateRequest(examID, teacherID, 3);
             else if (p == "take") {
-                storeSessionExam(examID, studentID);
+                storeSessionExam(examID, teacherID);
                 window.location.href = "/exam";
             }
         };

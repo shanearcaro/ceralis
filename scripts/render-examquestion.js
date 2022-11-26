@@ -46,10 +46,11 @@ function onLoad() {
 function generateID() {
     // Get the requested infromation
     const examRequest = sessionStorage.getItem("exam_request");
+    console.log(examRequest);
 
     // Set the ids
     examid = examRequest.substring(0, examRequest.indexOf("-"));
-    studentid = examRequest.substring(examRequest.indexOf("-") + 1);
+    studentid = sessionStorage.getItem("user_id")
 }
 
 /**
@@ -110,6 +111,8 @@ function updateDisplay() {
     // Resize text area after setting the text
     resizeTextarea();
     displayActionButtons();
+
+    // 50 is just a value that works, this should probably be set up as a const 
     createAnswerTextarea(50);
     createNavBar();
 }
@@ -161,7 +164,7 @@ function displayActionButtons() {
         if (Object.keys(studentAnswers).length == questionsAmount) {
             submit.onclick = function() {
                 saveStudentAnswer();
-                updateDisplay();
+                submitExam();
             }
         }
         else {
@@ -315,6 +318,11 @@ function saveStudentAnswer() {
     }
 }
 
+/**
+ * Create a nav bar element
+ * @param {number} index question index
+ * @returns nav bar element as a div
+ */
 function createNavElement(index) {
     // Create a div to hold the question and its icon
     const questionContainer = document.createElement("div");
@@ -358,11 +366,95 @@ function createNavElement(index) {
     return questionContainer;
 }
 
+/**
+ * Create side nav bar question indexes
+ */
 function createNavBar() {
+    // Get nav bar and reset HTML
     const nav = document.getElementById("nav-table");
     nav.innerHTML = "";
 
+    // Append all nav elements as children
     for (let i = 0; i < questionsAmount; i++) {
         nav.appendChild(createNavElement(i));
     }
+}
+
+/**
+ * Submit all student answers
+ */
+function submitExam() {
+    // Get questions request code
+    const requestCode = 5;
+    for (let i = 0; i < questionsAmount; i++) {
+        // Current question
+        const current = questionsCache[i];
+
+        // Format request
+        const credentials = `examid=${current.exam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
+        console.log(credentials);
+        const ajax = new XMLHttpRequest();
+
+        // Check AJAX
+        ajax.onreadystatechange = function() {
+            if (ajax.readyState == 4 && ajax.status == 200) {
+
+                console.log(ajax.responseText);
+                // If exams exist print table dynamically
+                if (ajax.responseText == "false") {
+                    /**
+                     * This should also never fail. The best way of dealing with this would be to make the
+                     * answers get added to sesssion data and then reload the page and answers on a failure
+                     * and try again. This might get added in a later version if I have time.
+                     */
+                    window.location.href = "/404";
+                }
+            }
+        }
+
+        // Send request
+        ajax.open("POST", "/post", true);
+        ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        ajax.send(credentials);
+    }
+    // Update exam score to 0
+    updateExamScore();
+}
+
+/**
+ * Students are able to take exams if the value of the exam is -1 meaning it hasn't been taken yet.
+ * Need to update the score to 0 so that students know it is ungraded, but they won't be able to take
+ * again.
+ */
+function updateExamScore() {
+    // Get questions request code
+    const requestCode = 6;
+
+    // Ungraded score
+    const score = 0;
+
+    // Format request
+    const credentials = `examid=${examid}&score=${score}&studentid=${studentid}&request=${requestCode}`;
+    console.log(credentials);
+    const ajax = new XMLHttpRequest();
+
+    // Check AJAX
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+
+            // Should also never fail
+            if (ajax.responseText == "false") {
+                window.location.href = "/404";
+            }
+            else {
+                // On success go back to student page
+                window.location.href = "/student";
+            }
+        }
+    }
+
+    // Send request
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
 }
