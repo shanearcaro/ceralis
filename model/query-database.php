@@ -158,7 +158,7 @@ switch($request_code) {
 
     case 7:
         $query = $pdo->prepare(
-            "SELECT se.studentexam_id, eq.question_id, eq.points, eq.answer, tc.testcase_id, tc.case, tc.answer AS case_answer
+            "SELECT se.studentexam_id, eq.question_id, eq.points, eq.answer, q.text, q.difficulty, q.constraint, tc.testcase_id, tc.case, tc.answer AS case_answer
             FROM StudentExams AS se
             INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
             INNER JOIN Questions AS q ON eq.question_id = q.question_id
