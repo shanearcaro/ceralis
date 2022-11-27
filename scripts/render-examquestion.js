@@ -386,8 +386,11 @@ function submitExam() {
         // Current question
         const current = questionsCache[i];
 
+        // AJAX removes + sign so the student answer needs to be encoded to avoid this
+        const answer = encodeURIComponent(studentAnswers[i]);
+
         // Format request
-        const credentials = `studentexamid=${current.studentexam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
+        const credentials = `studentexamid=${current.studentexam_id}&questionid=${current.question_id}&answer=${answer}&request=${requestCode}`;
         const ajax = new XMLHttpRequest();
 
         // Check AJAX
