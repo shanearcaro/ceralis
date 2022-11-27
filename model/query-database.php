@@ -59,6 +59,18 @@ $request_code = $data->{'request'};
   * 6 - Update student exam score
  *     [userid, examid, score]
  *     []
+ * 
+ * 7 - Get all created questions
+ *     []
+ *     [question_id, text]
+ * 
+ * 8 - Store newly created exam and return last exam Id
+ *     [userid, title, points, date]
+ *     [exam_id]
+ * 
+ * 9 - Store exam questions
+ *     [examid, questionid, points]
+ *     []
  */
 
 //  Execute queries based on request 
@@ -138,6 +150,27 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
+    case 7:
+        $query = $pdo->prepare(
+            "SELECT q.question_id, q.text
+            FROM Questions as q");
+        $query->execute();
+        break;
+    case 8:
+        $query = $pdo->prepare(
+            "INSERT INTO Exams (exam_id, user_id, title, points, date)
+            VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP)");
+        $query->execute([$data->{'userid'}, $data->{'title'}, $data->{'points'}]);
+        $query = $pdo->lastInsertId();
+        echo json_encode($query);
+        exit();
+    case 9:
+        $query = $pdo->prepare(
+            "INSERT INTO ExamQuestions (exam_id, question_id, points, answer, comment)
+            VALUES (?, ?, ?, NULL, NULL)");
+            $query->execute([$data->{'examid'}, $data->{'questionid'}, $data->{'points'}]);
+            break;
+
 }       
 
 // Fetch data and return
