@@ -60,15 +60,15 @@ $request_code = $data->{'request'};
  *     [userid, examid, score]
  *     []
  * 
- * 7 - Get all created questions
+ * 8 - Get all created questions
  *     []
  *     [question_id, text]
  * 
- * 8 - Store newly created exam and return last exam Id
+ * 9 - Store newly created exam and return last exam Id
  *     [userid, title, points, date]
  *     [exam_id]
  * 
- * 9 - Store exam questions
+ * 10 - Store exam questions
  *     [examid, questionid, points]
  *     []
  */
@@ -150,13 +150,13 @@ switch($request_code) {
          */
         echo json_encode(true);
         exit();
-    case 7:
+    case 8:
         $query = $pdo->prepare(
             "SELECT q.question_id, q.text
             FROM Questions as q");
         $query->execute();
         break;
-    case 8:
+    case 9:
         $query = $pdo->prepare(
             "INSERT INTO Exams (exam_id, user_id, title, points, date)
             VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP)");
@@ -164,7 +164,7 @@ switch($request_code) {
         $query = $pdo->lastInsertId();
         echo json_encode($query);
         exit();
-    case 9:
+    case 10:
         $query = $pdo->prepare(
             "INSERT INTO ExamQuestions (exam_id, question_id, points, answer, comment)
             VALUES (?, ?, ?, NULL, NULL)");

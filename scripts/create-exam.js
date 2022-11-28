@@ -96,7 +96,7 @@ function populateQuestionTable(data, i){
 
 function loadQuestions(){
     // Get questions request code
-    const requestCode = 7;
+    const requestCode = 8;
 
     // Format request
     const credentials = `request=${requestCode}`;
@@ -134,7 +134,7 @@ function loadQuestions(){
 }
 
 function addExam(){
-    const requestCode = 8;
+    const requestCode = 9;
     const userid = sessionStorage.getItem("user_id");
     const title = document.getElementById("title").value;
     const points = document.getElementsByClassName("points-input");
@@ -188,7 +188,7 @@ function addExam(){
 
 function addExamQuestions(exam_id, questions, points){
     const examid = parseInt(exam_id);
-    const requestCode = 9;
+    const requestCode = 10;
     for (let i = 0; i < questions.length; i++){
         var questionid = parseInt(questions[i].id);
         var questionPoints = points[i].value;
