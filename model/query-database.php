@@ -63,6 +63,18 @@ $request_code = $data->{'request'};
  * 7 - Get all student exam questions, testcases, and student answers.
  *     [studentexamid]
  *     [studentexamid, questionid, points, answer, testcaseid, case, answer, case_answer] 
+ * 
+ * 8 - Get all created questions
+ *     []
+ *     [question_id, text]
+ * 
+ * 9 - Store newly created exam and return last exam Id
+ *     [userid, title, points, date]
+ *     [exam_id]
+ * 
+ * 10 - Store exam questions
+ *     [examid, questionid, points]
+ *     []
  */
 
 //  Execute queries based on request 
@@ -166,6 +178,27 @@ switch($request_code) {
             WHERE se.studentexam_id = ?
             ORDER BY eq.question_id");
         $query->execute([$data->{'studentexamid'}]);
+    case 8:
+        $query = $pdo->prepare(
+            "SELECT q.question_id, q.text
+            FROM Questions as q");
+        $query->execute();
+        break;
+    case 9:
+        $query = $pdo->prepare(
+            "INSERT INTO Exams (exam_id, user_id, title, points, date)
+            VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP)");
+        $query->execute([$data->{'userid'}, $data->{'title'}, $data->{'points'}]);
+        $query = $pdo->lastInsertId();
+        echo json_encode($query);
+        exit();
+    case 10:
+        $query = $pdo->prepare(
+            "INSERT INTO ExamQuestions (exam_id, question_id, points, answer, comment)
+            VALUES (?, ?, ?, NULL, NULL)");
+            $query->execute([$data->{'examid'}, $data->{'questionid'}, $data->{'points'}]);
+            break;
+
 }       
 
 // Fetch data and return
