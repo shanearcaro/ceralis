@@ -162,10 +162,9 @@ function storeQuestion() {
 
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-
+            console.log(ajax.responseText);
             //The response text will be the id of the last exam created
             const questionId = JSON.parse(ajax.responseText);
-            console.log(ajax.responseText);
             if (ajax.responseText == "false") {
                 /**
                  * This should also never fail. The best way of dealing with this would be to make the
@@ -182,7 +181,7 @@ function storeQuestion() {
             //Store default test cases for the constraints
             storeTestCases(functionName[0], functionName[0], questionId);
 
-            switch (constraint){
+            switch (constraint) {
                 case 'NULL':
                     storeTestCases("None", "None", questionId);
                     break;
@@ -196,6 +195,7 @@ function storeQuestion() {
                     storeTestCases("Recursion", "Recursion", questionId);
                     break;
             }
+            window.location.href = "/teacher";
         }
     }
     ajax.open("POST", "/post", true);
@@ -219,9 +219,9 @@ function storeTestCases(testCase, solution, questionId) {
                  * and try again. This might get added in a later version if I have time.
                  */
                 window.location.href = "/404";
-                }
             }
         }
+    }
 
     ajax.open("POST", "/post", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

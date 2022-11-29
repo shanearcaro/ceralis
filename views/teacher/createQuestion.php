@@ -64,5 +64,8 @@
             </div>
             <input type="submit" id="form-button" class="center" value="SUBMIT" onclick="storeQuestion();" >
         </div>
+        <div class="table">
+            
+        </div>
 </body>
 </html>

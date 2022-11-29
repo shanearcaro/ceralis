@@ -174,6 +174,7 @@ function addExam(){
             }
 
             createStudentExams(examid, questions, points);
+            // window.location.href = "/teacher";
         }
     }
 

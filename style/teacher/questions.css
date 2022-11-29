@@ -34,7 +34,7 @@ select {
     width: 30%;
     height: 90%;
     display:flex;
-    flex: 1;
+    display: flex;
     flex-direction: column;
     text-align: left;
     margin-left: 1vw;
@@ -76,7 +76,7 @@ select {
     text-align: center;
     font-size:15px;
     padding: 5px;
-    width:50%;
+    width:60%;
     align-self: center;
     margin-top: 1vh;
 }
