@@ -180,7 +180,6 @@ switch($request_code) {
         $query->execute([$data->{'studentexamid'}]);
         break;
     case 19:
-        print_r($data);
         $query = $pdo->prepare(
             "INSERT INTO `Autograde` (`studentexam_id`, `testcase_id`, `autoresult`, `points`, `score`) 
             VALUES (?, ?, ?, ?, ?)"

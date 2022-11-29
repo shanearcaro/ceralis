@@ -93,6 +93,25 @@ if ($post_data['request'] == 7) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
         curl_exec($ch);
     }
+
+    $studentExams = array();
+
+    foreach ($responseArray as $examResults) {
+        $studentExams["studentexamid"] = $examResults["studentexamid"];
+        $score = $examResults["score"];
+
+        if (!array_key_exists("score", $studentExams))
+            $studentExams["score"] = $score;
+        else
+            $studentExams["score"] += $score;
+    }
+    $studentExams["request"] = 6;
+    
+    // Encode
+    $encoded = json_encode($studentExams);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+    $result = curl_exec($ch);
+    echo $result;
 }
 else {
     echo $result;
