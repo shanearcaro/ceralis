@@ -194,12 +194,14 @@ switch($request_code) {
             WHERE se.studentexam_id = ?
             ORDER BY eq.question_id");
         $query->execute([$data->{'studentexamid'}]);
+
     case 8:
         $query = $pdo->prepare(
             "SELECT q.question_id, q.text
             FROM Questions as q");
         $query->execute();
         break;
+
     case 9:
         $query = $pdo->prepare(
             "INSERT INTO Exams (exam_id, user_id, title, points, date)
@@ -208,14 +210,16 @@ switch($request_code) {
         $query = $pdo->lastInsertId();
         echo json_encode($query);
         exit();
+        
     case 10:
-            $query = $pdo->prepare(
-                "INSERT INTO StudentExams (studentexam_id, user_id, exam_id, score, date)
-                SELECT NULL, Users.user_id, ?, -1, CURRENT_TIMESTAMP
-                FROM Users
-                WHERE Users.position = 'student'");
-            $query->execute([$data->{'examid'}]);
-            break;
+        $query = $pdo->prepare(
+            "INSERT INTO StudentExams (studentexam_id, user_id, exam_id, score, date)
+            SELECT NULL, Users.user_id, ?, -1, CURRENT_TIMESTAMP
+            FROM Users
+            WHERE Users.position = 'student'");
+        $query->execute([$data->{'examid'}]);
+        break;
+
     case 11:
         $query = $pdo->prepare(
             "INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment)
@@ -224,6 +228,7 @@ switch($request_code) {
             WHERE StudentExams.exam_id=?");
         $query->execute([$data->{'questionid'}, $data->{'points'}, $data->{'examid'}]);
         break;
+
     case 12:
         $query = $pdo->prepare(
             "SELECT * FROM
@@ -231,6 +236,7 @@ switch($request_code) {
         $query->execute();
         echo json_encode(true);
         exit();
+
     case 13:
         $query = $pdo->prepare(
             "INSERT INTO Questions (question_id, text, difficulty, `constraint`, category)
@@ -241,11 +247,17 @@ switch($request_code) {
         $query = $pdo->lastInsertId();
         echo json_encode($query);
         exit();
+
     case 14:
         $query = $pdo->prepare(
             "INSERT INTO Testcases (testcase_id, question_id, `case`, answer)
             VALUES (NULL, ?, ?, ?)");
-            $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
+        $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
+
+    case 16:
+        $query = $pdo->prepare(
+            "abc");
+        $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
 }       
 
 // Fetch data and return
