@@ -66,6 +66,8 @@ CREATE TABLE Autograde (
     studentexam_id INT NOT NULL,
     testcase_id INT NOT NULL,
     autoresult VARCHAR(300) NOT NULL,
+    points INT NOT NULL,
+    score INT NOT NULL DEFAULT 0,
     FOREIGN KEY(studentexam_id) REFERENCES StudentExams(studentexam_id),
     FOREIGN KEY(testcase_id) REFERENCES Testcases(testcase_id),
     PRIMARY KEY(studentexam_id, testcase_id)
