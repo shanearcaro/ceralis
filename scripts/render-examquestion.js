@@ -101,8 +101,9 @@ function loadQuestions() {
 function updateDisplay() {
     // Set question attributes to those gathered from the query request
     document.getElementById("question-number").innerText = "Question " + (questionIndex + 1);
-    document.getElementById("question-points").innerText = questionsCache[questionIndex].points + " pts";
+    document.getElementById("question-points").innerText = questionsCache[questionIndex].difficulty + ", " + questionsCache[questionIndex].points + " pts";
     document.getElementById("question-text").innerText = questionsCache[questionIndex].text;
+    document.getElementById("exam-title").innerText = questionsCache[questionIndex].title;
 
     // Resize text area after setting the text
     resizeTextarea();
@@ -386,8 +387,11 @@ function submitExam() {
         // Current question
         const current = questionsCache[i];
 
+        // AJAX removes + sign so the student answer needs to be encoded to avoid this
+        const answer = encodeURIComponent(studentAnswers[i]);
+
         // Format request
-        const credentials = `studentexamid=${current.studentexam_id}&questionid=${current.question_id}&answer=${studentAnswers[i]}&request=${requestCode}`;
+        const credentials = `studentexamid=${current.studentexam_id}&questionid=${current.question_id}&answer=${answer}&request=${requestCode}`;
         const ajax = new XMLHttpRequest();
 
         // Check AJAX

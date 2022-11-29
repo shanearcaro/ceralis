@@ -302,7 +302,7 @@ function createActionButtons(studentExamID, viewID, isTaken) {
                  */
             }
             else if (p == "grade") {
-                autogradeRequest(studentExamID, viewID);
+                autogradeRequest(studentExamID);
             }
         };
         action.appendChild(buttons[i]);
@@ -593,12 +593,12 @@ function updateRequest(studentExamID, studentid, code) {
     ajax.send(credentials);
 }
 
-function autogradeRequest(examid, studentid) {
+function autogradeRequest(studentExamID) {
     // Autograde request code
-    const reuqestCode = 7;
+    const code = 7;
 
     // Begin AJAX call
-    const credentials = `examid=${examid}&studentid=${studentid}&request=${requestCode}`;
+    const credentials = `studentexamid=${studentExamID}&request=${code}`;
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
