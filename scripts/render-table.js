@@ -300,6 +300,9 @@ function createActionButtons(studentExamID, viewID, isTaken) {
                  * Need to add separate onclick functions for review
                  * depending on if the user is a student or a teacher
                  */
+                
+                window.location.href = "/review";
+
             }
             else if (p == "grade") {
                 autogradeRequest(studentExamID);

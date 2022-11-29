@@ -1,7 +1,7 @@
 function displayResults(){
     const getContentArea = document.getElementsByClassName("content-area");
     const table = document.createElement("table");
-    table.id = results;
+    table.id = "results";
 
     var row = table.insertRow(-1);
     row.id = "First";
@@ -38,7 +38,7 @@ function getExamQuestions(studentExamId){
                 window.location.href = "/404";
             }
             for(let i=0; i<examid.length; i++){
-                console.log(getTestCases(examid[i].question_id));
+                getTestCases(examid[i].question_id);
             }
         }
     }
@@ -70,14 +70,15 @@ function getTestCases(question_id){
             }
             console.log(testCases);
             for(let i=0; i < testCases.length; i++) {
-                if(testCases[i][0] == "None" || testCases[i][0] == "For" || testCases[i][0] == "While" || testCases[i][0] == "Recursion" ){
-                    insertConstraint(testCases[i]);
+                insertTestCase(testCases[i]);
+                if(testCases[i].case == "None" || testCases[i].case == "For" || testCases[i].case == "While" || testCases[i].case == "Recursion" ){
+                    //insertConstraint(testCases[i]);
                 }
-                else if(testCases[i][0] == testCases[i][1]){
-                    addFunctionName(testCases[i]);
+                else if(testCases[i].case == testCases[i].answer){
+                    //addFunctionName(testCases[i]);
                 }
                 else{
-                    insertTestCase(testCases[i]);
+                    //insertTestCase(testCases[i]);
                 }
             }
         }
@@ -89,8 +90,12 @@ function getTestCases(question_id){
 }
 
 function insertTestCase(testCase){
-    const table = document.getElementById("table");
+    console.log("HI");
+    const table = document.getElementById("results");
     const edit  = document.createElement("input");
+    const area = document.getElementById("content-area");
+
+    //area.append(table);
     var row = table.insertRow(-1);
 
     var caseText = row.insertCell(-1);
@@ -100,18 +105,18 @@ function insertTestCase(testCase){
     var points = row.insertCell(-1);
     var editPoints = row.insertCell(-1);
 
-    caseText.innerHTML = testCase[0];
-    expected.innerHTML = testCase[1];
+    caseText.innerHTML = testCase.case;
+    expected.innerHTML = testCase.answer;
     actual.innerHTML = "expected x";
     worth.innerHTML = "worth x";
     points.innerHTML = "10";
 
-    editPoints.class = "po"
+    edit.className = "points-input";
+    edit.type = "number";
+    edit.id = testCase.case + "-input";
+    edit.name = testCase.case + "-input";
 
-
-
-
-    
+    editPoints.appendChild(edit);
 }
 
 function insertConstraint(testCase){

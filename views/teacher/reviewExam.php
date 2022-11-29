@@ -17,13 +17,15 @@
 </head>
 <body>
     <?php include(dirname(__FILE__, 3) . "/views/includes/header.php");?>
-    <div class="content-area">
-        <table id="Results">
+    <div class="content-area" id="content-area">
+        <table id="results">
             <tr id="First">
                 <td> Name </td>
-                <td id="function-name" > Function Name </td>
+                <td id="function-name" > Student Function Name </td>
+                <td id="actual"> Expected Function Name </td>
                 <td id="worth"> Worth </td>
                 <td id="earned"> Earned </td>
+                <td></td>
             </tr>
         </table>
         <input type="button" value="BUTTON" onclick="displayResults();">
