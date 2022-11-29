@@ -196,7 +196,7 @@ switch($request_code) {
         $query->execute([$data->{'studentexamid'}]);
     case 8:
         $query = $pdo->prepare(
-            "SELECT q.question_id, q.text
+            "SELECT *
             FROM Questions as q");
         $query->execute();
         break;
