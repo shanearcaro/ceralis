@@ -103,6 +103,7 @@ function updateDisplay() {
     document.getElementById("question-number").innerText = "Question " + (questionIndex + 1);
     document.getElementById("question-points").innerText = questionsCache[questionIndex].points + " pts";
     document.getElementById("question-text").innerText = questionsCache[questionIndex].text;
+    document.getElementById("exam-title").innerText = questionsCache[questionIndex].title;
 
     // Resize text area after setting the text
     resizeTextarea();
