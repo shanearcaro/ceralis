@@ -91,6 +91,10 @@ $request_code = $data->{'request'};
  * 14 - Store Test Cases
  *      [questionid, testCase(2..5)]
  *      []
+ * 
+ * 16 - Get test cases
+ *      questionid
+ *      [testcase_id, case, answer]
  */
 
 //  Execute queries based on request 
@@ -256,8 +260,12 @@ switch($request_code) {
 
     case 16:
         $query = $pdo->prepare(
-            "abc");
-        $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
+            "SELECT testcase_id, `case`, answer 
+            FROM TestCases 
+            WHERE question_id = ? ");
+        $query->execute([$data->{'question_id'}]);
+        break;
+    
 }       
 
 // Fetch data and return
