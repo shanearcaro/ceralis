@@ -266,7 +266,18 @@ switch($request_code) {
         $query->execute([$data->{'question_id'}]);
         break;
     
-}       
+    case 18:
+        $query = $pdo->prepare(
+            "SELECT eq.question_id, eq.points, eq.answer, eq.comment, q.constraint, tc.testcase_id, tc.case, tc.answer AS case_answer
+            FROM StudentExams AS se
+            INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
+            INNER JOIN Questions AS q ON eq.question_id = q.question_id
+            INNER JOIN Testcases AS tc ON q.question_id = tc.question_id
+            WHERE eq.studentexam_id = ? AND eq.question_id = ?
+            ORDER BY eq.question_id");
+        $query->execute([$data->{'studentexamid'}, $data->{'question_id'}]);
+    
+}
 
 // Fetch data and return
 $response = $query->fetchAll();
