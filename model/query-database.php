@@ -179,6 +179,14 @@ switch($request_code) {
             ORDER BY eq.question_id");
         $query->execute([$data->{'studentexamid'}]);
         break;
+    case 19:
+        print_r($data);
+        $query = $pdo->prepare(
+            "INSERT INTO `Autograde` (`studentexam_id`, `testcase_id`, `autoresult`, `points`, `score`) 
+            VALUES (?, ?, ?, ?, ?)"
+        );
+        $query->execute([$data->{'studentexamid'}, $data->{'testcaseid'}, $data->{'autoresult'}, $data->{'points'}, $data->{'score'}]);
+        exit();
 }       
 
 // Fetch data and return

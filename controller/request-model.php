@@ -75,9 +75,8 @@ if ($post_data['request'] == 7) {
             $pointsValue[$question->{"question_id"}] = $val;
     }
 
-
     for ($i = 0; $i < count($responseArray); $i++) {
-        print_r($responseArray[$i]);
+        // print_r($responseArray[$i]);
         $id = $responseArray[$i]["questionid"];
         $responseArray[$i]["points"] = floor($pointsValue[$id] / $pointsCount[$id]);
 
@@ -88,10 +87,12 @@ if ($post_data['request'] == 7) {
 
         // Update request code
         $responseArray[$i]["request"] = 19;
+
+        // Encode
+        $encoded = json_encode($responseArray[$i]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+        curl_exec($ch);
     }
-
-
-    print_r($responseArray);
 }
 else {
     echo $result;
