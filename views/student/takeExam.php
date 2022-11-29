@@ -20,6 +20,9 @@
         <div class="area-column" id="left-column"></div>
         <div class="area-column" id="middle-column">
             <div class="middle-content" id="middle-question-container">
+                <div class="exam-info">
+                    <h2 id="exam-title"></h2>
+                </div>
                 <div class="question-header">
                     <div class="question-container">
                         <h1 id="question-number"></h1>
