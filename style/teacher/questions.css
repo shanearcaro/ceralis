@@ -1,0 +1,119 @@
+/* Reset values to 0 */
+* { 
+    margin: 0px; 
+    padding: 0px;
+    letter-spacing: -0.05em;
+    font-family: 'Lato', sans-serif; 
+}
+
+textarea {
+    height:200px;
+    width:90%;
+    resize: none;
+    margin-top: 1.5vh;
+}
+
+select {
+    background-color: white;
+    border: 1px solid;
+    border-style: ridge;
+    height: 20px;
+}
+
+.content-area {
+    position: absolute;
+    width: inherit;
+    height: 90%;
+    bottom: 0;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.question-form {
+    width: 50%;
+    height: 90%;
+    display:flex;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-left: 1vw;
+    margin-right: 7vw;
+}
+
+.question-table {
+    width: max-content;
+    max-width: 60rem !important;
+    height:90%;
+    flex: 1;
+    align-self: right;
+    margin-right:1vw;
+    align-content: center;
+}
+
+.test-case-area {
+    display: flex;
+}
+
+.test-case-div {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.test-solution-div {
+    width: 40%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-self: right;
+}
+
+.button {
+    background-color: #5bc2df;
+    border: none;
+    color: white;
+    text-align: center;
+    font-size:15px;
+    padding: 5px;
+    width:60%;
+    align-self: center;
+    margin-top: 1vh;
+}
+
+.center {
+    align-self: center;
+
+}
+
+.test-label {
+    text-align: left;
+    margin-left: 1vw;
+    margin-bottom: 1vh;
+    margin-top: 1.5vh;
+}
+
+.solution-input {
+    min-height: 2.5vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    margin-top: 0.25vh;
+    padding-left: 0.25vw;
+
+    letter-spacing: normal;
+}
+
+.test-input {
+    min-height: 2.5vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    margin-top: 0.25vh;
+    padding-left: 0.25vw;
+
+    letter-spacing: normal;
+}
+
+.entire-table {
+    width: 50%;
+}
