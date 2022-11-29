@@ -90,6 +90,27 @@ function getTestCases(question_id){
 
 function insertTestCase(testCase){
     const table = document.getElementById("table");
+    const edit  = document.createElement("input");
+    var row = table.insertRow(-1);
+
+    var caseText = row.insertCell(-1);
+    var expected = row.insertCell(-1);
+    var actual = row.insertCell(-1);
+    var worth = row.insertCell(-1);
+    var points = row.insertCell(-1);
+    var editPoints = row.insertCell(-1);
+
+    caseText.innerHTML = testCase[0];
+    expected.innerHTML = testCase[1];
+    actual.innerHTML = "expected x";
+    worth.innerHTML = "worth x";
+    points.innerHTML = "10";
+
+    editPoints.class = "po"
+
+
+
+
     
 }
 
