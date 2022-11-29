@@ -173,7 +173,7 @@ function addExam(){
                 window.location.href = "/404";
             }
 
-            addExamQuestions(examid, questions, points);
+            createStudentExams(examid, questions, points);
         }
     }
 
@@ -186,15 +186,38 @@ function addExam(){
 
 }
 
-function addExamQuestions(exam_id, questions, points){
+function createStudentExams(exam_id, questions, points){
     const examid = parseInt(exam_id);
-    const requestCode = 10;
-    for (let i = 0; i < questions.length; i++){
-        var questionid = parseInt(questions[i].id);
-        var questionPoints = points[i].value;
-        var credentials = `examid=${examid}&questionid=${questionid}&points=${questionPoints}&request=${requestCode}`;
-        postQuestions(credentials);
+    var requestCode = 10;
+    var credentials = `examid=${examid}&request=${requestCode}`;
+    const ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            const examid = JSON.parse(ajax.responseText);
+
+            //The response text will be the id of the last exam created
+            if (ajax.responseText == "false") {
+                /**
+                 * This should also never fail. The best way of dealing with this would be to make the
+                 * answers get added to sesssion data and then reload the page and answers on a failure
+                 * and try again. This might get added in a later version if I have time.
+                 */
+                window.location.href = "/404";
+            }
+
+            requestCode = 11;
+            for (let i = 0; i < questions.length; i++){
+                var questionid = parseInt(questions[i].id);
+                var questionPoints = points[i].value;
+                credentials = `questionid=${questionid}&points=${questionPoints}&examid=${exam_id}&request=${requestCode}`;
+                console.log(credentials);
+                postQuestions(credentials);
+            }
+        }
     }
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
 
 }
 
@@ -203,4 +226,10 @@ function postQuestions(credentials){
     ajax.open("POST", "/post", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
+
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+                console.log(ajax.responseText);
+        }
+    }
 }

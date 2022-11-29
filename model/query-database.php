@@ -72,9 +72,16 @@ $request_code = $data->{'request'};
  *     [userid, title, points, date]
  *     [exam_id]
  * 
- * 10 - Store exam questions
+ * 10 - Create student Exams for every new exam created
+ *      [examid]
+ *      [userid, examid]
+ * 
+ * 11 - Store exam questions
  *     [examid, questionid, points]
  *     []
+ * 
+ * 
+ * 
  */
 
 //  Execute queries based on request 
@@ -193,11 +200,23 @@ switch($request_code) {
         echo json_encode($query);
         exit();
     case 10:
-        $query = $pdo->prepare(
-            "INSERT INTO ExamQuestions (exam_id, question_id, points, answer, comment)
-            VALUES (?, ?, ?, NULL, NULL)");
-            $query->execute([$data->{'examid'}, $data->{'questionid'}, $data->{'points'}]);
+            $query = $pdo->prepare(
+                "INSERT INTO StudentExams (studentexam_id, user_id, exam_id, score, date)
+                SELECT NULL, Users.user_id, ?, -1, CURRENT_TIMESTAMP
+                FROM Users
+                WHERE Users.position = 'student'");
+            $query->execute([$data->{'examid'}]);
             break;
+    case 11:
+        $query = $pdo->prepare(
+            "INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment)
+            SELECT StudentExams.studentexam_id, ?, ?, NULL, NULL
+            FROM StudentExams
+            WHERE StudentExams.exam_id=?");
+        $query->execute([$data->{'questionid'}, $data->{'points'}, $data->{'examid'}]);
+        break;
+    
+    
 
 }       
 
