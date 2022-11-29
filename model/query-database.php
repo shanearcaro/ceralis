@@ -74,10 +74,10 @@ $request_code = $data->{'request'};
  * 
  * 10 - Create student Exams for every new exam created
  *      [examid]
- *      [userid, examid]
+ *      []
  * 
  * 11 - Store exam questions
- *     [examid, questionid, points]
+ *     [questionid, points, examid]
  *     []
  * 
  * 
