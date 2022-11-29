@@ -49,8 +49,8 @@ function autograde($row) {
     $fileName = "question.py";
 
     // Python file result and error code
-    $execResult;
-    $return_code;
+    $execResult = array();
+    $return_code = 0;
 
     // Attempt to open the file in write mode
     $file = fopen($fileName, "w") or die("Unable to open file!");
