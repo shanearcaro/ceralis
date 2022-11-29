@@ -80,8 +80,17 @@ $request_code = $data->{'request'};
  *     [questionid, points, examid]
  *     []
  * 
+ * 12 - Get All Created Questions
+ *     []
+ *     [questionid, text, difficulty, constraint]
  * 
+ * 13 - Store created question and return the question_id
+ *     [text, difficulty, constraint, category]
+ *     [question_id]
  * 
+ * 14 - Store Test Cases
+ *      [questionid, testCase(2..5)]
+ *      []
  */
 
 //  Execute queries based on request 
@@ -215,9 +224,28 @@ switch($request_code) {
             WHERE StudentExams.exam_id=?");
         $query->execute([$data->{'questionid'}, $data->{'points'}, $data->{'examid'}]);
         break;
-    
-    
-
+    case 12:
+        $query = $pdo->prepare(
+            "SELECT * FROM
+            Questions");
+        $query->execute();
+        echo json_encode(true);
+        exit();
+    case 13:
+        $query = $pdo->prepare(
+            "INSERT INTO Questions (question_id, text, difficulty, `constraint`, category)
+            VALUES (NULL, ?, ?, ?, ?)");
+        if($data->{'constraint'} == "NULL")
+            $data->{'constraint'} = NULL;
+        $query->execute([$data->{'text'}, $data->{'difficulty'}, $data->{'constraint'}, $data->{'category'}]);
+        $query = $pdo->lastInsertId();
+        echo json_encode($query);
+        exit();
+    case 14:
+        $query = $pdo->prepare(
+            "INSERT INTO Testcases (testcase_id, question_id, `case`, answer)
+            VALUES (NULL, ?, ?, ?)");
+            $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
 }       
 
 // Fetch data and return

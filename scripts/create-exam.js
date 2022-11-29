@@ -193,8 +193,6 @@ function createStudentExams(exam_id, questions, points){
     const ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
-            const examid = JSON.parse(ajax.responseText);
-
             //The response text will be the id of the last exam created
             if (ajax.responseText == "false") {
                 /**
