@@ -101,7 +101,7 @@ function loadQuestions() {
 function updateDisplay() {
     // Set question attributes to those gathered from the query request
     document.getElementById("question-number").innerText = "Question " + (questionIndex + 1);
-    document.getElementById("question-points").innerText = questionsCache[questionIndex].points + " pts";
+    document.getElementById("question-points").innerText = questionsCache[questionIndex].difficulty + ", " + questionsCache[questionIndex].points + " pts";
     document.getElementById("question-text").innerText = questionsCache[questionIndex].text;
     document.getElementById("exam-title").innerText = questionsCache[questionIndex].title;
 
