@@ -23,6 +23,7 @@
                 <ul class="panel-list">
                     <div class="panel-div panel-hover"><li class="panel-element" id='panel-dashboard' onclick="window.location.href='/questions'">QUESTION</li></div>
                     <div class="panel-div panel-hover"><li class="panel-element" id='panel-exam' onclick="window.location.href='/create'">CREATE EXAM</li></div>
+                    <div class="panel-div panel-hover"><li class="panel-element" id='panel-exam' onclick="window.location.href='/review'">REVIEW EXAM</li></div>
                     <div class="panel-div"><button class="panel-element button" id='logout-button' onclick="logout()">LOG OUT</button></div>
                 </ul>
             </div>

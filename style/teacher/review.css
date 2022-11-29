@@ -1,0 +1,11 @@
+th {
+    border: 1px solid;
+    padding: 5px;
+    min-width: max-content;
+}
+
+td {
+    border: 1px solid;
+    padding: 5px;
+    min-width: max-content;
+}

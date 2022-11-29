@@ -91,6 +91,14 @@ $request_code = $data->{'request'};
  * 14 - Store Test Cases
  *      [questionid, testCase(2..5)]
  *      []
+ * 
+ * 17 - Grab all exam questions
+ *      [studentexam_id, answer, comment]
+ *      [question_id]
+ * 
+ * 20 - Grab all testcases for exam
+ *      [question_id]
+ *      [studentexam_id]  
  */
 
 //  Execute queries based on request 
@@ -246,6 +254,20 @@ switch($request_code) {
             "INSERT INTO Testcases (testcase_id, question_id, `case`, answer)
             VALUES (NULL, ?, ?, ?)");
             $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
+    case 17:
+        $query = $pdo->prepare(
+            "SELECT eq.question_id, eq.points, eq.answer, eq.comment 
+            FROM ExamQuestions as eq
+            WHERE  eq.studentexam_id = ?");
+        $query->execute([$data->{'studentexamid'}]);
+        break;
+    case 20:
+        $query = $pdo->prepare(
+            "SELECT `case`, answer 
+            FROM Testcases
+            WHERE question_id = ?");
+        $query->execute([$data->{'questionid'}]);
+        break;
 }       
 
 // Fetch data and return
