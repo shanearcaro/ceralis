@@ -86,11 +86,11 @@
                         </div>
                     </div>
                     <div class="search-case">
-                        <select name="category" id="category-search">
+                        <select name="category" id="category-search" onclick='loadTables()'>
                             <option value="text">Text</option>
                             <option value="difficulty">Difficulty</option>
-                            <option value="constraint">Constraint</option>
                             <option value="category">Category</option>
+                            <option value="constraint">Constraint</option>
                         </select>
                     </div>
                     <div class="dash-table-div">
