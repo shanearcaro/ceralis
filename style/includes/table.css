@@ -14,6 +14,19 @@
     border: 1px solid var(--dash-ol);
 }
 
+.dash-table-area-2 {
+    position: relative;
+    width: 50rem;
+
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+
+    border: 1px solid var(--dash-ol);
+}
+
 /* ========== STUDENT EXAMS TABLE TITLE ========== */
 .dash-title {
     width: 100%;
@@ -47,6 +60,28 @@
     padding-top: 1vh;
     margin: 0.5rem 2.25vw 0;
 }
+
+.search-case {
+    width: 10%;
+    height: 100%;
+    /* background-color: black; */
+   
+    display: flex;
+    align-self: flex-end;
+    margin-right: 2.25vw;
+ }
+  
+ .search-case > select {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  
+    margin-top: 1vh;
+    background: none;
+    border: 1px solid var(--page-ol);
+    border-radius: 2px;
+  
+ }
 
 .searchbar-element {
     width: max-content;
@@ -129,7 +164,7 @@
 /* ========== STUDENT EXAMS TABLE ROW ========== */
 .exam-row {
     height: 50px;
-    
+
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -280,4 +315,31 @@
 
 .active-button {
     background-color: var(--active-btn);
+}
+
+.cell-question {
+    width: 10%;
+}
+
+.cell-text {
+    width: 52%;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+
+    /* max-width: 20%; */
+    min-height: max-content;
+    word-wrap: break-word;
+    overflow-y: auto;
+}
+
+.cell-difficulty {
+    width: 10%;
+}
+
+.cell-constraint {
+    width: 16%;
+}
+
+.cell-category {
+    width: 12%;
 }

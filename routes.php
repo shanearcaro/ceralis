@@ -19,6 +19,8 @@ get('/exam',                    '/views/student/takeExam.php');
 
 // Teacher routes
 get('/teacher',                 '/views/teacher/teacher.php');
+get('/create',                  '/views/teacher/createExam.php');
+get('/questions',               '/views/teacher/createQuestion.php');
 
 // Teacher requests
 // TODO

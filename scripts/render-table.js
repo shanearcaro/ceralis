@@ -80,7 +80,12 @@ function loadTables(forceReload = false) {
     const userid = sessionStorage.getItem("user_id");
 
     // Format request
-    const credentials = `userid=${userid}&request=${requestCode}`;
+    let credentials = `userid=${userid}&request=${requestCode}`;
+
+    if (requestCode == 12) {
+        credentials = `request=${8}`;
+    }
+
     const ajax = new XMLHttpRequest();
 
     // Check AJAX
@@ -177,7 +182,12 @@ function createTables(response) {
 
     // Horizontal header infromation
     const headers = getHeader();
-    const data = ["index", "name", "title", "points", "date", "action"];
+    let data = ["index", "name", "title", "points", "date", "action"];
+
+    console.log(requestCode)
+    if (requestCode == 12) {
+        data = ["question", "text", "difficulty", "category", "constraint"];
+    }
 
     // Create cell class descriptors
     const prefix = "cell";
@@ -205,7 +215,11 @@ function createTables(response) {
 
         // Current exam
         const exam = response[i];
-        const elements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
+        let elements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
+
+        if (requestCode == 12) {
+            elements = [exam.question_id, exam.text, exam.difficulty, exam.constraint, exam.category];
+        }
         
         // Counter for how many rows are being displayed
         displayAmount++;
@@ -336,15 +350,32 @@ function getSearchRows(response) {
         resetTableState();
         return response;
     }
-    
+
+    // Get the current filter value
+    const searchVal = document.getElementById("category-search") == null ? null : document.getElementById("category-search").value;
+
     // Create filtered response
     let filteredResponse = [];
     for (let i = 0; i < response.length; i++) {
         const exam = response[i];
-        const examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
-        
+        let examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
+
+        if (requestCode == 12) {
+            examElements = [];
+            if (searchVal == "text")
+                examElements = [exam.question_id, exam.text, exam.difficulty, exam.category, exam.constraint];
+            else if (searchVal == "difficulty")
+                examElements = [exam.difficulty]
+            else if (searchVal == "constraint")
+                examElements = [exam.constraint];
+            else if (searchVal == "category")
+                examElements = [exam.category];
+        }
         // Check to see if exam contains search string
         for (let j = 0; j < examElements.length; j++) {
+            console.log(examElements[j]);
+            if (examElements[j] == null)
+                continue;
             let value = String(examElements[j]).toLowerCase();
     
             // If row contains search text, stop checking
@@ -354,6 +385,8 @@ function getSearchRows(response) {
             }
         }
     }
+
+    // console.log(JSON.stringify(filteredResponse));
 
     // Update responseLength with new filtered length
     responseLength = filteredResponse.length;
@@ -705,6 +738,8 @@ function getHeader() {
             return ['ID', 'Professor', 'Title', 'Score', 'Date', "Action"];
         case 2:
             return ['ID', 'Student', 'Title', 'Score', 'Date', "Action"];
+        case 12:
+            return ['Question', 'Text', "Difficulty", "Category", "Constraint"];
     }
 }
 
@@ -718,6 +753,8 @@ function getPurpose(isTaken) {
             return isTaken != -1 ? ["review"] : ['take'];
         case 2:
             return isTaken == 1 ? ["review", "delete"] : ["grade", "delete"];
+        case 12:
+            return [];
     }
 }
 
@@ -754,6 +791,7 @@ function formatScore(score, points) {
         return "Ungraded";
     return String(parseInt(score / points * 100)) + "%";
 }
+
 
 /**
  * Disable the back button

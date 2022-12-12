@@ -1,4 +1,4 @@
-CREATE DATABASE sma237;
+CREATE DATABASE IF NOT EXISTS sma237;
 USE sma237;
 
 CREATE TABLE Users (
@@ -26,6 +26,7 @@ CREATE TABLE Questions (
     text VARCHAR(500) NOT NULL,
     difficulty ENUM ('Easy', 'Medium', 'Hard') NOT NULL,
     `constraint` ENUM ('For', 'While', 'Recursion'),
+    category ENUM ('Variable', 'Conditional', 'For', 'While', 'List', 'Recursion') NOT NULL,
     PRIMARY KEY(question_id)
 );
 
