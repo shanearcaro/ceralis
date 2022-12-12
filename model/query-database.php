@@ -264,8 +264,8 @@ switch($request_code) {
         $query = $pdo->prepare(
             "INSERT INTO Testcases (testcase_id, question_id, `case`, answer)
             VALUES (NULL, ?, ?, ?)");
-            $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
-
+        $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
+        break;
     case 17:
         $query = $pdo->prepare(
             "SELECT eq.question_id, q.text, eq.points, eq.answer, eq.comment 
@@ -294,8 +294,7 @@ switch($request_code) {
             SET score = ?
             WHERE studentexam_id = ? AND testcase_id = ?");
         $query->execute([$data->{'score'}, $data->{'studentexamid'}, $data->{'testcaseid'}]);
-        break
-        exit();
+        break;
     case 15:
         $query = $pdo->prepare(
             "SELECT eq.question_id, eq.points
