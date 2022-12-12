@@ -85,6 +85,14 @@
                             <input type="text" id='dash-search-input' onkeyup='loadTables()'>
                         </div>
                     </div>
+                    <div class="search-case">
+                        <select name="category" id="category-search">
+                            <option value="text">Text</option>
+                            <option value="difficulty">Difficulty</option>
+                            <option value="constraint">Constraint</option>
+                            <option value="category">Category</option>
+                        </select>
+                    </div>
                     <div class="dash-table-div">
                         <p class="disabled" id='table-empty-records'>No records</p>
                         <table id='table'><script> loadTables(); </script></table>

@@ -186,7 +186,7 @@ function createTables(response) {
 
     console.log(requestCode)
     if (requestCode == 12) {
-        data = ["question", "text", "difficulty", "constraint", "category"];
+        data = ["question", "text", "difficulty", "category", "constraint"];
     }
 
     // Create cell class descriptors
@@ -350,7 +350,10 @@ function getSearchRows(response) {
         resetTableState();
         return response;
     }
-    
+
+    // Get the current filter value
+    const searchVal = document.getElementById("category-search") == null ? null : document.getElementById("category-search").value;
+
     // Create filtered response
     let filteredResponse = [];
     for (let i = 0; i < response.length; i++) {
@@ -358,11 +361,21 @@ function getSearchRows(response) {
         let examElements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
 
         if (requestCode == 12) {
-            examElements = [exam.question_id, exam.text, exam.difficulty, exam.constraint, exam.category];
+            examElements = [];
+            if (searchVal == "text")
+                examElements = [exam.question_id, exam.text, exam.difficulty, exam.category, exam.constraint];
+            else if (searchVal == "difficulty")
+                examElements = [exam.difficulty]
+            else if (searchVal == "constraint")
+                examElements = [exam.constraint];
+            else if (searchVal == "category")
+                examElements = [exam.category];
         }
-        
         // Check to see if exam contains search string
         for (let j = 0; j < examElements.length; j++) {
+            console.log(examElements[j]);
+            if (examElements[j] == null)
+                continue;
             let value = String(examElements[j]).toLowerCase();
     
             // If row contains search text, stop checking
@@ -372,6 +385,8 @@ function getSearchRows(response) {
             }
         }
     }
+
+    // console.log(JSON.stringify(filteredResponse));
 
     // Update responseLength with new filtered length
     responseLength = filteredResponse.length;
@@ -724,7 +739,7 @@ function getHeader() {
         case 2:
             return ['ID', 'Student', 'Title', 'Score', 'Date', "Action"];
         case 12:
-            return ['Question', 'Text', "Difficulty", "Constraint", "Category"];
+            return ['Question', 'Text', "Difficulty", "Category", "Constraint"];
     }
 }
 
