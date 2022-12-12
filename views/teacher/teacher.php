@@ -12,6 +12,7 @@
     <?php include(dirname(__FILE__, 3) . "/style/includes/stylesheets.php");?>
     <script type="text/javascript" src="scripts/render-table.js??<?php echo time();?>"></script>
     <script type="text/javascript" src="scripts/authenticate-user.js??<?php echo time();?>"></script>
+    <script type="text/javascript" src="scripts/review.js??<?php echo time();?>"></script>
     <title>Teacher Portal</title>
 </head>
 <body onload="onLoad()">
@@ -23,7 +24,6 @@
                 <ul class="panel-list">
                     <div class="panel-div panel-hover"><li class="panel-element" id='panel-dashboard' onclick="window.location.href='/questions'">QUESTION</li></div>
                     <div class="panel-div panel-hover"><li class="panel-element" id='panel-exam' onclick="window.location.href='/create'">CREATE EXAM</li></div>
-                    <div class="panel-div panel-hover"><li class="panel-element" id='panel-exam' onclick="window.location.href='/review'">REVIEW EXAM</li></div>
                     <div class="panel-div"><button class="panel-element button" id='logout-button' onclick="logout()">LOG OUT</button></div>
                 </ul>
             </div>
