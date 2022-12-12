@@ -218,7 +218,7 @@ function createTables(response) {
         let elements = [exam.exam_id, exam.name, exam.title, formatScore(exam.score, exam.points), formatDate(exam.date)];
 
         if (requestCode == 12) {
-            elements = [exam.question_id, exam.text, exam.difficulty, exam.constraint, exam.category];
+            elements = [exam.question_id, exam.text, exam.difficulty, exam.category, exam.constraint];
         }
         
         // Counter for how many rows are being displayed
