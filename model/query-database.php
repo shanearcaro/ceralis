@@ -64,6 +64,8 @@ $request_code = $data->{'request'};
  *     [studentexamid]
  *     [studentexamid, questionid, points, answer, testcaseid, case, answer, case_answer] 
  * 
+ * 15 - Get student points
+ *      [studentexamid]
  * 8 - Get all created questions
  *     []
  *     [question_id, text]
@@ -161,7 +163,7 @@ switch($request_code) {
 
     case 4:
         $query = $pdo->prepare(
-            "SELECT se.studentexam_id, se.exam_id, eq.question_id, eq.points, q.text, q.difficulty
+            "SELECT se.studentexam_id, se.exam_id, eq.question_id, eq.points, q.text, q.difficulty, e.title
             FROM StudentExams AS se
             INNER JOIN Exams AS e ON se.exam_id = e.exam_id
             INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
@@ -210,9 +212,10 @@ switch($request_code) {
             WHERE se.studentexam_id = ?
             ORDER BY eq.question_id");
         $query->execute([$data->{'studentexamid'}]);
+        break;
     case 8:
         $query = $pdo->prepare(
-            "SELECT q.question_id, q.text
+            "SELECT *
             FROM Questions as q");
         $query->execute();
         break;
@@ -262,6 +265,7 @@ switch($request_code) {
             "INSERT INTO Testcases (testcase_id, question_id, `case`, answer)
             VALUES (NULL, ?, ?, ?)");
             $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
+
     case 17:
         $query = $pdo->prepare(
             "SELECT eq.question_id, q.text, eq.points, eq.answer, eq.comment 
@@ -290,7 +294,24 @@ switch($request_code) {
             SET score = ?
             WHERE studentexam_id = ? AND testcase_id = ?");
         $query->execute([$data->{'score'}, $data->{'studentexamid'}, $data->{'testcaseid'}]);
+        break
+        exit();
+    case 15:
+        $query = $pdo->prepare(
+            "SELECT eq.question_id, eq.points
+            FROM StudentExams AS se
+            INNER JOIN ExamQuestions AS eq ON se.studentexam_id = eq.studentexam_id
+            WHERE se.studentexam_id = ?
+            ORDER BY eq.question_id");
+        $query->execute([$data->{'studentexamid'}]);
         break;
+    case 19:
+        $query = $pdo->prepare(
+            "INSERT INTO `Autograde` (`studentexam_id`, `testcase_id`, `autoresult`, `points`, `score`) 
+            VALUES (?, ?, ?, ?, ?)"
+        );
+        $query->execute([$data->{'studentexamid'}, $data->{'testcaseid'}, $data->{'autoresult'}, $data->{'points'}, $data->{'score'}]);
+        exit();
 }       
 
 // Fetch data and return

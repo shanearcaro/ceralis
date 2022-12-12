@@ -17,7 +17,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
 
 // Decode the results of sending the data
 $result = curl_exec($ch);
-curl_close($ch);
+// curl_close($ch);
 
 // User is not authenticated
 if(!isset($_SESSION['user_id'])) {
@@ -31,26 +31,100 @@ if(!isset($_SESSION['user_id'])) {
  * but before the information is returned to the user the autograder must be run.
  */
 if ($post_data['request'] == 7) {
+    // print_r($post_data);
     $data = json_decode($result);
     $responseArray = array();
 
+    // Get points for all questions
+    $post_data["request"] = 15;
+
+    // Encode
+    $encoded = json_encode($post_data);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+    $result = curl_exec($ch);
+
     foreach ($data as $row) {
-        array_push($responseArray, autograde($row));
+        $grade = autograde($row);
+        $index = array(
+            "studentexamid"    => $row->{"studentexam_id"}, 
+            "questionid"       => $row->{"question_id"}, 
+            "testcaseid"       => $row->{"testcase_id"},
+            "answer"           => $row->{"case_answer"}, 
+            "autoresult"       => $grade[0]
+        );
+
+        // Auto grade is complete
+        array_push($responseArray, $index);
     }
 
-    print_r($responseArray);
+    $questionsArray = json_decode($result);
+
+    $pointsCount = array();
+    $pointsValue = array();
+
+    foreach ($responseArray as $question) {
+        $val = $question["questionid"];
+        if (!array_key_exists($val, $pointsCount))
+            $pointsCount[$val] = 0;
+        $pointsCount[$val] += 1;
+    }
+
+    foreach ($questionsArray as $question) {
+        $val = $question->{"points"};
+        if (!array_key_exists($val, $pointsValue))
+            $pointsValue[$question->{"question_id"}] = $val;
+    }
+
+    for ($i = 0; $i < count($responseArray); $i++) {
+        // print_r($responseArray[$i]);
+        $id = $responseArray[$i]["questionid"];
+        $responseArray[$i]["points"] = floor($pointsValue[$id] / $pointsCount[$id]);
+
+        if ($responseArray[$i]["answer"] == $responseArray[$i]["autoresult"])
+            $responseArray[$i]["score"] = $responseArray[$i]["points"];
+        else
+        $responseArray[$i]["score"] = 0;
+
+        // Update request code
+        $responseArray[$i]["request"] = 19;
+
+        // Encode
+        $encoded = json_encode($responseArray[$i]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+        curl_exec($ch);
+    }
+
+    $studentExams = array();
+
+    foreach ($responseArray as $examResults) {
+        $studentExams["studentexamid"] = $examResults["studentexamid"];
+        $score = $examResults["score"];
+
+        if (!array_key_exists("score", $studentExams))
+            $studentExams["score"] = $score;
+        else
+            $studentExams["score"] += $score;
+    }
+    $studentExams["request"] = 6;
+    
+    // Encode
+    $encoded = json_encode($studentExams);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+    $result = curl_exec($ch);
+    echo $result;
 }
 else {
     echo $result;
 }
 
-function autograde($row) {
+function autograde(object $row): array {
+    // print_r($row);
     // Create a new file to run test cases
     $fileName = "question.py";
 
     // Python file result and error code
-    $execResult;
-    $return_code;
+    $execResult = array();
+    $return_code = 0;
 
     // Attempt to open the file in write mode
     $file = fopen($fileName, "w") or die("Unable to open file!");
@@ -63,8 +137,18 @@ function autograde($row) {
 
     // Write everything to file
     fwrite($file, $shebang);
+
+    // Test whether the answer and case have the correct name
+    $functionName = testFunctionName($row->{"answer"}, $row->{"case"});
+
+    // Write the student's function into the file
     fwrite($file, $row->{"answer"} . PHP_EOL);
-    fwrite($file, "print(" . $row->{"case"} . ")");
+
+    // Write the correct case for the function and take off points if necessary
+    if ($functionName == -1) 
+        fwrite($file, "print(" . $row->{"case"} . ")");
+    else
+        fwrite($file, "print(" . $functionName . ")");
 
     // Close file after writting
     fclose($file);
@@ -76,9 +160,75 @@ function autograde($row) {
     unlink($fileName);
 
     // If the file contains a syntax error report it instead of the actual output
-    if ($return_code == 1)
-        return "Syntax Error: invalid syntax";
+    if ($return_code == 1) {
+        if (!strpos($row->{"case"}, "(")) {
+            $case = $row->{"case"};
+
+            if ($case == "None" || $case == "For" || $case == "While" || $case == "Recursion")
+                return array(testConstraint($row->{"answer"}, getCorrectFunctionName($row->{"answer"}), $row->{"case"}));
+            else {
+                return array(getCorrectFunctionName($row->{"answer"}));
+            }
+
+        }
+        return array("Syntax Error: invalid syntax");
+    }
 
     // Return python file output
-    return $execResult[0];
+    return array($execResult[0]);
+}
+
+function getCorrectFunctionName(string $answer): string {
+    // Get the function name of the test case
+    $offset = strpos($answer, "def") + 4;
+    return substr($answer, $offset, strpos($answer, "(") - $offset);
+}
+
+/**
+ * Give the answer and a test case check to see if the function names of both are the same.
+ * If this is not the case the auto grader will fail because the python file will contain a unknown function which will cause a syntax error. 
+ * 
+ * Return -1 if the function names are the same and no changes need to be made
+ * Return the updated function name if the function names are not the same and need to be updated
+ */
+function testFunctionName(string $answer, string $testcase): int | string {
+    $answer = getCorrectFunctionName($answer);
+
+    // Get the function name of the test case
+    $case = substr($testcase, 0, strpos($testcase, "("));
+
+    // If the case function name and the answer function name are the same return -1, no changes need to be made
+    if ($case == $answer)
+        return -1;
+    // else return the name of the new function name to user
+    $answer .= substr($testcase, strpos($testcase, "("));
+    return $answer;
+}
+
+function testConstraint(string $answer, string $functionName, string $constraint): string {
+    // If there is not constraint no testing needs to be done
+    if ($constraint == "None")
+        return "None";
+
+    if ($constraint == "While") {
+        if (strpos($answer, "while"))
+            return "While";
+    }
+
+    if ($constraint == "For") {
+        if (strpos($answer, "for"))
+            return "For";
+    }
+
+    if ($constraint == "Recursion") {
+        $offset = strpos($answer, $functionName);
+
+        if (!$offset)
+            return "false";
+
+        if (strpos($answer, $functionName, $offset))
+            return "Recursion" ;
+    }
+
+    return "false";
 }

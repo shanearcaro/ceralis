@@ -14,6 +14,19 @@
     border: 1px solid var(--dash-ol);
 }
 
+.dash-table-area-2 {
+    position: relative;
+    width: 50rem;
+
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+
+    border: 1px solid var(--dash-ol);
+}
+
 /* ========== STUDENT EXAMS TABLE TITLE ========== */
 .dash-title {
     width: 100%;
@@ -129,7 +142,7 @@
 /* ========== STUDENT EXAMS TABLE ROW ========== */
 .exam-row {
     height: 50px;
-    
+
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -280,4 +293,31 @@
 
 .active-button {
     background-color: var(--active-btn);
+}
+
+.cell-question {
+    width: 10%;
+}
+
+.cell-text {
+    width: 60%;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+
+    /* max-width: 20%; */
+    min-height: max-content;
+    word-wrap: break-word;
+    overflow-y: auto;
+}
+
+.cell-difficulty {
+    width: 10%;
+}
+
+.cell-constraint {
+    width: 10%;
+}
+
+.cell-category {
+    width: 10%;
 }
