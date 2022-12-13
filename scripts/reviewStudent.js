@@ -19,17 +19,14 @@ function newTable(questionNum, text, questionId){
     const earned = document.createElement("td");
 
     const commentLabel = document.createElement("label");
-    const commentBox = document.createElement("div");
-
-    submitButton.setAttribute("type", "submit");
-    submitButton.value = "Submit Updates for Question " + (questionNum+1);
+    const commentBox = document.createElement("p");
 
     commentBox.name = "comment-" + questionNum;
     commentBox.type = "text";
     commentBox.id = commentBox.name;
 
     commentLabel.setAttribute("for", commentBox.name);
-    commentLabel.innerHTML = "Comment for question " + (questionNum + 1);
+    commentLabel.innerHTML = "Comment for question " + (questionNum + 1) + ":";
 
 
     //Create div for the table and append to content area
@@ -76,6 +73,48 @@ function newTable(questionNum, text, questionId){
     tableHeader.appendChild(actual);
     tableHeader.appendChild(worth);
     tableHeader.appendChild(earned);
+
+    addComment(questionId, questionNum);
+}
+
+function addComment(questionId, questionNum){
+    const requestCode = 36;
+    const studentExamId = sessionStorage.getItem('exam_request');
+    console.log(questionId);
+    const credentials = `studentexamid=${studentExamId}&questionid=${questionId}&request=${requestCode}`;
+    const ajax = new XMLHttpRequest();
+
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            console.log(ajax.responseText);
+            const comment = JSON.parse(ajax.responseText);
+
+            //The response text will be the id of the last exam created
+            if (ajax.responseText == "false") {
+                /**
+                 * This should also never fail. The best way of dealing with this would be to make the
+                 * answers get added to sesssion data and then reload the page and answers on a failure
+                 * and try again. This might get added in a later version if I have time.
+                 */
+                //window.location.href = "/404";
+            }
+            ajax.onloadend = function() {
+                const commentBox = document.getElementById("comment-" + questionNum);
+                const commentText = comment[0].comment;
+                if(!commentText || commentText.trim().length == 0)
+                    commentBox.innerHTML = "No Comment";
+                else
+                    commentBox.innerHTML = comment[0].comment;
+            }
+
+
+            //console.log(comment);
+        }
+    }
+
+    ajax.open("POST", "/post", true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.send(credentials);
 }
 
 function insertTableRows(testCases, questionNum){
@@ -221,7 +260,6 @@ function addFunctionName(testCase, questionNum){
     var actual = row.insertCell(-1);
     var worth = row.insertCell(-1);
     var points = row.insertCell(-1);
-    var editPoints = row.insertCell(-1);
 
     caseText.innerHTML = testCase.case;
     expected.innerHTML = testCase.answer;
@@ -286,13 +324,10 @@ function insertTotalRow(questionId, questionNum){
     var actual = row.insertCell(-1);
     var worth = row.insertCell(-1);
     var points = row.insertCell(-1);
-    var editPoints = row.insertCell(-1);
 
     caseText.innerHTML = "TOTAL";
     expected.className = "black";
     actual.className = "black";
-
-    editPoints.className = "black";
 
     const ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function() {

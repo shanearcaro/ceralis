@@ -13,6 +13,7 @@ post('/login/query',            'model/query-database.php');
 // Student routes
 get('/student',                 '/views/student/student.php');
 get('/exam',                    '/views/student/takeExam.php');
+get('/studentReview',            '/views/student/reviewStudent.php');
 
 // Student requests
 // TODO

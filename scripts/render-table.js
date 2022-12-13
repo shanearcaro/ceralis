@@ -314,10 +314,10 @@ function createActionButtons(studentExamID, viewID, isTaken) {
                  * Need to add separate onclick functions for review
                  * depending on if the user is a student or a teacher
                 */
-                sessionStorage.setItem("exam_request", studentExamID);
-                window.location.href = "/review";
-
-
+               const position = sessionStorage.getItem('position');
+               sessionStorage.setItem("exam_request", studentExamID);
+               if(position == "teacher") window.location.href = "/review";
+               if(position == "student") window.location.href = "/studentReview";
             }
             else if (p == "grade") {
                 autogradeRequest(studentExamID);

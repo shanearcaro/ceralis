@@ -58,6 +58,7 @@
 
                 // Store for checking later
                 storeSessionLogin(response.user_id);
+                sessionStorage.setItem('position', response.position);
 
                 // Sleep to allow shake effect to animate
                 sleep(1250).then(() => {
