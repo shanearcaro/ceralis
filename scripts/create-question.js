@@ -195,10 +195,10 @@ function storeQuestion() {
                     storeTestCases("Recursion", "Recursion", questionId);
                     break;
             }
-            window.location.href = "/teacher";
+            window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
         }
     }
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
@@ -223,7 +223,7 @@ function storeTestCases(testCase, solution, questionId) {
         }
     }
 
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 

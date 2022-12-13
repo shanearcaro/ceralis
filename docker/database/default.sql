@@ -33,46 +33,6 @@ INSERT INTO Exams (exam_id, user_id, title, points, date) VALUES (NULL, '2', 'Ja
 INSERT INTO Exams (exam_id, user_id, title, points, date) VALUES (NULL, '2', 'What to learn next', '100', '2022-11-16 22:48:36.000000');
 INSERT INTO Exams (exam_id, user_id, title, points, date) VALUES (NULL, '2', 'Java Beyond', '100', '2022-11-16 22:48:36.000000');
 
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (1, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (1, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (1, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (2, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (2, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (2, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (3, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (3, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (3, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (4, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (4, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (4, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (5, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (5, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (5, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (6, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (6, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (6, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (7, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (7, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (7, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (8, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (8, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (8, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (9, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (9, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (9, 3, 50, NULL, NULL);
-
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (10, 1, 20, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (10, 2, 30, NULL, NULL);
-INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (10, 3, 50, NULL, NULL);
-
 INSERT INTO StudentExams (studentexam_id, user_id, exam_id, date) VALUES (NULL, '1', '1', '2022-4-1 22:49:13.000000');
 INSERT INTO StudentExams (studentexam_id, user_id, exam_id, date) VALUES (NULL, '1', '2', '2022-4-7 22:49:13.000000');
 INSERT INTO StudentExams (studentexam_id, user_id, exam_id, date) VALUES (NULL, '1', '3', '2022-4-19 22:49:13.000000');
@@ -134,6 +94,46 @@ INSERT INTO StudentExams (studentexam_id, user_id, exam_id, score, date) VALUES 
 INSERT INTO StudentExams (studentexam_id, user_id, exam_id, score, date) VALUES (NULL, '3', '28', '24', '2022-12-2 22:49:13.000000');
 INSERT INTO StudentExams (studentexam_id, user_id, exam_id, score, date) VALUES (NULL, '3', '29', '68', '2022-12-24 22:49:13.000000');
 INSERT INTO StudentExams (studentexam_id, user_id, exam_id, score, date) VALUES (NULL, '3', '30', '64', '2022-12-25 22:49:13.000000');
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (1, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (1, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (1, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (2, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (2, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (2, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (3, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (3, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (3, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (4, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (4, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (4, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (5, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (5, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (5, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (6, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (6, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (6, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (7, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (7, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (7, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (8, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (8, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (8, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (9, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (9, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (9, 3, 50, NULL, NULL);
+
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (10, 1, 20, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (10, 2, 30, NULL, NULL);
+INSERT INTO ExamQuestions (studentexam_id, question_id, points, answer, comment) VALUES (10, 3, 50, NULL, NULL);
 
 INSERT INTO Testcases (testcase_id, question_id, `case`, answer) VALUES (NULL, 1, "add(5, 10)", "15");
 INSERT INTO Testcases (testcase_id, question_id, `case`, answer) VALUES (NULL, 1, "add(36, 42)", "78");

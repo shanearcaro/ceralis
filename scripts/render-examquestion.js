@@ -93,7 +93,7 @@ function loadQuestions() {
     }
 
     // Send request
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
@@ -347,13 +347,13 @@ function createNavElement(index) {
     if (isAnswered) {
         icon.classList.add("icon-answered");
         question.classList.add("question-answered");
-        icon.srcset = "../assets/check-mark.png";
+        icon.srcset = "https://afsaccess4.njit.edu/~sma237/CS490/assets/check-mark.png";
         icon.innerHTML = "Check mark";
     }
     else {
         icon.classList.add("icon-unanswered");
         question.classList.add("question-unanswered");
-        icon.srcset = "../assets/question-mark.png";
+        icon.srcset = "https://afsaccess4.njit.edu/~sma237/CS490/assets/question-mark.png";
         icon.innerHTML = "Question Mark";
     }
 
@@ -410,7 +410,7 @@ function submitExam() {
         }
 
         // Send request
-        ajax.open("POST", "/post", true);
+        ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
         ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         ajax.send(credentials);
     }
@@ -442,13 +442,13 @@ function updateExamScore() {
             }
             else {
                 // On success go back to student page
-                window.location.href = "/student";
+                window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/student/student.php";
             }
         }
     }
 
     // Send request
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }

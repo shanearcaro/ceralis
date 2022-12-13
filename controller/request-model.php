@@ -1,14 +1,19 @@
 <?php
-require_once("config/browser-config.php");
 
 // Get form data
 $post_data = $_POST;
+
+// $post_data = array(
+//     "request" => 0,
+//     "username" => "studentshane",
+//     "password" => "studentpassword"
+// );
 
 // Encode
 $encoded = json_encode($post_data);
 
 // Curl
-$url = $post_url . "/login/query";
+$url = "https://afsaccess4.njit.edu/~sma237/CS490/model/query-database.php";
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_POST, 1);
@@ -78,7 +83,7 @@ if ($post_data['request'] == 7) {
     for ($i = 0; $i < count($responseArray); $i++) {
         // print_r($responseArray[$i]);
         $id = $responseArray[$i]["questionid"];
-        $responseArray[$i]["points"] = floor($pointsValue[$id] / $pointsCount[$id]);
+        $responseArray[$i]["points"] = $pointsValue[$id] / $pointsCount[$id];
 
         if ($responseArray[$i]["answer"] == $responseArray[$i]["autoresult"])
             $responseArray[$i]["score"] = $responseArray[$i]["points"];
@@ -191,7 +196,7 @@ function getCorrectFunctionName(string $answer): string {
  * Return -1 if the function names are the same and no changes need to be made
  * Return the updated function name if the function names are not the same and need to be updated
  */
-function testFunctionName(string $answer, string $testcase): int | string {
+function testFunctionName(string $answer, string $testcase) {
     $answer = getCorrectFunctionName($answer);
 
     // Get the function name of the test case

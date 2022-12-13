@@ -22,6 +22,7 @@
     // Begin AJAX call
     const credentials = `username=${username}&password=${password}&request=${requestCode}`;
     const ajax = new XMLHttpRequest();
+    console.log(credentials);
 
     // Check AJAX
     ajax.onreadystatechange = function() {
@@ -42,6 +43,7 @@
             }
             // Else user authenticates
             else {
+                console.log(ajax.responseText);
                 // Decode json response
                 const allResponses = JSON.parse(ajax.responseText);
                 const response = allResponses[0];
@@ -62,8 +64,8 @@
                 // Sleep to allow shake effect to animate
                 sleep(1250).then(() => {
                     // Redirect based on position
-                    if (response.position == "student") window.location.href = "/student";
-                    if (response.position == "teacher") window.location.href = "/teacher";
+                    if (response.position == "student") window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/student/student.php";
+                    if (response.position == "teacher") window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
                 });
             }
         }
@@ -73,7 +75,7 @@
     }
 
     // Send request
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
@@ -84,7 +86,7 @@
  */
 function logout() {
     sessionStorage.removeItem("user_id");
-    window.location.href="/";
+    window.location.href="https://afsaccess4.njit.edu/~sma237/CS490/";
 }
 
 /**

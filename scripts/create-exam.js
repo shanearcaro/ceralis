@@ -128,12 +128,12 @@ function loadQuestions(){
     }
 
     // Send request
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
 
-function addExam(){
+function addExam() {
     const requestCode = 9;
     const userid = sessionStorage.getItem("user_id");
     const title = document.getElementById("title").value;
@@ -181,7 +181,7 @@ function addExam(){
     const credentials = `userid=${userid}&title=${title}&points=${total}&request=${requestCode}`;
     console.log(credentials);
 
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 
@@ -209,12 +209,12 @@ function createStudentExams(exam_id, questions, points){
                 var questionid = parseInt(questions[i].id);
                 var questionPoints = points[i].value;
                 credentials = `questionid=${questionid}&points=${questionPoints}&examid=${exam_id}&request=${requestCode}`;
-                console.log(credentials);
                 postQuestions(credentials);
             }
+            // window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
         }
     }
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 
@@ -222,7 +222,7 @@ function createStudentExams(exam_id, questions, points){
 
 function postQuestions(credentials){
     const ajax = new XMLHttpRequest();
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 

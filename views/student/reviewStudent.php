@@ -11,7 +11,7 @@
     <link rel="Stylesheet" href="https://afsaccess4.njit.edu/~sma237/CS490/style/teacher/review.css">
     <link rel="Stylesheet" href="https://afsaccess4.njit.edu/~sma237/CS490/style/includes/header.css">
     <script type="text/javascript" src="https://afsaccess4.njit.edu/~sma237/CS490/scripts/render-table.js"></script>
-    <script type="text/javascript" src="https://afsaccess4.njit.edu/~sma237/CS490/scripts/review.js"></script>
+    <script type="text/javascript" src="https://afsaccess4.njit.edu/~sma237/CS490/scripts/reviewStudent.js"></script>
 
     <title>Review Questions</title>
 </head>

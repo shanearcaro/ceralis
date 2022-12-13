@@ -1,12 +1,12 @@
 <?php
-require_once('vendor/autoload.php');
 
-// Read credentials
-$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 1));
-$dotenv->load();
+$server = "sql1.njit.edu";
+$username = "sma237";
+$password = "Cr43zg3fsa#";
+$database = "sma237";
 
 // Create connection string
-$dsn = "mysql:host={$_ENV['HOST']};dbname={$_ENV['DATABASE']};charset=utf8mb4";
+$dsn = "mysql:host=" . $server . ";dbname=" . $database . ";charset=utf8mb4";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -15,7 +15,7 @@ $options = [
 
 // Try connection
 try {
-     $pdo = new PDO($dsn, $_ENV['NAME'], $_ENV['PASS'], $options);
+     $pdo = new PDO($dsn, $username, $password, $options);
 } catch (\PDOException $e) {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
@@ -94,6 +94,8 @@ $request_code = $data->{'request'};
  *      [questionid, testCase(2..5)]
  *      []
  */
+
+$request_code = $data->{'request'};
 
 //  Execute queries based on request 
 switch($request_code) {
@@ -266,7 +268,7 @@ switch($request_code) {
         );
         $query->execute([$data->{'studentexamid'}, $data->{'testcaseid'}, $data->{'autoresult'}, $data->{'points'}, $data->{'score'}]);
         exit();
-}       
+}
 
 // Fetch data and return
 $response = $query->fetchAll();

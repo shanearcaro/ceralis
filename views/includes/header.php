@@ -1,7 +1,7 @@
 <div class="banner-container banner-element">
     <div class="banner banner-element">
         <div class="banner-frame banner-element">
-            <img class="banner-element" id="banner-image" src="/assets/njit_new.png" alt="njit logo">
+            <img class="banner-element" id="banner-image" src="https://afsaccess4.njit.edu/~sma237/CS490/assets/njit_new.png" alt="njit logo">
         </div>
         <div class="banner-title banner-element">
             <div class="banner-description banner-element">

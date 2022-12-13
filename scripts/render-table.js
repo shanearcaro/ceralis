@@ -117,7 +117,7 @@ function loadTables(forceReload = false) {
     }
 
     // Send request
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
@@ -307,13 +307,11 @@ function createActionButtons(studentExamID, viewID, isTaken) {
                 updateRequest(studentExamID, viewID, 3);
             else if (p == "take") {
                 storeSessionExam(studentExamID, viewID);
-                window.location.href = "/exam";
+                window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/student/takeExam.php";
             }
             else if (p == "review") {
-                /**
-                 * Need to add separate onclick functions for review
-                 * depending on if the user is a student or a teacher
-                 */
+                sessionStorage.setItem("exam_request", studentExamID);
+                window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/reviewExam.php";
             }
             else if (p == "grade") {
                 autogradeRequest(studentExamID);
@@ -621,7 +619,7 @@ function updateRequest(studentExamID, studentid, code) {
     }
 
     // Send request
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
@@ -642,7 +640,7 @@ function autogradeRequest(studentExamID) {
     }
 
     // Send request
-    ajax.open("POST", "/post", true);
+    ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send(credentials);
 }
