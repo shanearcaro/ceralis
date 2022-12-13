@@ -341,7 +341,13 @@ switch($request_code) {
             WHERE studentexam_id = ?");
         $query->execute([$data->{'score'}, $data->{'studentexamid'}]);
         break;
-        
+    case 36:
+        $query = $pdo->prepare(
+            "SELECT comment
+            FROM ExamQuestions
+            WHERE studentexam_id = ? AND question_id = ?");
+        $query->execute([$data->{'studentexamid'}, $data->{'questionid'}]);
+        break; 
 }       
 
 // Fetch data and return

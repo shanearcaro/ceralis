@@ -310,9 +310,14 @@ function createActionButtons(studentExamID, viewID, isTaken) {
                 window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/student/takeExam.php";
             }
             else if (p == "review") {
-                console.log("Student Exam ID: " + studentExamID);
+                const position = sessionStorage.getItem('position');
                 sessionStorage.setItem("exam_request", studentExamID);
-                window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/reviewExam.php";
+                console.log(position);
+                if (position == "teacher") 
+                    window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/reviewExam.php";
+                    
+                if (position == "student") 
+                    window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/student/reviewStudent.php";
             }
             else if (p == "grade") {
                 autogradeRequest(studentExamID);

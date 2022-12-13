@@ -362,19 +362,20 @@ function insertTotalRow(questionId, questionNum){
 }
 
 function updateTable(questionNum, questionId){
+    console.log("Updating the table");
     const table = document.getElementById("table-" + questionNum);
     const points = table.getElementsByClassName('points-input');
     const studentExamId = sessionStorage.getItem('exam_request');  
-    for(let i=0; i<points.length; i++){
-        if(points[i].value >= 0 && points[i].value){
+
+    console.log(points.length);
+    for(let i = 0; i < points.length; i++) {
+        if (points[i].value >= 0 && points[i].value) {
             var array = points[i].id.split("-");
             const testCaseId = array[0];
-            updateComment(studentExamId, questionId, questionNum)
             updatePoints(testCaseId, studentExamId, points[i].value);
         }
     }
-
-    //Still need to update the comment
+    updateComment(studentExamId, questionId, questionNum);
 }
 
 //Updates the points of the questions
@@ -408,6 +409,7 @@ function updatePoints(testCaseId, studentExamId, points){
 }
 
 function updateComment(studentExamId, questionId, questionNum){
+    console.log("Attempting to update comment");
     const requestCode = 33;
     const comment = document.getElementById("comment-" + questionNum).value;
     const credentials = `comment=${comment}&studentexamid=${studentExamId}&questionid=${questionId}&request=${requestCode}`;

@@ -75,7 +75,7 @@ if ($post_data['request'] == 7) {
     }
 
     foreach ($questionsArray as $question) {
-        $val = $question->{"points"};
+        $val = number_format((float)$question->{"points"}, 2, '.', '');
         if (!array_key_exists($val, $pointsValue))
             $pointsValue[$question->{"question_id"}] = $val;
     }
