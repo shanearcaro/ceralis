@@ -195,7 +195,7 @@ function storeQuestion() {
                     storeTestCases("Recursion", "Recursion", questionId);
                     break;
             }
-            window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
+            // window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
         }
     }
     ajax.open("POST", "https://afsaccess4.njit.edu/~sma237/CS490/controller/request-model.php", true);

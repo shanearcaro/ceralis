@@ -93,9 +93,23 @@ $request_code = $data->{'request'};
  * 14 - Store Test Cases
  *      [questionid, testCase(2..5)]
  *      []
+ * 
+ * 17 - Grab all exam questions
+ *      [studentexam_id, answer, comment]
+ *      [question_id]
+ * 
+ * 20 - Grab all testcases for exam
+ *      [question_id]
+ *      [studentexam_id]
+ * 
+ * 30 - Get test case answers 
+ *      [testcase_id, studentexam_id]
+ *      [autoresult, points, score] 
+ * 
+ * 31 - Update Autograde Scores
+ *      [studentexam_id, testcase_id, score]
+ *      []
  */
-
-$request_code = $data->{'request'};
 
 //  Execute queries based on request 
 switch($request_code) {
@@ -250,8 +264,37 @@ switch($request_code) {
         $query = $pdo->prepare(
             "INSERT INTO Testcases (testcase_id, question_id, `case`, answer)
             VALUES (NULL, ?, ?, ?)");
-            $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
-        exit();
+        $query->execute([$data->{'questionid'}, $data->{'case'}, $data->{'answer'}]);
+        break;
+    case 17:
+        $query = $pdo->prepare(
+            "SELECT eq.question_id, q.text, eq.points, eq.answer, eq.comment 
+            FROM ExamQuestions as eq
+            INNER JOIN Questions as q
+            WHERE  eq.studentexam_id = ? AND eq.question_id = q.question_id");
+        $query->execute([$data->{'studentexamid'}]);
+        break;
+    case 20:
+        $query = $pdo->prepare(
+            "SELECT `case`, answer, testcase_id 
+            FROM Testcases
+            WHERE question_id = ?");
+        $query->execute([$data->{'questionid'}]);
+        break;
+    case 30:
+        $query = $pdo->prepare(
+            "SELECT autoresult, points, score
+            FROM Autograde
+            WHERE studentexam_id = ? AND testcase_id = ?");
+        $query->execute([$data->{'studentexamid'}, $data->{'testcaseid'}]);
+        break;
+    case 31:
+        $query = $pdo->prepare(
+            "UPDATE Autograde
+            SET score = ?
+            WHERE studentexam_id = ? AND testcase_id = ?");
+        $query->execute([$data->{'score'}, $data->{'studentexamid'}, $data->{'testcaseid'}]);
+        break;
     case 15:
         $query = $pdo->prepare(
             "SELECT eq.question_id, eq.points
@@ -268,7 +311,38 @@ switch($request_code) {
         );
         $query->execute([$data->{'studentexamid'}, $data->{'testcaseid'}, $data->{'autoresult'}, $data->{'points'}, $data->{'score'}]);
         exit();
-}
+    case 32:
+        $query = $pdo->prepare(
+            "SELECT a.points, a.score, tc.testcase_id
+            FROM Autograde as a
+            INNER JOIN Testcases as tc ON a.testcase_id = tc.testcase_id
+            INNER JOIN Questions as q on tc.question_id = q.question_id
+            WHERE a.studentexam_id = ? AND tc.question_id = ?");
+        $query -> execute([$data->{'studentexamid'}, $data->{'questionid'}]);
+        break;
+    case 33:
+        $query = $pdo->prepare(
+            "UPDATE ExamQuestions
+            SET comment = ?
+            WHERE studentexam_id = ? AND question_id = ?");
+        $query->execute([$data->{'comment'}, $data->{'studentexamid'}, $data->{'questionid'}]);
+        break;
+    case 34:
+        $query = $pdo->prepare(
+            "SELECT score, points
+            FROM Autograde
+            WHERE studentexam_id = ?");
+        $query->execute([$data->{'studentexamid'}]);
+        break;
+    case 35:
+        $query = $pdo->prepare(
+            "UPDATE StudentExams
+            SET score = ?
+            WHERE studentexam_id = ?");
+        $query->execute([$data->{'score'}, $data->{'studentexamid'}]);
+        break;
+        
+}       
 
 // Fetch data and return
 $response = $query->fetchAll();

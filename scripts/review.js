@@ -106,22 +106,26 @@ function insertTableRows(testCases, questionNum){
 function getExamQuestions(studentExamId){
     const requestCode = 17;
 
-    const credentials = `studentexamid=${studentExamId}&request=${requestCode}`
+    const credentials = `studentexamid=${studentExamId}&request=${requestCode}`;
+    console.log(credentials);
 
     const ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function() {
         if (ajax.readyState == 4 && ajax.status == 200) {
+            console.log(ajax.responseText);
             const examid = JSON.parse(ajax.responseText);
+            
 
             //The response text will be the id of the last exam created
             if (ajax.responseText == "false") {
+                console.log("This is breaking");
                 /**
                  * This should also never fail. The best way of dealing with this would be to make the
                  * answers get added to sesssion data and then reload the page and answers on a failure
                  * and try again. This might get added in a later version if I have time.
                  */
-                window.location.href = "/404";
+                // window.location.href = "/404";
             }
 
             for(let i=0; i < examid.length; i++){

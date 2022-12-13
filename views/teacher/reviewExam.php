@@ -10,11 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     <link rel="Stylesheet" href="https://afsaccess4.njit.edu/~sma237/CS490/style/teacher/review.css">
     <link rel="Stylesheet" href="https://afsaccess4.njit.edu/~sma237/CS490/style/includes/header.css">
-    <script type="text/javascript" src="https://afsaccess4.njit.edu/~sma237/CS490/scripts/render-table.js"></script>
-    <script type="text/javascript" src="https://afsaccess4.njit.edu/~sma237/CS490/scripts/review.js"></script>
 
     <title>Review Questions</title>
 </head>
+<script type="text/javascript" src="https://afsaccess4.njit.edu/~sma237/CS490/scripts/render-table.js"></script>
+<script type="text/javascript" src="https://afsaccess4.njit.edu/~sma237/CS490/scripts/review.js"></script>
 <body>
     <div class="banner-container banner-element">
         <div class="banner banner-element">
@@ -33,3 +33,4 @@
         <script> displayResults(); </script>
     </div>
 </body>
+</html>

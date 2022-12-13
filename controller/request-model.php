@@ -137,12 +137,6 @@ function autograde(object $row): array {
     // Set file permissions 
     chmod($fileName, 0755);
     
-    // Write shell shebang
-    $shebang = "#!/usr/bin/env python3" . PHP_EOL;
-
-    // Write everything to file
-    fwrite($file, $shebang);
-
     // Test whether the answer and case have the correct name
     $functionName = testFunctionName($row->{"answer"}, $row->{"case"});
 
@@ -159,7 +153,7 @@ function autograde(object $row): array {
     fclose($file);
 
     // Run python file and record output
-    exec("./question.py" . ' 2>&1', $execResult, $return_code);
+    exec("python ./question.py" . ' 2>&1', $execResult, $return_code);
 
     // Delete the file
     unlink($fileName);
