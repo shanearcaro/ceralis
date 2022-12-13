@@ -33,6 +33,7 @@ if(!isset($_SESSION['user_id'])) {
 if ($post_data['request'] == 7) {
     // print_r($post_data);
     $data = json_decode($result);
+    echo ('console.log(' . $data . ')');
     $responseArray = array();
 
     // Get points for all questions
