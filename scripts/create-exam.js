@@ -114,7 +114,7 @@ function loadQuestions(){
                  * is picked and a valid exam consists of at least a single question.
                  * If somehow it does happen redirect to error page
                  */
-                window.location.href = "/404";
+                window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
             }
             else {
                 // Display results
@@ -170,7 +170,7 @@ function addExam() {
                  * answers get added to sesssion data and then reload the page and answers on a failure
                  * and try again. This might get added in a later version if I have time.
                  */
-                window.location.href = "/404";
+                 window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
             }
 
             createStudentExams(examid, questions, points);
@@ -201,7 +201,7 @@ function createStudentExams(exam_id, questions, points){
                  * answers get added to sesssion data and then reload the page and answers on a failure
                  * and try again. This might get added in a later version if I have time.
                  */
-                window.location.href = "/404";
+                 window.location.href = "https://afsaccess4.njit.edu/~sma237/CS490/views/teacher/teacher.php";
             }
 
             requestCode = 11;
